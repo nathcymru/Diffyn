@@ -1,56 +1,120 @@
 # Diffyn
 
-![Diffyn Header](header.png)
+![Diffyn: turning complex information into clear, manageable steps](docs/assets/header.png)
 
-[![GitHub License](https://img.shields.io/github/license/nathcymru/Diffyn)](LICENSE)
-[![Rust Version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fnathcymru%2FDiffyn%2Fmain%2FCargo.toml&query=%24.package.rust-version&label=Rust&logo=rust)](https://rust-lang.org)
-[![Protocol](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fnathcymru%2FDiffyn%2Fmain%2FCargo.toml&query=%24.package.metadata.diffyn.protocol&label=Protocol)](https://modelcontextprotocol.io)
-[![Community](https://img.shields.io/github/contributors/nathcymru/Diffyn)](https://github.com/nathcymru/Diffyn/issues)
+[![CI](https://github.com/nathcymru/Diffyn/actions/workflows/ci.yml/badge.svg)](https://github.com/nathcymru/Diffyn/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/nathcymru/Diffyn)](LICENSE)
+[![Rust version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fnathcymru%2FDiffyn%2Fmain%2FCargo.toml&query=%24.package.rust-version&label=Rust&logo=rust)](https://rust-lang.org/)
+[![Protocol: MCP](https://img.shields.io/badge/Protocol-MCP-4203BF)](https://modelcontextprotocol.io/)
 
-Diffyn is an open-source library of specialized system prompts and instructions designed to align Large Language Models (LLMs) with neurodivergent communication styles, processing needs, and executive functions.
+**Communication tools that adapt to the person.**
 
-The name bridges the English "Different" and the Welsh "Diffinio" (to define), reflecting our mission: redefining how AI communicates to match the unique way your mind works.
+Diffyn is a local Rust server for the **Model Context Protocol (MCP)**.
+It provides text tools, prompt templates and reference guidance for AI clients
+serving neurodivergent people.
 
-## 🧠 Why Diffyn?
-Standard LLM outputs are frequently poorly formatted for neurodivergent individuals. They often feature overwhelming walls of text, ambiguous phrasing, or structures that aggravate executive dysfunction, reading fatigue, and sensory overload.
+The name brings together **Different** and the Welsh **Diffinio**: to define.
+The aim is clear communication that respects individual preferences, autonomy
+and access to detail.
 
-Diffyn optimizes LLM behaviors to deliver clear, structured, and friction-free interactions tailored to:
-- **Autism Spectrum Conditions (ASC):** Eliminates idioms, minimizes conversational fluff, provides hyper-direct answers first, and respects literal interpretations.
-- **ADHD & AuDHD:** Uses scannable formatting, punchy summaries, bold visual anchors, and actionable, step-by-step task breakdowns to reduce executive overwhelm.
-- **Dyslexia:** Formats text with high-readability layouts, avoids dense paragraphs, and prioritizes clear structural markers.
-- **Dyspraxia & Processing Differences:** Structures information sequentially to alleviate cognitive load during complex navigation or instructions.
+[Get started](docs/engineering.md) ·
+[Examples](docs/examples.md) ·
+[Architecture](docs/architecture.md) ·
+[Research](docs/research.md) ·
+[Discussions](https://github.com/nathcymru/Diffyn/discussions)
 
-## 🏴󠁧󠁢󠁷󠁬󠁳󠁿 Cyflwyniad (Welsh Introduction)
-Llyfrgell cod agored yw Diffyn sy'n cynnwys cyfarwyddiadau a phrompts system ar gyfer Aliniad Modelau Iaith Mawr (LLMs) ag anghenion cyfathrebu a phrosesu niwrodargyfeiriol.
+## What Diffyn provides
 
-Daw'r enw o gyfuniad o'r gair Saesneg "Different" a'r gair Cymraeg "Diffinio". Ein nod yw ailddiffinio sut mae deallusrwydd artiffisial yn cyfathrebu, gan sicrhau bod yr allbwn yn cyd-fynd yn berffaith â ffordd unigryw eich meddwl chi o weithio.
+- **[Reformat for cognitive load](docs/examples.md#add-space-without-rewriting "reformat_for_cognitive_load"):** Add manageable paragraph breaks while preserving wording.
+- **[Generate executive function checklist](docs/examples.md#keep-an-existing-sequence-manageable "generate_executive_function_checklist"):** Extract supplied actions into ordered groups.
+- **[Verify clarity and literalism](docs/examples.md#review-a-possible-idiom "verify_clarity_and_literalism"):** Flag a defined set of potentially ambiguous English phrases.
 
-Mae Diffyn yn teilwrio ymatebion AI ar gyfer Awtistiaeth, ADHD, AuDHD, Dyslexia, a Dyspracsia drwy gael gwared ar eiriau diangen, strwythuro gwybodaeth yn glir, a chynnig camau gweithredu syml sy'n helpu gyda gorlwytho gwybyddol ac arafwch gweithredol.
+- **Two prompts** support preference-led responses and focused clarification.
+- **Four resources** provide communication guidance, combined preference options and evidence limits.
+- **Local processing** requires no model account, API key or hosted service.
+- **Explicit preferences** control formatting without requiring a diagnosis.
 
----
+The tools preserve source text and identify results that need review.
+They do not diagnose, infer a person's abilities or establish clinical benefit.
 
-## Project status
+## Designed for different processing needs
 
-Diffyn's first implementation is a local Rust MCP server with three text tools,
-two prompt templates, and four bundled reference resources. The descriptions
-above state the project's goals; they are not claims of clinically validated outcomes.
-Communication preferences vary within and across neurotypes. Individual choices
-take priority over any default, and a diagnosis is never required.
+- **Literal communication:** make instructions, references and assumptions explicit.
+- **Attention and planning:** keep the next action visible and group existing steps.
+- **Reading comfort:** use short sections, descriptive headings and optional emphasis.
+- **Motor sequencing:** offer ordered instructions with stable names for objects and controls.
+- **Combined needs:** apply the person's chosen supports without a fixed neurotype preset.
 
-The tools format layout, extract explicit steps, and flag possible idioms. They
-preserve source text and report uncertainty; they do not diagnose people or
-guarantee a correct plan or semantic rewrite. Processing stays local to the
-server, while the upstream AI client's data policies still apply.
+These options can support people who identify as autistic, ADHD, AuDHD, dyslexic
+or dyspraxic, alongside anyone who prefers these formats.
+**The person's choices take priority over labels.**
 
-Get started with [the engineering guide](docs/engineering.md) and
-[example requests](docs/examples.md). Read the [research assessment](docs/research.md)
-for evidence, source limitations, and the next evaluation needs.
-The code and original project documentation use the [MIT license](LICENSE).
+## Get started
+
+**Requirements:** Rust 1.99 or later and an MCP client that supports local stdio.
+
+```sh
+git clone https://github.com/nathcymru/Diffyn.git
+cd Diffyn
+cargo build --release --locked
+```
+
+1. **Build** the executable with the commands above.
+2. **Connect** your client using the [configuration guide](docs/engineering.md#connect-an-mcp-client).
+3. **Try** a request from the [examples](docs/examples.md).
+
+Diffyn starts when the client launches the executable.
+The current transport is **local stdio**; hosted HTTP integration is not included.
+
+## Privacy and security
+
+- **No persistence:** Diffyn does not store submitted text or profiles.
+- **No content logging:** standard output carries MCP messages only.
+- **No outbound model calls:** formatting and reference access run locally.
+- **Client policies still apply:** the upstream AI client controls its own data handling.
+
+Read the [security policy](.github/SECURITY.md) for supported versions and
+**private vulnerability reporting**.
+
+## Research and citation
+
+The [research report](docs/research.md) describes the evidence, methodology
+and evaluation priorities behind Diffyn.
+
+- **Sources:** [central BibTeX bibliography](docs/bibliography.bib).
+- **Cite the project:** [CITATION.cff](CITATION.cff).
+- **Behaviour:** [communication contract](docs/communication-contract.md).
+
+## Contribute
+
+- **Propose a change:** follow the [contribution guide](.github/CONTRIBUTING.md).
+- **Report a bug:** use the [issue templates](https://github.com/nathcymru/Diffyn/issues/new/choose).
+- **Share an idea:** join [GitHub Discussions](https://github.com/nathcymru/Diffyn/discussions).
+- **Participate respectfully:** follow the [Code of Conduct](.github/CODE_OF_CONDUCT.md).
 
 ## Optional charity donations
 
-Diffyn is developed voluntarily and remains free to use and fork. If you would
-like to support a neurodiversity charity, see the [independent charity donation
-page](.github/DONATE.md). Donations are optional, go directly to your chosen
-charity, and do not imply any affiliation with Diffyn.
+Diffyn is developed voluntarily and remains **free to use and fork**.
+The [charity donation page](.github/DONATE.md) links directly to independent
+neurodiversity charities.
 
+**No affiliation. No obligation.** Donations go to the selected charity.
+
+## Cyflwyniad Cymraeg
+
+**Offer cyfathrebu sy'n addasu i'r unigolyn.**
+
+Llyfrgell cod agored yw Diffyn sy'n cynnwys cyfarwyddiadau a phrompts system
+ar gyfer modelau iaith mawr ac anghenion cyfathrebu niwrodargyfeiriol.
+
+- **Gwybodaeth glir:** adrannau byr a chamau gweithredu syml.
+- **Dewis personol:** mae dewisiadau'r unigolyn yn dod gyntaf.
+- **Parch ac annibyniaeth:** nid oes angen datgelu diagnosis.
+
+Daw'r enw o'r gair Saesneg **Different** a'r gair Cymraeg **Diffinio**.
+
+## License
+
+Original code and project documentation use the [MIT license](LICENSE).
+Charity names and logos remain the property of their respective organisations;
+see the [artwork credits](docs/assets/charities/README.md).

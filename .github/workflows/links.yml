@@ -1,0 +1,47 @@
+name: External links
+
+on:
+  schedule:
+    - cron: "19 7 * * 3"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: external-links
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: External link availability
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install checksum-verified Lychee
+        env:
+          LYCHEE_SHA256: 1f4e0ef7f6554a6ed33dd7ac144fb2e1bbed98598e7af973042fc5cd43951c9a
+        run: |
+          archive="$RUNNER_TEMP/lychee.tar.gz"
+          curl --fail --silent --show-error --location --retry 2 --max-time 120 \
+            https://github.com/lycheeverse/lychee/releases/download/lychee-v0.24.2/lychee-x86_64-unknown-linux-gnu.tar.gz \
+            --output "$archive"
+          printf '%s  %s\n' "$LYCHEE_SHA256" "$archive" | sha256sum --check --strict
+          tar -xzf "$archive" -C "$RUNNER_TEMP" --strip-components=1 lychee-x86_64-unknown-linux-gnu/lychee
+      - name: Check published references
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          "$RUNNER_TEMP/lychee" --config .lychee.toml --no-progress \
+            --format markdown --output "$RUNNER_TEMP/links.md" \
+            README.md 'docs/**/*.md' '.github/**/*.md' \
+            docs/bibliography.bib CITATION.cff .github/FUNDING.yml
+      - name: Add the report to this run
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/links.md" ]; then
+            cat "$RUNNER_TEMP/links.md" >> "$GITHUB_STEP_SUMMARY"
+          fi

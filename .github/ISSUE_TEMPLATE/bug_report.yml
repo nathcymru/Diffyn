@@ -1,0 +1,39 @@
+name: Bug report
+description: Report a reproducible problem with Diffyn.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Use synthetic or redacted examples.** Do not include health records, private conversations or credentials.
+        **Security issue?** Use [private vulnerability reporting](https://github.com/nathcymru/Diffyn/security/advisories/new).
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the problem and the result you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How can we reproduce it?
+      description: Give the smallest example or sequence of steps that shows the problem.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Diffyn version or commit
+      placeholder: "For example: 0.1.0 or a commit identifier"
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include the operating system and MCP client if relevant.
+  - type: textarea
+    id: accessibility
+    attributes:
+      label: Communication or accessibility impact
+      description: Optional; describe the barrier or preferred behaviour without disclosing a diagnosis.

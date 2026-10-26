@@ -1,0 +1,12 @@
+{
+  "globs": ["**/*.md", ".github/**/*.md"],
+  "ignores": ["target/**", "scripts/docs/node_modules/**"],
+  "config": {
+    "default": true,
+    // Source wrapping is not rendered paragraph length; tables and URLs vary.
+    "MD013": false,
+    // Centered headings, linked logos and collapsible sections are intentional.
+    "MD033": { "allowed_elements": ["a", "br", "details", "h1", "h2", "img", "p", "picture", "source", "strong", "summary"] },
+    "MD041": { "allow_preamble": true }
+  }
+}

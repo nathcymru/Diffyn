@@ -1,0 +1,29 @@
+name: Feature request
+description: Suggest a focused improvement to Diffyn.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Describe the need or task.** No diagnosis or personal health information is required.
+        Use [Discussions](https://github.com/nathcymru/Diffyn/discussions) for early ideas or questions.
+  - type: textarea
+    id: need
+    attributes:
+      label: What problem should this solve?
+      description: Explain the task or barrier in a short example.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: What would a useful result look like?
+      description: Describe the behaviour or outcome you want.
+    validations:
+      required: true
+  - type: textarea
+    id: considerations
+    attributes:
+      label: Alternatives or considerations
+      description: Optional; include preferences, trade-offs or supporting sources.

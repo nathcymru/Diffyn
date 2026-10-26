@@ -1,12 +1,12 @@
 # Example requests
 
-These examples use synthetic text. The objects are tool arguments; the host MCP
-client wraps them in a `tools/call` request and handles the protocol lifecycle.
-Names and schemas are discoverable through `tools/list`.
+**These examples use synthetic text.** Tool examples show argument objects that an MCP client wraps in a `tools/call` request.
 
-## Layout without changing meaning
+The client handles connection setup, and `tools/list` supplies the current tool schemas.
 
-Tool: `reformat_for_cognitive_load`
+## Add space without rewriting
+
+**Tool:** `reformat_for_cognitive_load`.
 
 ```json
 {
@@ -20,31 +20,43 @@ Tool: `reformat_for_cognitive_load`
 }
 ```
 
-The formatter can insert paragraph breaks while preserving wording and exact
-values. It does not write a summary or change the medical instruction. Structured
-content, code, quotations, and linked text may be left intact to preserve meaning.
-Always inspect `changes`, `warnings`, `review_required`, and `limitations`.
+**Expected `formatted_text`:**
 
-Every profile field is optional. If useful, a person may supply
-`"self_declared_neurotypes": ["adhd", "dyslexia"]` alongside `preferences`.
-Labels never change the settings or establish the person's reading ability.
+```text
+The appointment is at 14:30. Bring the letter.
 
-Supported explicit preferences:
+Do not stop your medication. Ask the clinician if you need advice.
+```
 
-| Field | Default | Meaning |
-| --- | --- | --- |
-| `max_sentences_per_chunk` | `2` | A layout grouping preference from 1 to 5 |
-| `max_checklist_items` | `7` | An active group of 1 to 20 steps; other steps are retained |
-| `use_bold` | `false` | Optional generated emphasis where supported; the formatter does not infer which words are important |
-| `plain_text` | `false` | Suppress generated decoration; preserves existing source formatting |
-| `literal_language` | `true` | Include optional literal alternatives; never silently rewrite meaning |
+- **Preserved:** Wording, the time and the instruction beginning with “Do not” stay intact.
+- **Review:** `changes` describes the inserted break and `review_required` is true.
+- **Protected content:** Structured text, code, quotations and links may remain unchanged.
 
-Plain text takes precedence over generated bold when both are requested. These
-defaults are configurable product choices, not clinical thresholds.
+The tool changes layout without writing a summary or changing the supplied medical instruction.
 
-## Make existing actions easier to follow
+## Choose settings without a diagnosis
 
-Tool: `generate_executive_function_checklist`
+**Every profile field is optional**, and omitting `profile` uses neutral product defaults.
+
+```json
+{
+  "text": "Open the document. Check the title. Save your changes.",
+  "profile": {
+    "preferences": {
+      "max_sentences_per_chunk": 1
+    }
+  }
+}
+```
+
+- **Optional labels:** A person may add `"self_declared_neurotypes": ["adhd", "dyslexia"]` alongside `preferences`.
+- **Same settings:** Labels do not change defaults or establish reading ability.
+- **Plain-text priority:** `plain_text: true` suppresses generated bold even when `use_bold` is true.
+- **Exact fields:** The [communication contract](communication-contract.md#supported-preferences) lists all five preferences, defaults and bounds.
+
+## Keep an existing sequence manageable
+
+**Tool:** `generate_executive_function_checklist`.
 
 ```json
 {
@@ -57,18 +69,36 @@ Tool: `generate_executive_function_checklist`
 }
 ```
 
-The result retains all supplied actions. The preference controls the active group,
-not deletion of later actions. The original remains available for review. The
-tool does not establish that the supplied ordering is safe or complete.
+**Expected result:** The first two actions appear in `extracted_steps`, and the third remains in `deferred_steps`.
 
-For a broad request such as `"Organise my move"`, the local tool should report
-insufficient structure instead of inventing a plan. An upstream model can use
-the clarification prompt to gather the most useful missing information and
-clearly label any proposed steps as suggestions.
+- **Original retained:** `original_task` contains the full supplied sequence.
+- **Next action:** `next_action` is `Find the appointment letter.`.
+- **Visible limit:** The display window changes presentation without deleting later steps.
+- **Review:** Supplied order, completeness and safety still need checking.
 
-## Review possible ambiguity
+An explicit checked item such as `- [x] Find the appointment letter.` retains its completed status and is not selected as the next action.
 
-Tool: `verify_clarity_and_literalism`
+## Handle a goal that needs more detail
+
+**Tool:** `generate_executive_function_checklist`.
+
+```json
+{
+  "complex_task": "Organise my move"
+}
+```
+
+**Expected result:** `extraction_method` is `insufficient_structure`, with empty step arrays and a question in `missing_information`.
+
+- **No invented plan:** The tool cannot infer the location, dates, equipment or prerequisites from this goal.
+- **Focused clarification:** The host can ask for the most consequential missing information.
+- **Host suggestions:** A model may propose a sequence separately if it labels assumptions and proposed steps clearly.
+
+The clarification prompt below can help the host decide what to ask.
+
+## Review a possible idiom
+
+**Tool:** `verify_clarity_and_literalism`.
 
 ```json
 {
@@ -81,15 +111,18 @@ Tool: `verify_clarity_and_literalism`
 }
 ```
 
-The tool preserves the source and flags known phrases with optional explanations.
-A phrase can have a literal meaning in context; every finding needs review.
-No findings means only that the finite phrase list found no matches, not that the
-text is clear or free of sarcasm. English phrase heuristics are not a multilingual
-language-understanding system.
+**Expected finding:** `touch base` appears at UTF-8 byte offsets **6–16**, with a conditional suggestion to name who should contact whom and why.
 
-## Request a reusable prompt
+- **No rewrite:** `original_text` remains unchanged.
+- **Context matters:** The phrase could be literal or appropriate in another context.
+- **Preference effect:** Setting `literal_language` to false keeps the finding but omits its suggested interpretation.
+- **Limited coverage:** No findings means only that the finite English phrase list found no matches in the scanned text.
 
-Send `prompts/get` with:
+Use byte offsets against the UTF-8 source rather than treating them as character indices.
+
+## Request a prompt
+
+**Method:** `prompts/get`.
 
 ```json
 {
@@ -101,14 +134,17 @@ Send `prompts/get` with:
 }
 ```
 
-The alternative prompt name is `neuro_inclusive_persona_wrapper`. Both accept
-required nonblank `context` and optional plain-text `preferences`, with a combined
-32 KiB UTF-8 limit. They return static guidance and separate messages containing
-the supplied data. They do not execute model calls or override the host's rules.
+**Expected result:** Separate user-role messages contain the template, supplied context and supplied preferences.
+
+- **Alternative template:** `neuro_inclusive_persona_wrapper` uses the same argument names.
+- **Required context:** `context` must be a nonblank string.
+- **Free-text preferences:** Prompt preferences are a string, not the tool profile object.
+- **Combined limit:** Context and preferences together may contain at most 32,768 UTF-8 bytes.
+- **Host responsibility:** Templates do not execute model calls or replace higher-priority instructions.
 
 ## Read bundled guidance
 
-Send `resources/read` with:
+**Method:** `resources/read`.
 
 ```json
 {
@@ -116,7 +152,19 @@ Send `resources/read` with:
 }
 ```
 
-Other exact URIs are `diffyn://guidance/core-instructions`,
-`diffyn://guidance/style-guide`, and `diffyn://guidance/evidence-and-limits`.
-No file paths, external URLs, or URI variants are resolved. References in the
-resources are citations; the server does not fetch them.
+**Expected result:** One `text/markdown` resource contains the combined preference matrix.
+
+- **Other resources:** `core-instructions`, `style-guide` and `evidence-and-limits` use the same `diffyn://guidance/` prefix.
+- **Exact match:** File paths, external URLs, query strings and other URI variants are rejected.
+- **Local content:** References are citations that the server does not fetch.
+
+## Present the result usefully
+
+**The host should show the relevant answer**, with enough uncertainty and source context for the person to make an informed choice.
+
+- **Check warnings:** A protected section may have been preserved without analysis or formatting.
+- **Keep deferred steps:** A short display window must not conceal later requirements.
+- **Respect preferences:** The person can request plain text, more detail or a different presentation.
+- **Avoid raw metadata dumps:** Explain meaningful limitations without making the person interpret every JSON field.
+
+See the [communication contract](communication-contract.md) for the full behaviour and the [engineering guide](engineering.md) for connection setup.
