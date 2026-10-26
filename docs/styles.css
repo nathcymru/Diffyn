@@ -95,6 +95,7 @@ main:focus { outline: none; }
 :root[data-theme="muted"] .spectrum-text { background-image: linear-gradient(100deg, #a13979, #665394 38%, #396995 68%, #3b716f); }
 .hero-copy { text-align: center; }
 .hero-copy h1 { max-width: 1050px; margin: 18px auto 0; }
+.hero-copy h1 .spectrum-text { display: block; }
 .hero-description { font-size: 1.4rem; font-weight: 700; margin-top: 22px; }
 .hero-detail { max-width: 600px; margin: 12px auto 0; color: var(--secondary); font-size: 1.05rem; }
 .hero-actions, .community-actions { display: flex; justify-content: center; flex-wrap: wrap; align-items: center; gap: 24px; margin-top: 27px; }
