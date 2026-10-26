@@ -116,7 +116,7 @@
   background: #fff;
   color: var(--ink);
   overflow: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--line) #fff;
   box-shadow: none;
@@ -227,7 +227,7 @@
 .connection-note p { margin-top: 18px; }
 .connection-note .text-link { margin-top: 20px; }
 
-/* Each front stays a stable button. Opening reveals the wooden tray behind it. */
+/* Each front stays a stable button. Its wooden tray opens directly beneath it. */
 .workbench { position: relative; width: min(1180px, calc(100% - 80px)); margin: 0 auto; padding: 50px 0 20px; isolation: isolate; }
 .workbench > header { max-width: 720px; margin: 0 auto 40px; text-align: center; }
 /* Shared uprights continue through the book shelf and writing desk below. */
@@ -241,7 +241,7 @@
 .drawer-front {
   position: relative;
   z-index: 2;
-  order: 2;
+  order: 1;
   display: block;
   width: 100%;
   padding: 0;
@@ -272,14 +272,14 @@
 .drawer-front:hover .drawer-art { filter: saturate(var(--image-saturation)) drop-shadow(0 6px 4px #321a104a); }
 .drawer-content {
   position: relative;
-  order: 1;
+  order: 2;
   min-width: 0;
-  margin: 0 3% -12px;
+  margin: -12px 3% 0;
   padding: 25px 22px 30px;
   border: 6px solid #a76632;
-  border-top-width: 10px;
-  border-bottom: 0;
-  border-radius: 3px 3px 0 0;
+  border-top: 0;
+  border-bottom-width: 10px;
+  border-radius: 0 0 3px 3px;
   background: linear-gradient(180deg, #fffaf0, var(--paper) 38px);
   color: var(--ink);
   box-shadow: inset 0 3px 9px #6a3b1722, 4px 0 6px #4c290c14;
@@ -355,7 +355,7 @@
   min-width: 0;
   color: var(--ink);
   overflow: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--line) transparent;
 }
