@@ -1,3 +1,2 @@
-# Optional charity donations:
-# https://github.com/nathcymru/Diffyn/blob/main/.github/DONATE.md
-custom: []
+custom:
+  - "https://github.com/nathcymru/Diffyn/blob/main/.github/DONATE.md"
