@@ -205,4 +205,4 @@ svg { display: block; }
 @media (prefers-reduced-motion: reduce) { .world-depth { translate: 0 0 !important; }.world-scenery { position: absolute; height: 100%; } }
 @media (forced-colors: active) { .world-scenery, .world-light, .world-depth { display: none; }.hero-copy, .wall-paper, .values-scroll, .studio-sign, .board-title, .hanging-sign { border-color: CanvasText; } }
 
-.sunflower-emblem { width: 23px; height: 23px; vertical-align: middle; margin: -3px 7px 0 0; filter: saturate(var(--image-saturation)); }
+.sunflower-emblem { display: inline-block; width: 23px; height: 23px; vertical-align: middle; margin: -3px 7px 0 0; filter: saturate(var(--image-saturation)); }
