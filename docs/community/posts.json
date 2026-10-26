@@ -42,7 +42,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX7",
       "title": "Welcome to Diffyn: start where you feel comfortable",
       "bodyPath": "docs/community/announcements/welcome.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/10"
     },
     {
       "id": "announcements/local-privacy",
@@ -51,7 +52,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX7",
       "title": "What local processing means for your privacy",
       "bodyPath": "docs/community/announcements/local-privacy.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/11"
     },
     {
       "id": "announcements/small-contributions",
@@ -60,7 +62,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX7",
       "title": "Small contributions that make Diffyn easier to use",
       "bodyPath": "docs/community/announcements/small-contributions.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/12"
     },
     {
       "id": "announcements/dco-signoff",
@@ -69,7 +72,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX7",
       "title": "Code contributions: add a DCO sign-off",
       "bodyPath": "docs/community/announcements/dco-signoff.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/13"
     },
     {
       "id": "announcements/website-and-releases",
@@ -78,7 +82,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX7",
       "title": "Find the website, setup guide and release downloads",
       "bodyPath": "docs/community/announcements/website-and-releases.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/14"
     },
     {
       "id": "general/describe-a-preference",
@@ -87,7 +92,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX8",
       "title": "Describe a communication preference without a diagnosis",
       "bodyPath": "docs/community/general/describe-a-preference.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/15"
     },
     {
       "id": "general/keep-important-detail",
@@ -96,7 +102,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX8",
       "title": "What information must survive a shorter-looking response?",
       "bodyPath": "docs/community/general/keep-important-detail.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/16"
     },
     {
       "id": "general/welsh-and-other-languages",
@@ -105,7 +112,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX8",
       "title": "Welsh and other languages: what makes an example useful?",
       "bodyPath": "docs/community/general/welsh-and-other-languages.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/17"
     },
     {
       "id": "general/reading-and-navigation",
@@ -114,7 +122,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX8",
       "title": "Share a reading or navigation barrier, at your level of detail",
       "bodyPath": "docs/community/general/reading-and-navigation.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/18"
     },
     {
       "id": "general/choose-a-category",
@@ -123,7 +132,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX8",
       "title": "Where should a question, idea or example go?",
       "bodyPath": "docs/community/general/choose-a-category.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/19"
     },
     {
       "id": "ideas/preference-preview",
@@ -132,7 +142,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX-",
       "title": "Idea: preview a preference before applying it",
       "bodyPath": "docs/community/ideas/preference-preview.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/20"
     },
     {
       "id": "ideas/change-summary",
@@ -141,7 +152,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX-",
       "title": "Idea: a clearer summary of what formatting changed",
       "bodyPath": "docs/community/ideas/change-summary.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/21"
     },
     {
       "id": "ideas/language-coverage",
@@ -150,7 +162,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX-",
       "title": "Idea: make language coverage easier to understand",
       "bodyPath": "docs/community/ideas/language-coverage.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/22"
     },
     {
       "id": "ideas/checklist-context",
@@ -159,7 +172,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX-",
       "title": "Idea: keep deferred checklist steps visible without clutter",
       "bodyPath": "docs/community/ideas/checklist-context.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/23"
     },
     {
       "id": "ideas/integration-guides",
@@ -168,7 +182,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX-",
       "title": "Idea: choose a useful next integration guide",
       "bodyPath": "docs/community/ideas/integration-guides.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/24"
     },
     {
       "id": "q-a/diagnosis-and-settings",
@@ -177,7 +192,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX9",
       "title": "Do I need a diagnosis or neurotype label to use Diffyn?",
       "bodyPath": "docs/community/q-a/diagnosis-and-settings.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/25"
     },
     {
       "id": "q-a/client-and-model",
@@ -186,7 +202,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX9",
       "title": "Does Diffyn need an API key or a particular AI model?",
       "bodyPath": "docs/community/q-a/client-and-model.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/26"
     },
     {
       "id": "q-a/unchanged-text",
@@ -195,7 +212,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX9",
       "title": "Why did the formatter leave my text unchanged?",
       "bodyPath": "docs/community/q-a/unchanged-text.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/27"
     },
     {
       "id": "q-a/incomplete-goal",
@@ -204,7 +222,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX9",
       "title": "Why does “Organise my move” return insufficient structure?",
       "bodyPath": "docs/community/q-a/incomplete-goal.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/28"
     },
     {
       "id": "q-a/clarity-findings",
@@ -213,7 +232,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX9",
       "title": "Does “no clarity findings” mean my wording is clear?",
       "bodyPath": "docs/community/q-a/clarity-findings.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/29"
     },
     {
       "id": "show-and-tell/paragraph-breaks",
@@ -222,7 +242,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX_",
       "title": "Maintainer example: add paragraph breaks without rewriting",
       "bodyPath": "docs/community/show-and-tell/paragraph-breaks.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/30"
     },
     {
       "id": "show-and-tell/checklist-window",
@@ -231,7 +252,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX_",
       "title": "Maintainer example: show two steps and retain the third",
       "bodyPath": "docs/community/show-and-tell/checklist-window.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/31"
     },
     {
       "id": "show-and-tell/completed-checkboxes",
@@ -240,7 +262,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX_",
       "title": "Maintainer example: keep completed checkboxes out of the next action",
       "bodyPath": "docs/community/show-and-tell/completed-checkboxes.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/32"
     },
     {
       "id": "show-and-tell/conditional-idiom",
@@ -249,7 +272,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX_",
       "title": "Maintainer example: review an idiom without silently replacing it",
       "bodyPath": "docs/community/show-and-tell/conditional-idiom.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/33"
     },
     {
       "id": "show-and-tell/one-useful-question",
@@ -258,7 +282,8 @@
       "categoryId": "DIC_kwDOVXcm9s4DJoX_",
       "title": "Maintainer example: request focused clarification",
       "bodyPath": "docs/community/show-and-tell/one-useful-question.md",
-      "bodyFormat": "markdown-with-yaml-frontmatter"
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "url": "https://github.com/nathcymru/Diffyn/discussions/34"
     },
     {
       "id": "polls/opening-format",
@@ -276,7 +301,8 @@
           "Brief context first",
           "It depends on the task"
         ]
-      }
+      },
+      "url": "https://github.com/nathcymru/Diffyn/discussions/4"
     },
     {
       "id": "polls/checklist-view",
@@ -294,7 +320,8 @@
           "Seven steps",
           "The complete sequence"
         ]
-      }
+      },
+      "url": "https://github.com/nathcymru/Diffyn/discussions/5"
     },
     {
       "id": "polls/visual-emphasis",
@@ -312,7 +339,8 @@
           "Headings, no bold labels",
           "It depends on the task"
         ]
-      }
+      },
+      "url": "https://github.com/nathcymru/Diffyn/discussions/6"
     },
     {
       "id": "polls/documentation-start",
@@ -330,7 +358,8 @@
           "An architecture diagram",
           "A research summary"
         ]
-      }
+      },
+      "url": "https://github.com/nathcymru/Diffyn/discussions/7"
     },
     {
       "id": "polls/feedback-format",
@@ -348,7 +377,8 @@
           "A step-by-step report",
           "A quick poll response"
         ]
-      }
+      },
+      "url": "https://github.com/nathcymru/Diffyn/discussions/8"
     }
   ]
 }

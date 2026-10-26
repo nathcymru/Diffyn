@@ -4,53 +4,55 @@
 
 Use [GitHub Discussions](https://github.com/nathcymru/Diffyn/discussions) to join the conversation; reading without posting is welcome.
 
+**Source:** complete Markdown copies remain in this directory, with live URLs recorded in the [publication manifest](posts.json).
+
 ## Announcements
 
-- [Welcome to Diffyn: start where you feel comfortable](announcements/welcome.md).
-- [What local processing means for your privacy](announcements/local-privacy.md).
-- [Small contributions that make Diffyn easier to use](announcements/small-contributions.md).
-- [Code contributions: add a DCO sign-off](announcements/dco-signoff.md).
-- [Find the website, setup guide and release downloads](announcements/website-and-releases.md).
+- [Welcome to Diffyn: start where you feel comfortable](https://github.com/nathcymru/Diffyn/discussions/10).
+- [What local processing means for your privacy](https://github.com/nathcymru/Diffyn/discussions/11).
+- [Small contributions that make Diffyn easier to use](https://github.com/nathcymru/Diffyn/discussions/12).
+- [Code contributions: add a DCO sign-off](https://github.com/nathcymru/Diffyn/discussions/13).
+- [Find the website, setup guide and release downloads](https://github.com/nathcymru/Diffyn/discussions/14).
 
 ## General
 
-- [Describe a communication preference without a diagnosis](general/describe-a-preference.md).
-- [What information must survive a shorter-looking response?](general/keep-important-detail.md).
-- [Welsh and other languages: what makes an example useful?](general/welsh-and-other-languages.md).
-- [Share a reading or navigation barrier, at your level of detail](general/reading-and-navigation.md).
-- [Where should a question, idea or example go?](general/choose-a-category.md).
+- [Describe a communication preference without a diagnosis](https://github.com/nathcymru/Diffyn/discussions/15).
+- [What information must survive a shorter-looking response?](https://github.com/nathcymru/Diffyn/discussions/16).
+- [Welsh and other languages: what makes an example useful?](https://github.com/nathcymru/Diffyn/discussions/17).
+- [Share a reading or navigation barrier, at your level of detail](https://github.com/nathcymru/Diffyn/discussions/18).
+- [Where should a question, idea or example go?](https://github.com/nathcymru/Diffyn/discussions/19).
 
 ## Ideas
 
-- [Idea: preview a preference before applying it](ideas/preference-preview.md).
-- [Idea: a clearer summary of what formatting changed](ideas/change-summary.md).
-- [Idea: make language coverage easier to understand](ideas/language-coverage.md).
-- [Idea: keep deferred checklist steps visible without clutter](ideas/checklist-context.md).
-- [Idea: choose a useful next integration guide](ideas/integration-guides.md).
+- [Idea: preview a preference before applying it](https://github.com/nathcymru/Diffyn/discussions/20).
+- [Idea: a clearer summary of what formatting changed](https://github.com/nathcymru/Diffyn/discussions/21).
+- [Idea: make language coverage easier to understand](https://github.com/nathcymru/Diffyn/discussions/22).
+- [Idea: keep deferred checklist steps visible without clutter](https://github.com/nathcymru/Diffyn/discussions/23).
+- [Idea: choose a useful next integration guide](https://github.com/nathcymru/Diffyn/discussions/24).
 
 ## Q&A
 
-- [Do I need a diagnosis or neurotype label to use Diffyn?](q-a/diagnosis-and-settings.md).
-- [Does Diffyn need an API key or a particular AI model?](q-a/client-and-model.md).
-- [Why did the formatter leave my text unchanged?](q-a/unchanged-text.md).
-- [Why does “Organise my move” return insufficient structure?](q-a/incomplete-goal.md).
-- [Does “no clarity findings” mean my wording is clear?](q-a/clarity-findings.md).
+- [Do I need a diagnosis or neurotype label to use Diffyn?](https://github.com/nathcymru/Diffyn/discussions/25).
+- [Does Diffyn need an API key or a particular AI model?](https://github.com/nathcymru/Diffyn/discussions/26).
+- [Why did the formatter leave my text unchanged?](https://github.com/nathcymru/Diffyn/discussions/27).
+- [Why does “Organise my move” return insufficient structure?](https://github.com/nathcymru/Diffyn/discussions/28).
+- [Does “no clarity findings” mean my wording is clear?](https://github.com/nathcymru/Diffyn/discussions/29).
 
 ## Show and tell
 
-- [Maintainer example: add paragraph breaks without rewriting](show-and-tell/paragraph-breaks.md).
-- [Maintainer example: show two steps and retain the third](show-and-tell/checklist-window.md).
-- [Maintainer example: keep completed checkboxes out of the next action](show-and-tell/completed-checkboxes.md).
-- [Maintainer example: review an idiom without silently replacing it](show-and-tell/conditional-idiom.md).
-- [Maintainer example: request focused clarification](show-and-tell/one-useful-question.md).
+- [Maintainer example: add paragraph breaks without rewriting](https://github.com/nathcymru/Diffyn/discussions/30).
+- [Maintainer example: show two steps and retain the third](https://github.com/nathcymru/Diffyn/discussions/31).
+- [Maintainer example: keep completed checkboxes out of the next action](https://github.com/nathcymru/Diffyn/discussions/32).
+- [Maintainer example: review an idiom without silently replacing it](https://github.com/nathcymru/Diffyn/discussions/33).
+- [Maintainer example: request focused clarification](https://github.com/nathcymru/Diffyn/discussions/34).
 
 ## Polls
 
-- [Which opening helps you start reading an answer?](polls/opening-format.md).
-- [How much of a checklist would you like to see first?](polls/checklist-view.md).
-- [Which kind of emphasis would you choose for a short guide?](polls/visual-emphasis.md).
-- [What would help you understand Diffyn first?](polls/documentation-start.md).
-- [Which feedback format would be easiest to use?](polls/feedback-format.md).
+- [Which opening helps you start reading an answer?](https://github.com/nathcymru/Diffyn/discussions/4).
+- [How much of a checklist would you like to see first?](https://github.com/nathcymru/Diffyn/discussions/5).
+- [Which kind of emphasis would you choose for a short guide?](https://github.com/nathcymru/Diffyn/discussions/6).
+- [What would help you understand Diffyn first?](https://github.com/nathcymru/Diffyn/discussions/7).
+- [Which feedback format would be easiest to use?](https://github.com/nathcymru/Diffyn/discussions/8).
 
 **Privacy:** use synthetic examples and avoid disclosing health information, credentials or other people's data.
 
