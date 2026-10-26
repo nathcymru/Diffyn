@@ -25,6 +25,9 @@ preferred-citation:
   authors:
   - name: nathcymru
     website: https://github.com/nathcymru
+  institution:
+    name: Diffyn
+    website: https://github.com/nathcymru/Diffyn
   year: 2026
   url: https://github.com/nathcymru/Diffyn/blob/main/docs/research.md
   filename: docs/research.md
