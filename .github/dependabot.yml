@@ -26,6 +26,21 @@ updates:
     groups:
       actions:
         patterns: ["*"]
+  - package-ecosystem: cargo
+    directory: /fuzz
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:20"
+      timezone: Europe/London
+    open-pull-requests-limit: 5
+    groups:
+      fuzz-compatible:
+        applies-to: version-updates
+        update-types: [minor, patch]
+      fuzz-security:
+        applies-to: security-updates
+        patterns: ["*"]
   - package-ecosystem: npm
     directory: /scripts/docs
     schedule:

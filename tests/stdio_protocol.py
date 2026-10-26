@@ -531,6 +531,10 @@ class ProtocolTests(unittest.TestCase):
                 self.assertEqual(peer.wait(), 0)
 
     def check_signal_shutdown(self, signal_name):
+        if os.name != "posix":
+            self.skipTest(
+                "POSIX signal delivery is unavailable here; protocol and EOF shutdown tests still run"
+            )
         signum = getattr(signal, signal_name, None)
         if signum is None:
             self.skipTest(f"{signal_name} is unavailable on this platform")

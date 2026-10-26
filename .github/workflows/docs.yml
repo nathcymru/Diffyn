@@ -33,6 +33,8 @@ jobs:
         run: npm --prefix scripts/docs run lint
       - name: Validate links, anchors, citations, diagrams and YAML
         run: npm --prefix scripts/docs run check
+      - name: Validate landing-page JavaScript syntax
+        run: node --check docs/site.js
       - name: Validate workflow syntax
         env:
           ACTIONLINT_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8

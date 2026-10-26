@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import MarkdownIt from 'markdown-it';
 import GithubSlugger from 'github-slugger';
-import { parseFragment } from 'parse5';
+import { parse, parseFragment } from 'parse5';
 import { parseDocument } from 'yaml';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
@@ -32,37 +32,55 @@ function visit(node, callback) {
   children(node).forEach(child => visit(child, callback));
 }
 
-// Use rendered tokens for inline formatting, raw HTML anchors, and image URLs.
-// GithubSlugger supplies GitHub-compatible duplicate/Unicode heading anchors.
-function inspectMarkdown(file) {
-  if (documents.has(file)) return documents.get(file);
-  const source = read(file);
-  const tokens = markdown.parse(source, {});
-  const document = { anchors: new Set(), links: [], tokens };
-  documents.set(file, document);
-  const slugger = new GithubSlugger();
-  visit(parseFragment(markdown.renderer.render(tokens, markdown.options, {})), node => {
+// Parse structure and references without loading assets or executing scripts.
+// Markdown additionally receives GitHub's generated heading anchors.
+function inspectTree(file, tree, document, slugger) {
+  visit(tree, node => {
     const id = attr(node, 'id') ?? (node.tagName === 'a' ? attr(node, 'name') : undefined);
-    if (id) document.anchors.add(id);
-    if (/^h[1-6]$/.test(node.tagName ?? '')) document.anchors.add(slugger.slug(text(node)));
-    if (node.tagName === 'a' && attr(node, 'href') !== undefined) {
-      document.links.push({ href: attr(node, 'href'), label: text(node) });
+    if (id) {
+      if (!slugger && document.anchors.has(id)) report(file, `Duplicate HTML anchor: ${id}`);
+      document.anchors.add(id);
+    }
+    if (slugger && /^h[1-6]$/.test(node.tagName ?? '')) document.anchors.add(slugger.slug(text(node)));
+    const referenceAttribute = { a: 'href', link: 'href', img: 'src', script: 'src', source: 'src' }[node.tagName];
+    if (referenceAttribute && attr(node, referenceAttribute) !== undefined) {
+      document.links.push({ href: attr(node, referenceAttribute), label: node.tagName === 'a' ? text(node) : undefined });
     }
     if (node.tagName === 'img') {
       if (attr(node, 'alt') === undefined) report(file, 'An image is missing its alt attribute.');
-      if (attr(node, 'src')) document.links.push({ href: attr(node, 'src') });
     }
-    if (node.tagName === 'source' && attr(node, 'srcset')) {
+    if (['img', 'source'].includes(node.tagName) && attr(node, 'srcset')) {
       for (const source of attr(node, 'srcset').split(',')) {
         document.links.push({ href: source.trim().split(/\s+/)[0] });
       }
     }
   });
+}
+
+// Use rendered tokens for inline formatting, raw HTML anchors, and image URLs.
+// GithubSlugger supplies GitHub-compatible duplicate/Unicode heading anchors.
+function inspectMarkdown(file) {
+  if (documents.has(file)) return documents.get(file);
+  const tokens = markdown.parse(read(file), {});
+  const document = { anchors: new Set(), links: [], tokens, kind: 'markdown' };
+  documents.set(file, document);
+  inspectTree(file, parseFragment(markdown.renderer.render(tokens, markdown.options, {})), document, new GithubSlugger());
   for (const token of tokens) {
     if (token.type === 'fence' && token.info.trim().split(/\s+/)[0] === 'mermaid') {
       diagrams.push({ file, line: token.map[0] + 1, source: token.content });
     }
   }
+  return document;
+}
+
+function inspectHtml(file) {
+  if (documents.has(file)) return documents.get(file);
+  const document = { anchors: new Set(), links: [], kind: 'html' };
+  documents.set(file, document);
+  const tree = parse(read(file), {
+    onParseError: error => report(`${file}:${error.startLine}`, `Invalid HTML: ${error.code}`),
+  });
+  inspectTree(file, tree, document);
   return document;
 }
 
@@ -115,6 +133,8 @@ function checkLink(file, href) {
     if (!anchors.has(fragment) && !anchors.has(fragment.replace(/^user-content-/, ''))) {
       report(file, `Missing heading or HTML anchor: ${href}`);
     }
+  } else if (/\.html?$/i.test(relative)) {
+    if (!inspectHtml(relative).anchors.has(fragment)) report(file, `Missing HTML anchor: ${href}`);
   } else if (/^L\d+(?:-L\d+)?$/.test(fragment)) {
     const range = fragment.match(/\d+/g).map(Number);
     const lineCount = read(relative).split('\n').length;
@@ -125,6 +145,7 @@ function checkLink(file, href) {
 }
 
 for (const file of files.filter(file => /\.md$/i.test(file))) inspectMarkdown(file);
+for (const file of files.filter(file => /\.html?$/i.test(file))) inspectHtml(file);
 for (const [file, document] of documents) {
   for (const { href } of document.links) checkLink(file, href);
 }
@@ -218,5 +239,7 @@ if (errors.length) {
   console.error(errors.join('\n'));
   process.exitCode = 1;
 } else {
-  console.log(`Validated ${documents.size} Markdown files, ${citationCount} bibliography entries, CITATION.cff, ${diagrams.length} Mermaid diagrams, local links/anchors, and YAML/action pins.`);
+  const markdownCount = [...documents.values()].filter(document => document.kind === 'markdown').length;
+  const htmlCount = [...documents.values()].filter(document => document.kind === 'html').length;
+  console.log(`Validated ${markdownCount} Markdown files, ${htmlCount} HTML files, ${citationCount} bibliography entries, CITATION.cff, ${diagrams.length} Mermaid diagrams, local links/assets/anchors, and YAML/action pins.`);
 }

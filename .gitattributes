@@ -1,0 +1,2 @@
+# Fuzz seeds are literal byte inputs, including intentional whitespace.
+fuzz/seeds/** -text whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab

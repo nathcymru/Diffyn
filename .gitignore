@@ -1,4 +1,6 @@
 /target
+/dist/
+__pycache__/
 /tmp/
 node_modules/
 .DS_Store

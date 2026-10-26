@@ -1,0 +1,36 @@
+name: DCO
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: dco-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  signoff:
+    name: DCO sign-off
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # This event is used only to run the base-owned checker. Never check out
+      # the PR branch or execute its code, hooks, build scripts or dependencies.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/check_dco.py
+            tests/test_dco.py
+          sparse-checkout-cone-mode: false
+      - name: Test the trusted checker
+        run: python3 -I tests/test_dco.py
+      - name: Check every pull-request commit
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 -I scripts/check_dco.py

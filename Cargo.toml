@@ -6,10 +6,16 @@ rust-version = "1.99"
 description = "Neurodivergent-friendly communication tools and guidance over MCP"
 license = "MIT"
 repository = "https://github.com/nathcymru/Diffyn"
+homepage = "https://nathcymru.github.io/Diffyn/"
+documentation = "https://github.com/nathcymru/Diffyn/tree/main/docs"
+keywords = ["mcp", "accessibility", "neurodiversity", "communication"]
+categories = ["accessibility", "command-line-utilities"]
+include = ["/src/**", "/docs/guidance/**", "/docs/prompts/**", "/tests/stdio_protocol.py", "/Cargo.toml", "/Cargo.lock", "/README.md", "/LICENSE", "/CITATION.cff"]
 publish = false
 
 [workspace]
 members = ["."]
+exclude = ["fuzz"]
 resolver = "3"
 
 [package.metadata.diffyn]

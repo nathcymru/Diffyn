@@ -1,0 +1,1 @@
+{"complex_task": "Before starting, read the conditions.\n- [x] Gather 2 items.\n- [ ] Wait if the light is red.\n  Keep this condition.\n- [ ] Contact the named person.", "profile": {"preferences": {"max_checklist_items": 1}}}

@@ -1,6 +1,6 @@
 # Diffyn
 
-![Diffyn: turning complex information into clear, manageable steps](docs/assets/header.png)
+![Diffyn: clearer structure, lower overwhelm, better communication](docs/assets/banner.png)
 
 [![CI](https://github.com/nathcymru/Diffyn/actions/workflows/ci.yml/badge.svg)](https://github.com/nathcymru/Diffyn/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/github/license/nathcymru/Diffyn)](LICENSE)
@@ -17,6 +17,8 @@ The name brings together **Different** and the Welsh **Diffinio**: to define.
 The aim is clear communication that respects individual preferences, autonomy
 and access to detail.
 
+[Website](https://nathcymru.github.io/Diffyn/) ·
+[Downloads](https://github.com/nathcymru/Diffyn/releases) ·
 [Get started](docs/engineering.md) ·
 [Examples](docs/examples.md) ·
 [Architecture](docs/architecture.md) ·
@@ -54,17 +56,17 @@ or dyspraxic, alongside anyone who prefers these formats.
 **Requirements:** Rust 1.99 or later and an MCP client that supports local stdio.
 
 ```sh
-git clone https://github.com/nathcymru/Diffyn.git
-cd Diffyn
-cargo build --release --locked
+cargo install --git https://github.com/nathcymru/Diffyn --tag v0.1.0 --locked
 ```
 
-1. **Build** the executable with the commands above.
+1. **Install** with the command above, or choose a [prebuilt download](https://github.com/nathcymru/Diffyn/releases).
 2. **Connect** your client using the [configuration guide](docs/engineering.md#connect-an-mcp-client).
 3. **Try** a request from the [examples](docs/examples.md).
 
 Diffyn starts when the client launches the executable.
 The current transport is **local stdio**; hosted HTTP integration is not included.
+
+See the [release guide](docs/releases/README.md) for supported platforms and package verification.
 
 ## Privacy and security
 
