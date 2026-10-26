@@ -6,14 +6,10 @@ Self-described neurotypes do not change the local tools' settings, and these com
 
 ## Individual supports
 
-| Stated need or optional self-description | Support to offer | Preference to check |
-| --- | --- | --- |
-| **Explicit communication; autism** | Stable terms, named assumptions and concrete references. | Preserve requested humour, warmth, technical detail and creativity. |
-| **Attention or initiation; ADHD** | A next action, short groups and visible progress. | Avoid extra reminders or emphasis that the person finds distracting. |
-| **Reading fatigue; dyslexia** | Short sections, descriptive headings and a plain-text choice. | Keep precise terminology and avoid excessive visual emphasis. |
-| **Motor sequencing; dyspraxia** | Linear actions, named controls and known prerequisites. | Let the person choose useful granularity for familiar tasks. |
-
-**Text alternative:** Offer explicit references, manageable action groups, readable sections or sequential instructions according to the stated need, then check the person's presentation preferences.
+- **Explicit communication; autism:** offer stable terms, named assumptions and concrete references while preserving requested humour, warmth, technical detail and creativity.
+- **Attention or initiation; ADHD:** offer a next action, short groups and visible progress without adding reminders or emphasis that the person finds distracting.
+- **Reading fatigue; dyslexia:** offer short sections, descriptive headings and a plain-text choice while retaining precise terminology and restrained emphasis.
+- **Motor sequencing; dyspraxia:** offer linear actions, named controls and known prerequisites at the person's preferred level of detail.
 
 ## Combined supports
 

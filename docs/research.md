@@ -18,14 +18,12 @@ conformance assessment.
 design possibilities; they do not demonstrate that an LLM tool improves health,
 comprehension, or executive function.
 
-| Evidence type | Appropriate use | Limit |
-| --- | --- | --- |
-| Accessibility standard | Identify requirements for a complete interface | Server output alone cannot establish conformance |
-| Practice or clinical guidance | Offer adaptable communication options | Context and individual needs remain decisive |
-| Original study | Describe the measured sample and task | Results do not establish universal preferences |
-| Engineering decision | Define tool behavior and safeguards | A product default is not a clinical threshold |
+- **Accessibility standards** identify requirements for a complete interface; server output alone cannot establish conformance.
+- **Practice and clinical guidance** inform adaptable communication options; context and individual needs remain decisive.
+- **Original studies** describe measured samples and tasks; results do not establish universal preferences.
+- **Engineering decisions** define tool behavior and safeguards; a product default is not a clinical threshold.
 
-**References:** bracketed keys link to the machine-readable
+**References:** citation keys link to the machine-readable
 [bibliography](bibliography.bib), which records source titles, authors,
 publication details, and direct URLs.
 
@@ -111,13 +109,11 @@ conflict; the combinations below are engineering options, not validated clinical
 prescriptions. Personalization provides the design basis.
 [w3c-coga-2021](bibliography.bib)
 
-| Requested support | Possible combination | Conflict to resolve |
-| --- | --- | --- |
-| Attention and reading support | Short groups with sparse optional emphasis | Too many visual anchors can increase clutter |
-| Predictability and task initiation | Stable structure with one next action | Excessive detail can obscure the starting point |
-| Reading and motor sequencing | Linear instructions with named controls | Too many microsteps can burden familiar tasks |
-| Literal and low-pressure language | Explicit options in neutral wording | Softening must not conceal requirements or urgency |
-| Numeracy support | Exact values plus optional explanation | Approximation must not replace precise quantities |
+- **Attention and reading:** use short groups with sparse optional emphasis, since too many visual anchors can increase clutter.
+- **Predictability and task initiation:** keep a stable structure with one next action, since excessive detail can obscure the starting point.
+- **Reading and motor sequencing:** use linear instructions with named controls, with fewer microsteps for familiar tasks when preferred.
+- **Literal and low-pressure language:** offer explicit options in neutral wording while retaining requirements and urgency.
+- **Numeracy:** retain exact values alongside optional explanations, without substituting approximate quantities.
 
 **Diagnostic uncertainty:** the National Autistic Society describes disagreement
 and evidence gaps around PDA, while the CDS work-group report identifies

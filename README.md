@@ -25,11 +25,9 @@ and access to detail.
 
 ## What Diffyn provides
 
-| Tool | Purpose |
-| --- | --- |
-| `reformat_for_cognitive_load` | Add manageable paragraph breaks while preserving wording. |
-| `generate_executive_function_checklist` | Extract supplied actions into ordered groups. |
-| `verify_clarity_and_literalism` | Flag a defined set of potentially ambiguous English phrases. |
+- **[Reformat for cognitive load](docs/examples.md#add-space-without-rewriting "reformat_for_cognitive_load"):** Add manageable paragraph breaks while preserving wording.
+- **[Generate executive function checklist](docs/examples.md#keep-an-existing-sequence-manageable "generate_executive_function_checklist"):** Extract supplied actions into ordered groups.
+- **[Verify clarity and literalism](docs/examples.md#review-a-possible-idiom "verify_clarity_and_literalism"):** Flag a defined set of potentially ambiguous English phrases.
 
 - **Two prompts** support preference-led responses and focused clarification.
 - **Four resources** provide communication guidance, combined preference options and evidence limits.
