@@ -20,9 +20,9 @@ jobs:
     steps:
       # This event is used only to run the base-owned checker. Never check out
       # the PR branch or execute its code, hooks, build scripts or dependencies.
+      # The default pull_request_target checkout resolves the trusted base SHA.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.pull_request.base.sha }}
           persist-credentials: false
           sparse-checkout: |
             scripts/check_dco.py

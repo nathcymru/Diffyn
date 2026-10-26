@@ -18,7 +18,7 @@ Binary archives include the project licence, third-party dependency notices and 
 ## Publish a version
 
 1. **Update the version** in `Cargo.toml`, `Cargo.lock` and `CITATION.cff`.
-2. **Add release notes** at `docs/releases/vMAJOR.MINOR.PATCH.md`.
+2. **Add release notes** at `docs/releases/vMAJOR.MINOR.PATCH.md` and update the installation and provenance examples to the new tag.
 3. **Merge a signed-off pull request** after the required checks and package builds pass.
 4. **Create an annotated tag** named `vMAJOR.MINOR.PATCH` on that main-branch commit.
 5. **Push the tag** to start the release workflow.
@@ -45,3 +45,11 @@ gh attestation verify FILE --repo nathcymru/Diffyn
 ```
 
 Confirm that the verified source reference is the expected `refs/tags/vMAJOR.MINOR.PATCH` release tag.
+
+**Require this release and workflow explicitly:**
+
+```sh
+gh attestation verify FILE --repo nathcymru/Diffyn \
+  --signer-workflow nathcymru/Diffyn/.github/workflows/release.yml \
+  --source-ref refs/tags/v0.1.0
+```

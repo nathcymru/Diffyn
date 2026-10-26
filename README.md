@@ -56,7 +56,7 @@ or dyspraxic, alongside anyone who prefers these formats.
 **Requirements:** Rust 1.99 or later and an MCP client that supports local stdio.
 
 ```sh
-cargo install --git https://github.com/nathcymru/Diffyn --tag v0.1.0 --locked
+cargo install --git https://github.com/nathcymru/Diffyn --tag v0.1.0 --locked diffyn
 ```
 
 1. **Install** with the command above, or choose a [prebuilt download](https://github.com/nathcymru/Diffyn/releases).
