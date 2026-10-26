@@ -1,48 +1,96 @@
-# Support Neurodiversity Charities
+<h1 align="center">Support neurodiversity</h1>
 
-This repository is developed voluntarily and maintained free of charge. If you like, use, or wish to fork this repository, we kindly ask that you consider donating to one of the registered independent charities listed below. There is absolutely no affiliation and no obligation.
+<p align="center">
+  Diffyn is built voluntarily and remains free to use and fork.<br>
+  If you would like to give, support an independent charity below.
+</p>
 
-Donations go to your chosen charity through its own donation page or payment provider. Diffyn and its maintainer do not collect these donations. Using, modifying, or forking Diffyn never depends on donating.
-
----
-
-## National Autistic Society (NAS)
-
-The National Autistic Society provides information, advice, education and care services for autistic people and their families. It also campaigns for greater understanding and inclusion. [About its work](https://www.autism.org.uk/what-we-do/who-we-are/vision-to-reality-strategy).
-
-- **[Donate directly to the National Autistic Society](https://www.autism.org.uk/get-involved/donate)**
-- **Legal imprint:** The National Autistic Society; registered charity in England and Wales, no. **269425**.
-- **Official profile:** [Charity Commission register details](https://register-of-charities.charitycommission.gov.uk/en/charity-search/-/charity-details/269425).
-- **Fundraising Regulator:** [View its registered directory entry](https://www.fundraisingregulator.org.uk/directory/national-autistic-society).
+<p align="center">
+  <strong>No affiliation. No obligation.</strong><br>
+  Donations go directly to your chosen charity.
+</p>
 
 ---
 
-## British Dyslexia Association (BDA)
+<h2 align="center">National Autistic Society</h2>
 
-The British Dyslexia Association provides information and support for dyslexic people and families, helps professionals understand dyslexia, and campaigns for improvements in education, employment and public services. [About its work](https://www.bdadyslexia.org.uk/about/about-the-british-dyslexia-association).
+<p align="center">
+  <a href="https://www.autism.org.uk/">
+    <img src="assets/charities/nas-logo.svg" alt="National Autistic Society logo — visit the charity" width="304" height="134">
+  </a>
+</p>
 
-- **[Donate directly to the British Dyslexia Association](https://www.bdadyslexia.org.uk/support-us/donate-2/donate-online)** — its official link opens the charity's JustGiving donation form.
-- **Legal imprint:** The British Dyslexia Association; registered charity in England and Wales, no. **289243**.
-- **Official profile:** [Charity Commission register details](https://register-of-charities.charitycommission.gov.uk/en/charity-search/-/charity-details/289243).
-- **Fundraising Regulator:** [View its registered directory entry](https://www.fundraisingregulator.org.uk/directory/british-dyslexia-association).
+<p align="center">Advice, services and advocacy for autistic people and their families.</p>
+
+<p align="center">
+  <a href="https://www.autism.org.uk/get-involved/donate">
+    <img src="assets/charities/nas-donate.svg" alt="Donate directly to the National Autistic Society" width="258" height="44">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://register-of-charities.charitycommission.gov.uk/en/charity-search/-/charity-details/269425">
+    <img src="https://img.shields.io/badge/Charity_Commission-269425-4203BF?style=flat-square&amp;labelColor=25364A" alt="National Autistic Society — Charity Commission, England and Wales: 269425" width="206" height="24">
+  </a>
+  <a href="https://www.fundraisingregulator.org.uk/directory/national-autistic-society">
+    <img src="https://img.shields.io/badge/Fundraising_Regulator-Registered-19734B?style=flat-square&amp;labelColor=25364A&amp;logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI%2BPGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjUiIGZpbGw9IiM1N0Q2QTUiLz48L3N2Zz4%3D" alt="National Autistic Society — Fundraising Regulator: registered; view profile" width="260" height="24">
+  </a>
+</p>
 
 ---
 
-## ADHD UK
+<h2 align="center">British Dyslexia Association</h2>
 
-ADHD UK provides information and support for people affected by ADHD, advocates for their needs, raises awareness, and undertakes or supports research. [About its work](https://adhduk.co.uk/about-us/).
+<p align="center">
+  <a href="https://www.bdadyslexia.org.uk/">
+    <img src="assets/charities/bda-logo.svg" alt="British Dyslexia Association logo — visit the charity" width="304" height="134">
+  </a>
+</p>
 
-- **[Donate directly to ADHD UK](https://adhduk.co.uk/donate-to-adhd-uk/)**
-- **Legal imprint:** ADHD UK; registered charity in England and Wales, no. **1188365**.
-- **Official profile:** [Charity Commission register details](https://register-of-charities.charitycommission.gov.uk/en/charity-search/-/charity-details/5152570).
-- **Fundraising Regulator:** Registration was not verified during this review. [Check the current directory](https://www.fundraisingregulator.org.uk/directory).
+<p align="center">Information, support and advocacy for dyslexic people in education, work and everyday life.</p>
+
+<p align="center">
+  <a href="https://www.bdadyslexia.org.uk/support-us/donate-2/donate-online">
+    <img src="assets/charities/bda-donate.svg" alt="Donate directly to the British Dyslexia Association" width="258" height="44">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://register-of-charities.charitycommission.gov.uk/en/charity-search/-/charity-details/289243">
+    <img src="https://img.shields.io/badge/Charity_Commission-289243-006398?style=flat-square&amp;labelColor=25364A" alt="British Dyslexia Association — Charity Commission, England and Wales: 289243" width="206" height="24">
+  </a>
+  <a href="https://www.fundraisingregulator.org.uk/directory/british-dyslexia-association">
+    <img src="https://img.shields.io/badge/Fundraising_Regulator-Registered-19734B?style=flat-square&amp;labelColor=25364A&amp;logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI%2BPGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjUiIGZpbGw9IiM1N0Q2QTUiLz48L3N2Zz4%3D" alt="British Dyslexia Association — Fundraising Regulator: registered; view profile" width="260" height="24">
+  </a>
+</p>
 
 ---
 
-## Registration and independence
+<h2 align="center">ADHD UK</h2>
 
-Charity Commission registration and Fundraising Regulator registration are separate. The directory links above refer to the charities, not to Diffyn. No affiliation, partnership, or endorsement of Diffyn by these organisations is implied.
+<p align="center">
+  <a href="https://adhduk.co.uk/">
+    <img src="assets/charities/adhd-uk-logo.svg" alt="ADHD UK logo — visit the charity" width="304" height="134">
+  </a>
+</p>
 
-An [official Fundraising Regulator badge](https://www.fundraisingregulator.org.uk/service/badge) exists. Its [digital badge guidelines](https://www.fundraisingregulator.org.uk/service/badge-guidelines) restrict it to the registered organisation's own websites. This independent page uses text links to official records instead of reproducing registration badges or charity logos.
+<p align="center">Information, support, research and advocacy for people affected by ADHD.</p>
 
-Details checked on **26 October 2026**. All three charity numbers were checked against live Charity Commission records. Fundraising Regulator registration was verified for NAS and BDA; it was not verified for ADHD UK. Follow the official links for current details.
+<p align="center">
+  <a href="https://adhduk.co.uk/donate-to-adhd-uk/">
+    <img src="assets/charities/adhd-uk-donate.svg" alt="Donate directly to ADHD UK" width="310" height="44">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://register-of-charities.charitycommission.gov.uk/en/charity-search/-/charity-details/5152570">
+    <img src="https://img.shields.io/badge/Charity_Commission-1188365-651077?style=flat-square&amp;labelColor=25364A" alt="ADHD UK — Charity Commission, England and Wales: 1188365" width="216" height="24">
+  </a>
+  <a href="https://www.fundraisingregulator.org.uk/directory?name=ADHD%20UK">
+    <img src="https://img.shields.io/badge/Fundraising_Regulator-Check%20status-586675?style=flat-square&amp;labelColor=25364A&amp;logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI%2BPGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjUiIGZpbGw9IiNCN0MxQ0QiLz48L3N2Zz4%3D" alt="ADHD UK — check its status in the Fundraising Regulator directory" width="275" height="24">
+  </a>
+</p>
+
+---
+
+<p align="center"><a href="../README.md">Back to Diffyn</a></p>
