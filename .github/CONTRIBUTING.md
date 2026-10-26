@@ -69,3 +69,24 @@ Follow the [style guide](../docs/guidance/style-guide.md).
 
 The [maintenance guide](../docs/maintenance.md) describes automated checks and
 dependency policy.
+
+## Sign off your commits
+
+**Read the [Developer Certificate of Origin](DCO) before contributing.**
+Each pull-request commit needs a final `Signed-off-by` trailer matching its
+author or committer name and email.
+
+```sh
+git commit --signoff
+```
+
+- **Certify only contributions you have the right to submit** under the DCO.
+- **Use your own Git identity**; a configured GitHub noreply email is supported.
+- **Keep every commit signed off**, including fixups and merge commits in the pull request.
+- **Remember that sign-offs are public** and retained with the contribution history.
+- **Sign-off is a declaration**, separate from cryptographic commit signing or independent review.
+
+The check reads commit metadata and runs the checker from the trusted base
+branch. It checks up to 250 commits; split larger changes into smaller pull
+requests. The [fuzzing guide](../docs/fuzzing.md) describes additional checks for
+changes to the Rust tools.

@@ -16,3 +16,4 @@ existing client behaviour.
 - [ ] The change preserves meaning, exact values and user choice.
 - [ ] Examples and logs contain synthetic or appropriately redacted data.
 - [ ] Relevant documentation, regression coverage and citations are updated.
+- [ ] Every commit has my DCO sign-off, as described in the contribution guide.

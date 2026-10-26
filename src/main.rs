@@ -3,7 +3,8 @@
 mod prompts;
 mod resources;
 mod server;
-mod tools;
+
+use diffyn::tools;
 
 use std::{process::ExitCode, time::Duration};
 

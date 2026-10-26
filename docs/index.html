@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b111b">
+    <meta name="description" content="Diffyn is a local, open-source Rust MCP server for communication that respects neurodivergent preferences. Explore three tools, two prompts and four resources.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Diffyn — AI communication. On your terms.">
+    <meta property="og:description" content="A local, open-source toolkit for clearer, preference-led AI communication.">
+    <meta property="og:image" content="https://nathcymru.github.io/Diffyn/assets/banner.png">
+    <meta property="og:url" content="https://nathcymru.github.io/Diffyn/">
+    <title>Diffyn — AI communication. On your terms.</title>
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="stylesheet" href="styles.css">
+    <script src="site.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="#top" aria-label="Diffyn home">
+          <span class="brand-mark"><img src="logo.png" width="42" height="42" alt=""></span>
+          <span>Diffyn<span class="brand-dot">.</span></span>
+        </a>
+        <nav aria-label="Main navigation">
+          <a href="#capabilities">Explore</a>
+          <a href="https://github.com/nathcymru/Diffyn/blob/main/docs/README.md">Docs<span class="external-arrow" aria-hidden="true">↗</span></a>
+          <a class="nav-install" href="#quickstart">Get started <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <section class="hero shell" id="top" aria-labelledby="hero-heading">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Open source. Personal by design.</p>
+          <h1 id="hero-heading">AI communication.<br><span class="gradient-text">On your terms.</span></h1>
+          <p class="hero-description">Different ways of thinking deserve different ways of communicating.</p>
+          <p class="hero-detail">Diffyn gives AI clients local tools, prompts and guidance for clearer, preference-led responses.</p>
+          <div class="hero-actions">
+            <a class="button button-primary no-js-install" href="#quickstart">Install Diffyn <span aria-hidden="true">↗</span></a>
+            <button class="button button-primary" type="button" data-copy="install-command" data-copy-label="Install command">
+              <span class="copy-icon" aria-hidden="true"></span><span>Copy install command</span>
+            </button>
+            <a class="button button-secondary" href="https://github.com/nathcymru/Diffyn">View on GitHub <span aria-hidden="true">↗</span></a>
+          </div>
+          <p class="install-note">Requires Rust 1.99+ · <a href="#quickstart">See the setup steps</a></p>
+          <ul class="hero-facts" aria-label="Project essentials">
+            <li>Built with Rust</li><li>Runs locally</li><li>MIT licensed</li>
+          </ul>
+        </div>
+
+        <div class="hero-visual">
+          <div class="visual-topline"><span>WORDS IN. ROOM TO THINK.</span><span aria-hidden="true">↘</span></div>
+          <div class="brand-plaque">
+            <img src="logo.png" alt="Diffyn: colourful interwoven paths becoming clear arrows" width="160" height="160" fetchpriority="high">
+            <div><span class="mini-label">A different definition</span><p>Your preferences.<br>Your pace.</p></div>
+          </div>
+          <div class="example-window">
+            <div class="window-bar"><span class="window-symbol" aria-hidden="true">⌘</span><span>Space to process</span><span class="local-label">Local tool</span></div>
+            <div class="example-source"><span class="mini-label">Original</span><p>Open the document. Check the title. Save your changes. Close the document.</p></div>
+            <div class="example-result"><div class="result-label"><span class="mini-label">With paragraph breaks</span><span aria-hidden="true">↓</span></div><p>Open the document. Check the title.</p><p>Save your changes. Close the document.</p></div>
+            <div class="example-footnote"><span class="check-icon" aria-hidden="true">✓</span> Same words. More breathing room.</div>
+          </div>
+          <p class="visual-caption">Illustrative result · two sentences per chunk · review before use</p>
+        </div>
+      </section>
+
+      <section class="intro-section section-border" aria-labelledby="intro-heading">
+        <div class="shell intro-grid">
+          <div><p class="eyebrow section-number">01 / THE CONNECTION</p><h2 id="intro-heading">A small server.<br>A more personal interaction.</h2></div>
+          <div class="intro-copy"><p>The <strong>Model Context Protocol (MCP)</strong> lets an AI client use external tools, prompts and reference material.</p><p>Diffyn runs on your device, giving compatible AI clients practical ways to adapt communication to your stated preferences.</p><a class="text-link" href="https://github.com/nathcymru/Diffyn/blob/main/docs/architecture.md">Explore the architecture <span aria-hidden="true">↗</span></a></div>
+          <ol class="connection-flow" aria-label="How the connection works">
+            <li><span class="flow-number">01</span><div><strong>Your AI client</strong><span>Calls a tool or requests guidance</span></div></li>
+            <li><span class="flow-number">02</span><div><strong>Diffyn on your device</strong><span>Processes locally and returns a result</span></div></li>
+            <li><span class="flow-number">03</span><div><strong>Your client reviews it</strong><span>Presents the response to you</span></div></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="capabilities shell section-space" id="capabilities" aria-labelledby="capabilities-heading">
+        <div class="section-heading"><div><p class="eyebrow section-number">02 / THE TOOLKIT</p><h2 id="capabilities-heading">Clarity has more<br>than one shape.</h2></div><p>Three practical tools.<br>Two prompts. Four reference resources.<br><span class="muted">One person's preferences at a time.</span></p></div>
+        <div class="tool-grid">
+          <article class="tool-card tool-teal">
+            <div class="card-top"><span class="tool-symbol" aria-hidden="true">¶</span><span class="mini-label">Tool / 01</span></div>
+            <h3>Make room<br>for the words.</h3>
+            <p>Add manageable paragraph breaks while preserving the original wording.</p>
+            <p class="card-detail">Structured text, links and code may remain unchanged.</p>
+            <a class="tool-api" href="https://github.com/nathcymru/Diffyn/blob/main/docs/examples.md#add-space-without-rewriting"><code>reformat_<wbr>for_<wbr>cognitive_<wbr>load</code><span aria-hidden="true">↗</span></a>
+          </article>
+          <article class="tool-card tool-purple">
+            <div class="card-top"><span class="tool-symbol checklist-symbol" aria-hidden="true">☷</span><span class="mini-label">Tool / 02</span></div>
+            <h3>Keep the next<br>action in sight.</h3>
+            <p>Extract an existing sequence into ordered groups, with later steps still available.</p>
+            <p class="card-detail">When a goal lacks steps, ask for detail instead of inventing a plan.</p>
+            <a class="tool-api" href="https://github.com/nathcymru/Diffyn/blob/main/docs/examples.md#keep-an-existing-sequence-manageable"><code>generate_<wbr>executive_<wbr>function_<wbr>checklist</code><span aria-hidden="true">↗</span></a>
+          </article>
+          <article class="tool-card tool-blue">
+            <div class="card-top"><span class="tool-symbol" aria-hidden="true">Aa</span><span class="mini-label">Tool / 03</span></div>
+            <h3>Notice what<br>could be unclear.</h3>
+            <p>Flag a defined set of English idioms with possible interpretations for review.</p>
+            <p class="card-detail">The original stays intact; context decides whether a phrase needs changing.</p>
+            <a class="tool-api" href="https://github.com/nathcymru/Diffyn/blob/main/docs/examples.md#review-a-possible-idiom"><code>verify_<wbr>clarity_<wbr>and_<wbr>literalism</code><span aria-hidden="true">↗</span></a>
+          </article>
+        </div>
+
+        <div class="support-grid">
+          <article class="support-card">
+            <div class="support-heading"><h3>Better starting points.</h3><span class="count-label">2 prompts</span></div>
+            <p>Reusable guidance your client can request.</p>
+            <ul class="capability-list">
+              <li><a href="https://github.com/nathcymru/Diffyn/blob/main/docs/prompts/persona-wrapper.md">Neuro-inclusive persona wrapper <span aria-hidden="true">↗</span></a><span>Shape responses around expressed preferences.</span></li>
+              <li><a href="https://github.com/nathcymru/Diffyn/blob/main/docs/prompts/adaptive-interrogator.md">Adaptive input interrogator <span aria-hidden="true">↗</span></a><span>Clarify missing information with a focused question.</span></li>
+            </ul>
+          </article>
+          <article class="support-card">
+            <div class="support-heading"><h3>Context to work from.</h3><span class="count-label">4 resources</span></div>
+            <p>Reference material bundled into the server.</p>
+            <ul class="resource-list">
+              <li><a href="https://github.com/nathcymru/Diffyn/blob/main/docs/guidance/core-instructions.md"><span>01</span> Core instructions <span aria-hidden="true">↗</span></a></li>
+              <li><a href="https://github.com/nathcymru/Diffyn/blob/main/docs/guidance/style-guide.md"><span>02</span> Communication style guide <span aria-hidden="true">↗</span></a></li>
+              <li><a href="https://github.com/nathcymru/Diffyn/blob/main/docs/guidance/profile-matrix.md"><span>03</span> Combined preference matrix <span aria-hidden="true">↗</span></a></li>
+              <li><a href="https://github.com/nathcymru/Diffyn/blob/main/docs/guidance/evidence-and-limits.md"><span>04</span> Evidence and limits <span aria-hidden="true">↗</span></a></li>
+            </ul>
+          </article>
+        </div>
+        <p class="capability-note">Tools preserve source text and identify results that need review. Prompt templates guide a host; they do not run model calls.</p>
+      </section>
+
+      <section class="principles section-border" aria-labelledby="principles-heading">
+        <div class="shell principles-inner">
+          <div><p class="eyebrow section-number">03 / THE PERSON COMES FIRST</p><h2 id="principles-heading">Preferences,<br><span class="gradient-text">not assumptions.</span></h2><p class="principles-intro">No diagnosis needed. Choose what helps you read, plan and understand.</p></div>
+          <div class="principle-list">
+            <div><span aria-hidden="true">01</span><p><strong>You choose the format.</strong> Explicit preferences take priority; neurotype labels do not change the settings.</p></div>
+            <div><span aria-hidden="true">02</span><p><strong>Your meaning stays intact.</strong> Numbers, conditions and original wording matter more than a shorter answer.</p></div>
+            <div><span aria-hidden="true">03</span><p><strong>Local by default.</strong> Diffyn makes no outbound model calls and does not save submitted text or profiles.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="quickstart shell section-space" id="quickstart" aria-labelledby="quickstart-heading">
+        <div class="section-heading"><div><p class="eyebrow section-number">04 / MAKE THE CONNECTION</p><h2 id="quickstart-heading">Your setup.<br>A few clear steps.</h2></div><p>A terminal, Rust 1.99+ and an AI client<br>that supports local stdio MCP servers.</p></div>
+        <div class="setup-grid">
+          <div class="setup-instructions">
+            <ol class="setup-steps">
+              <li><span class="step-index">1</span><div><h3>Install Diffyn.</h3><p>Run the command to build the tagged release with Cargo.</p><a href="https://rust-lang.org/tools/install/">Need Rust? Install it first <span aria-hidden="true">↗</span></a></div></li>
+              <li><span class="step-index">2</span><div><h3>Point your client to it.</h3><p>Copy the example configuration, then replace the command with the absolute path to your installed executable.</p><p class="path-note">Cargo usually installs to <code>~/.cargo/bin/diffyn</code>; Windows uses <code>diffyn.exe</code>.</p></div></li>
+              <li><span class="step-index">3</span><div><h3>Let your client connect.</h3><p>Reload the MCP configuration as your client requires, then discover Diffyn's tools, prompts and resources.</p></div></li>
+            </ol>
+            <a class="text-link" href="https://github.com/nathcymru/Diffyn/blob/main/docs/engineering.md#connect-an-mcp-client">Read the connection guide <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="terminal-stack">
+            <div class="terminal">
+              <div class="terminal-header"><span><span class="terminal-dot" aria-hidden="true"></span> Terminal / install</span><button class="copy-button" type="button" data-copy="install-command" data-copy-label="Install command"><span class="copy-icon" aria-hidden="true"></span>Copy</button></div>
+              <pre tabindex="0" aria-label="Install command"><code id="install-command">cargo install --git https://github.com/nathcymru/Diffyn --tag v0.1.0 --locked</code></pre>
+              <div class="terminal-note">Builds from source · downloads Rust dependencies during installation</div>
+            </div>
+            <div class="terminal config-terminal">
+              <div class="terminal-header"><span><span class="terminal-dot purple-dot" aria-hidden="true"></span> MCP / example configuration</span><button class="copy-button" type="button" data-copy="mcp-config" data-copy-label="MCP configuration"><span class="copy-icon" aria-hidden="true"></span>Copy</button></div>
+              <pre tabindex="0" aria-label="Example MCP client configuration"><code id="mcp-config">{
+  "mcpServers": {
+    "diffyn": {
+      "command": "/absolute/path/to/diffyn",
+      "args": []
+    }
+  }
+}</code></pre>
+              <div class="terminal-note"><strong>Replace the path.</strong> Configuration syntax varies by client.</div>
+            </div>
+            <p class="setup-boundary">Local stdio only. Clients that require hosted HTTP connections need a different transport.</p>
+          </div>
+        </div>
+        <noscript><p class="no-script-note">Copy buttons need JavaScript; you can still select and copy the command and configuration above.</p></noscript>
+      </section>
+
+      <section class="story shell" aria-labelledby="story-heading">
+        <div class="story-heading"><p class="eyebrow section-number">DIFFERENT + DIFFINIO</p><h2 id="story-heading">A different way to define the conversation.</h2><p>From the English <em>Different</em> and the Welsh <em>Diffinio</em> — to define.</p></div>
+        <figure class="story-art">
+          <picture><source media="(max-width: 560px)" srcset="assets/branding/diffyn-poster.png"><img src="assets/banner.png" width="2172" height="724" alt="Diffyn artwork: a person and dog at a desk, with colourful paths leading from tangled ideas to structured information." loading="lazy" decoding="async"></picture>
+          <figcaption>Built around a simple aim: clearer communication, shaped by the person using it.</figcaption>
+        </figure>
+        <div class="evidence-line"><p>Diffyn is an engineering project, not a diagnostic or clinically validated intervention. Your AI client's own data policies still apply.</p><a class="text-link" href="https://github.com/nathcymru/Diffyn/blob/main/docs/research.md">Read the research and limits <span aria-hidden="true">↗</span></a></div>
+      </section>
+    </main>
+
+    <footer class="site-footer shell"><div><a class="footer-brand" href="#top">Diffyn<span class="brand-dot">.</span></a><span>© 2026 Diffyn contributors</span></div><nav aria-label="Footer navigation"><a href="https://github.com/nathcymru/Diffyn">GitHub</a><a href="https://github.com/nathcymru/Diffyn/discussions">Community</a><a href="https://github.com/nathcymru/Diffyn/blob/main/LICENSE">MIT license</a></nav></footer>
+
+    <div class="copy-status" id="copy-status" role="status" aria-live="polite" aria-atomic="true"></div>
+    <dialog class="copy-dialog" id="copy-dialog" aria-labelledby="copy-dialog-title" aria-describedby="copy-dialog-help">
+      <form method="dialog"><div class="dialog-heading"><h2 id="copy-dialog-title">Copy manually</h2><button class="copy-button" aria-label="Close copy dialog">Close <span aria-hidden="true">×</span></button></div><p id="copy-dialog-help">Automatic clipboard access is unavailable. Select the text below, then use your device's copy command.</p><textarea id="manual-copy" readonly spellcheck="false" aria-label="Text to copy"></textarea><button class="button button-primary" type="button" id="select-copy-text">Select all text</button></form>
+    </dialog>
+  </body>
+</html>

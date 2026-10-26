@@ -38,7 +38,7 @@ jobs:
           "$RUNNER_TEMP/lychee" --config .lychee.toml --no-progress \
             --format markdown --output "$RUNNER_TEMP/links.md" \
             README.md 'docs/**/*.md' '.github/**/*.md' \
-            docs/bibliography.bib CITATION.cff .github/FUNDING.yml
+            docs/index.html docs/bibliography.bib CITATION.cff .github/FUNDING.yml
       - name: Add the report to this run
         if: always()
         run: |

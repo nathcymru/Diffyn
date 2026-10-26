@@ -14,6 +14,14 @@ ignore = []
 allow = ["Apache-2.0", "MIT", "Unicode-3.0"]
 confidence-threshold = 0.93
 
+[[licenses.exceptions]]
+# The fuzz-only LLVM libFuzzer/compiler-rt wrapper declares NCSA alongside
+# MIT/Apache-2.0. Permit that declaration only for the reviewed pinned release;
+# libfuzzer-sys is excluded from the server workspace and release artifacts.
+name = "libfuzzer-sys"
+version = "=0.4.13"
+allow = ["NCSA"]
+
 [bans]
 # Transitive versions can coexist legitimately; review duplication warnings.
 multiple-versions = "warn"

@@ -1,0 +1,354 @@
+{
+  "repository": "nathcymru/Diffyn",
+  "repositoryId": "R_kgDOVXcm9g",
+  "bodyFormat": "Remove the opening YAML frontmatter before using a bodyPath file as a discussion body.",
+  "categories": [
+    {
+      "name": "Announcements",
+      "slug": "announcements",
+      "id": "DIC_kwDOVXcm9s4DJoX7"
+    },
+    {
+      "name": "General",
+      "slug": "general",
+      "id": "DIC_kwDOVXcm9s4DJoX8"
+    },
+    {
+      "name": "Ideas",
+      "slug": "ideas",
+      "id": "DIC_kwDOVXcm9s4DJoX-"
+    },
+    {
+      "name": "Q&A",
+      "slug": "q-a",
+      "id": "DIC_kwDOVXcm9s4DJoX9"
+    },
+    {
+      "name": "Show and tell",
+      "slug": "show-and-tell",
+      "id": "DIC_kwDOVXcm9s4DJoX_"
+    },
+    {
+      "name": "Polls",
+      "slug": "polls",
+      "id": "DIC_kwDOVXcm9s4DJoYA"
+    }
+  ],
+  "posts": [
+    {
+      "id": "announcements/welcome",
+      "category": "Announcements",
+      "categorySlug": "announcements",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX7",
+      "title": "Welcome to Diffyn: start where you feel comfortable",
+      "bodyPath": "docs/community/announcements/welcome.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "announcements/local-privacy",
+      "category": "Announcements",
+      "categorySlug": "announcements",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX7",
+      "title": "What local processing means for your privacy",
+      "bodyPath": "docs/community/announcements/local-privacy.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "announcements/small-contributions",
+      "category": "Announcements",
+      "categorySlug": "announcements",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX7",
+      "title": "Small contributions that make Diffyn easier to use",
+      "bodyPath": "docs/community/announcements/small-contributions.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "announcements/dco-signoff",
+      "category": "Announcements",
+      "categorySlug": "announcements",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX7",
+      "title": "Code contributions: add a DCO sign-off",
+      "bodyPath": "docs/community/announcements/dco-signoff.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "announcements/website-and-releases",
+      "category": "Announcements",
+      "categorySlug": "announcements",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX7",
+      "title": "Find the website, setup guide and release downloads",
+      "bodyPath": "docs/community/announcements/website-and-releases.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "general/describe-a-preference",
+      "category": "General",
+      "categorySlug": "general",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX8",
+      "title": "Describe a communication preference without a diagnosis",
+      "bodyPath": "docs/community/general/describe-a-preference.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "general/keep-important-detail",
+      "category": "General",
+      "categorySlug": "general",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX8",
+      "title": "What information must survive a shorter-looking response?",
+      "bodyPath": "docs/community/general/keep-important-detail.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "general/welsh-and-other-languages",
+      "category": "General",
+      "categorySlug": "general",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX8",
+      "title": "Welsh and other languages: what makes an example useful?",
+      "bodyPath": "docs/community/general/welsh-and-other-languages.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "general/reading-and-navigation",
+      "category": "General",
+      "categorySlug": "general",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX8",
+      "title": "Share a reading or navigation barrier, at your level of detail",
+      "bodyPath": "docs/community/general/reading-and-navigation.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "general/choose-a-category",
+      "category": "General",
+      "categorySlug": "general",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX8",
+      "title": "Where should a question, idea or example go?",
+      "bodyPath": "docs/community/general/choose-a-category.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "ideas/preference-preview",
+      "category": "Ideas",
+      "categorySlug": "ideas",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX-",
+      "title": "Idea: preview a preference before applying it",
+      "bodyPath": "docs/community/ideas/preference-preview.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "ideas/change-summary",
+      "category": "Ideas",
+      "categorySlug": "ideas",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX-",
+      "title": "Idea: a clearer summary of what formatting changed",
+      "bodyPath": "docs/community/ideas/change-summary.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "ideas/language-coverage",
+      "category": "Ideas",
+      "categorySlug": "ideas",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX-",
+      "title": "Idea: make language coverage easier to understand",
+      "bodyPath": "docs/community/ideas/language-coverage.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "ideas/checklist-context",
+      "category": "Ideas",
+      "categorySlug": "ideas",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX-",
+      "title": "Idea: keep deferred checklist steps visible without clutter",
+      "bodyPath": "docs/community/ideas/checklist-context.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "ideas/integration-guides",
+      "category": "Ideas",
+      "categorySlug": "ideas",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX-",
+      "title": "Idea: choose a useful next integration guide",
+      "bodyPath": "docs/community/ideas/integration-guides.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "q-a/diagnosis-and-settings",
+      "category": "Q&A",
+      "categorySlug": "q-a",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX9",
+      "title": "Do I need a diagnosis or neurotype label to use Diffyn?",
+      "bodyPath": "docs/community/q-a/diagnosis-and-settings.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "q-a/client-and-model",
+      "category": "Q&A",
+      "categorySlug": "q-a",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX9",
+      "title": "Does Diffyn need an API key or a particular AI model?",
+      "bodyPath": "docs/community/q-a/client-and-model.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "q-a/unchanged-text",
+      "category": "Q&A",
+      "categorySlug": "q-a",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX9",
+      "title": "Why did the formatter leave my text unchanged?",
+      "bodyPath": "docs/community/q-a/unchanged-text.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "q-a/incomplete-goal",
+      "category": "Q&A",
+      "categorySlug": "q-a",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX9",
+      "title": "Why does “Organise my move” return insufficient structure?",
+      "bodyPath": "docs/community/q-a/incomplete-goal.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "q-a/clarity-findings",
+      "category": "Q&A",
+      "categorySlug": "q-a",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX9",
+      "title": "Does “no clarity findings” mean my wording is clear?",
+      "bodyPath": "docs/community/q-a/clarity-findings.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "show-and-tell/paragraph-breaks",
+      "category": "Show and tell",
+      "categorySlug": "show-and-tell",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX_",
+      "title": "Maintainer example: add paragraph breaks without rewriting",
+      "bodyPath": "docs/community/show-and-tell/paragraph-breaks.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "show-and-tell/checklist-window",
+      "category": "Show and tell",
+      "categorySlug": "show-and-tell",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX_",
+      "title": "Maintainer example: show two steps and retain the third",
+      "bodyPath": "docs/community/show-and-tell/checklist-window.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "show-and-tell/completed-checkboxes",
+      "category": "Show and tell",
+      "categorySlug": "show-and-tell",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX_",
+      "title": "Maintainer example: keep completed checkboxes out of the next action",
+      "bodyPath": "docs/community/show-and-tell/completed-checkboxes.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "show-and-tell/conditional-idiom",
+      "category": "Show and tell",
+      "categorySlug": "show-and-tell",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX_",
+      "title": "Maintainer example: review an idiom without silently replacing it",
+      "bodyPath": "docs/community/show-and-tell/conditional-idiom.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "show-and-tell/one-useful-question",
+      "category": "Show and tell",
+      "categorySlug": "show-and-tell",
+      "categoryId": "DIC_kwDOVXcm9s4DJoX_",
+      "title": "Maintainer example: request focused clarification",
+      "bodyPath": "docs/community/show-and-tell/one-useful-question.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter"
+    },
+    {
+      "id": "polls/opening-format",
+      "category": "Polls",
+      "categorySlug": "polls",
+      "categoryId": "DIC_kwDOVXcm9s4DJoYA",
+      "title": "Which opening helps you start reading an answer?",
+      "bodyPath": "docs/community/polls/opening-format.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "poll": {
+        "question": "Which opening helps you start reading an answer?",
+        "options": [
+          "The answer first",
+          "The next action first",
+          "Brief context first",
+          "It depends on the task"
+        ]
+      }
+    },
+    {
+      "id": "polls/checklist-view",
+      "category": "Polls",
+      "categorySlug": "polls",
+      "categoryId": "DIC_kwDOVXcm9s4DJoYA",
+      "title": "How much of a checklist would you like to see first?",
+      "bodyPath": "docs/community/polls/checklist-view.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "poll": {
+        "question": "How much of a checklist would you like to see first?",
+        "options": [
+          "One step",
+          "Three steps",
+          "Seven steps",
+          "The complete sequence"
+        ]
+      }
+    },
+    {
+      "id": "polls/visual-emphasis",
+      "category": "Polls",
+      "categorySlug": "polls",
+      "categoryId": "DIC_kwDOVXcm9s4DJoYA",
+      "title": "Which kind of emphasis would you choose for a short guide?",
+      "bodyPath": "docs/community/polls/visual-emphasis.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "poll": {
+        "question": "Which kind of emphasis would you choose for a short guide?",
+        "options": [
+          "Plain text, no emphasis",
+          "A few bold labels",
+          "Headings, no bold labels",
+          "It depends on the task"
+        ]
+      }
+    },
+    {
+      "id": "polls/documentation-start",
+      "category": "Polls",
+      "categorySlug": "polls",
+      "categoryId": "DIC_kwDOVXcm9s4DJoYA",
+      "title": "What would help you understand Diffyn first?",
+      "bodyPath": "docs/community/polls/documentation-start.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "poll": {
+        "question": "What would help you understand Diffyn first?",
+        "options": [
+          "A copyable example",
+          "A short setup guide",
+          "An architecture diagram",
+          "A research summary"
+        ]
+      }
+    },
+    {
+      "id": "polls/feedback-format",
+      "category": "Polls",
+      "categorySlug": "polls",
+      "categoryId": "DIC_kwDOVXcm9s4DJoYA",
+      "title": "Which feedback format would be easiest to use?",
+      "bodyPath": "docs/community/polls/feedback-format.md",
+      "bodyFormat": "markdown-with-yaml-frontmatter",
+      "poll": {
+        "question": "Which feedback format would be easiest to use?",
+        "options": [
+          "A short written note",
+          "A before-and-after example",
+          "A step-by-step report",
+          "A quick poll response"
+        ]
+      }
+    }
+  ]
+}

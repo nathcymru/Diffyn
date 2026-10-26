@@ -31,6 +31,8 @@ jobs:
         run: cargo +stable install cargo-deny --version 0.20.2 --locked
       - name: Check advisories, licences, bans and sources
         run: cargo +stable deny --locked check
+      - name: Check fuzzing dependencies
+        run: cargo +stable deny --manifest-path fuzz/Cargo.toml --config deny.toml --locked check
   documentation:
     name: Documentation dependency audit
     runs-on: ubuntu-latest

@@ -16,6 +16,9 @@ Use the [contribution guide](../.github/CONTRIBUTING.md) for ordinary changes an
 | Documentation integrity | Markdown, local links, anchors, citations, Mermaid syntax and workflow syntax | Pull requests and main pushes |
 | External link availability | Reachability of referenced websites | Weekly or manually |
 | OpenSSF Scorecard | Repository security practices | Main pushes and weekly |
+| DCO sign-off | Every PR commit carries a matching contributor sign-off | Pull requests |
+| Fuzzing | Randomized inputs exercise text preservation and structured tool requests | Pull requests, main pushes and weekly |
+| Release packages | Build and test four platform binaries and the Cargo source package | Pull requests, release tags or manually |
 
 **Scope:** these checks detect specific errors and known advisories. They do not certify that a dependency is free of malicious code or establish clinical effectiveness, accessibility conformance, or host-interface quality.
 
@@ -48,14 +51,14 @@ The advisory database refreshes during this check. An offline run cannot discove
 ```sh
 lychee --config .lychee.toml --no-progress \
   README.md 'docs/**/*.md' '.github/**/*.md' \
-  docs/bibliography.bib CITATION.cff .github/FUNDING.yml
+  docs/index.html docs/bibliography.bib CITATION.cff .github/FUNDING.yml
 ```
 
 The [workflow](../.github/workflows/links.yml) uses a release archive checked against a fixed SHA-256 digest. It limits request time, retries and concurrency, and excludes private network addresses.
 
 ## Review dependency updates
 
-**Dependabot:** weekly version updates cover Cargo, SHA-pinned GitHub Actions, and the documentation package. Security-update PRs use GitHub's separately enabled security-update service.
+**Dependabot:** weekly version updates cover the application and fuzzing Cargo workspaces, SHA-pinned GitHub Actions, and the documentation package. Security-update PRs use GitHub's separately enabled security-update service.
 
 - **Read the change:** inspect release notes, dependency changes and any permissions changes.
 - **Keep exact pins:** actions use full commit hashes with version comments; documentation dependencies use a committed npm lockfile.
@@ -88,6 +91,9 @@ Remove the override when the upstream dependency selects a patched release and b
 - **Scorecard:** keep publishing in its dedicated default-branch job with its required security-event and identity-token permissions.
 - **Documentation:** dependency installation disables npm lifecycle scripts; parsers run in a job without write access.
 - **Communication:** checks publish job results and summaries; they do not create issues or post PR comments.
+- **DCO:** the read-only `pull_request_target` job checks out the trusted base commit and reads commit metadata; it never checks out or runs pull-request code.
+- **Fuzzing:** use the bounded runs and local reproduction steps in the [fuzzing guide](fuzzing.md).
+- **Packages:** follow the [release guide](releases/README.md); publishing permissions are limited to the release job.
 
 Before requiring a new check in branch rules, confirm that it succeeds on GitHub and use its exact check name. Required workflows run on every pull request so path filtering cannot leave them permanently pending.
 

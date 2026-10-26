@@ -1,0 +1,59 @@
+name: Fuzzing
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "39 4 * * 2"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fuzz-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  fuzz:
+    name: Fuzz smoke (${{ matrix.target }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [tools_text, tools_json]
+    env:
+      FUZZ_TARGET: ${{ matrix.target }}
+      FUZZ_SECONDS: ${{ github.event_name == 'schedule' && '300' || '45' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install pinned fuzzing toolchain
+        run: |
+          rustup toolchain install nightly-2026-10-25 --profile minimal
+          cargo +stable install cargo-fuzz --version 0.13.2 --locked
+      - name: Fetch locked harness dependencies
+        run: cargo +nightly-2026-10-25 fetch --manifest-path fuzz/Cargo.toml --locked
+      - name: Test fuzz invariants and boundaries
+        run: cargo +stable test --manifest-path fuzz/Cargo.toml --locked --lib
+      - name: Run bounded AddressSanitizer fuzzing
+        env:
+          CARGO_NET_OFFLINE: "true"
+        run: |
+          mkdir -p "fuzz/corpus/$FUZZ_TARGET"
+          cp "fuzz/seeds/$FUZZ_TARGET/"* "fuzz/corpus/$FUZZ_TARGET/"
+          cargo +nightly-2026-10-25 fuzz run "$FUZZ_TARGET" -- -max_total_time="$FUZZ_SECONDS" -max_len=65536 -timeout=5 -rss_limit_mb=1024 -dict=fuzz/dictionary.txt
+      - name: Verify dependency locks stayed unchanged
+        if: always()
+        run: git diff --exit-code -- Cargo.lock fuzz/Cargo.lock
+      - name: Preserve synthetic crash inputs for investigation
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: fuzz-crashes-${{ matrix.target }}
+          path: fuzz/artifacts/${{ matrix.target }}/
+          if-no-files-found: ignore
+          retention-days: 7

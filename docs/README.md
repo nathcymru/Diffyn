@@ -2,11 +2,14 @@
 
 ## Start here
 
+- **Explore Diffyn:** [project website](https://nathcymru.github.io/Diffyn/).
+- **Download a release:** [packages and verification](releases/README.md).
 - **Install and connect:** [engineering guide](engineering.md).
 - **Make a request:** [examples](examples.md).
 - **Understand the system:** [architecture and data flow](architecture.md).
 - **Choose preferences:** [communication contract](communication-contract.md).
 - **Maintain the repository:** [automated checks and dependency policy](maintenance.md).
+- **Test unusual inputs:** [fuzzing guide](fuzzing.md).
 
 ## Evidence
 
@@ -28,6 +31,7 @@
 
 ## Project participation
 
+- **Community topics:** [discussion collection](community/README.md).
 - **Contribute:** [contribution guide](../.github/CONTRIBUTING.md).
 - **Report vulnerabilities:** [security policy](../.github/SECURITY.md).
 - **Community conduct:** [Code of Conduct](../.github/CODE_OF_CONDUCT.md).
