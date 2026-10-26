@@ -1,15 +1,101 @@
 (() => {
   "use strict";
+  const root = document.documentElement;
+  root.classList.remove("no-js");
+  const themeButton = document.getElementById("theme-toggle");
+  const motionButton = document.getElementById("motion-toggle");
+  const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  document.documentElement.classList.remove("no-js");
+  // Store appearance preferences only. Example text and checkbox state stay in memory.
+  function readPreference(key) {
+    try { return localStorage.getItem(key); } catch { return null; }
+  }
+  function savePreference(key, value) {
+    try { localStorage.setItem(key, value); } catch { /* The controls also work without storage. */ }
+  }
+  function setTheme(theme) {
+    const muted = theme === "muted";
+    root.dataset.theme = muted ? "muted" : "vivid";
+    themeButton.setAttribute("aria-pressed", String(muted));
+    themeButton.title = muted ? "Muted palette on. Select for vivid colours." : "Vivid palette on. Select for muted colours.";
+    document.querySelector('meta[name="theme-color"]').content = muted ? "#faf7ef" : "#fff9ec";
+  }
+  let requestedMotion = readPreference("diffyn-motion") !== "off";
+  function setMotion() {
+    const paused = motionPreference.matches || !requestedMotion;
+    root.dataset.motion = paused ? "off" : "on";
+    motionButton.setAttribute("aria-pressed", String(paused));
+    motionButton.disabled = motionPreference.matches;
+    motionButton.title = motionPreference.matches ? "Animation is paused by your device's reduced-motion preference." : paused ? "Resume animation" : "Pause animation";
+    motionButton.setAttribute("aria-label", motionPreference.matches ? "Animation paused by your device preference" : "Pause animation");
+    document.getElementById("motion-symbol").textContent = paused ? "▷" : "Ⅱ";
+  }
+  setTheme(readPreference("diffyn-theme"));
+  setMotion();
+  themeButton.addEventListener("click", () => {
+    setTheme(root.dataset.theme === "vivid" ? "muted" : "vivid");
+    savePreference("diffyn-theme", root.dataset.theme);
+  });
+  motionButton.addEventListener("click", () => {
+    requestedMotion = !requestedMotion;
+    setMotion();
+    savePreference("diffyn-motion", requestedMotion ? "on" : "off");
+  });
+  motionPreference.addEventListener("change", setMotion);
 
-  // This page only copies user-selected setup text; it makes no network calls.
+  // These fixed examples illustrate presentation choices; they do not run the Rust server.
+  const demoButtons = [...document.querySelectorAll("[data-demo]")];
+  function showDemo(name) {
+    if (!["space", "steps", "meaning"].includes(name)) return;
+    demoButtons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.demo === name)));
+    document.querySelectorAll(".demo-panel").forEach((panel) => { panel.hidden = panel.id !== `demo-${name}`; });
+  }
+  demoButtons.forEach((button) => button.addEventListener("click", () => showDemo(button.dataset.demo)));
+  document.querySelectorAll("[data-open-demo]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      showDemo(link.dataset.openDemo);
+      document.getElementById("playground").scrollIntoView({ block: "start" });
+      demoButtons.find((button) => button.dataset.demo === link.dataset.openDemo).focus({ preventScroll: true });
+    });
+  });
+  const spacingButton = document.getElementById("spacing-toggle");
+  const readingSample = document.getElementById("reading-sample");
+  const sampleChunks = ["Open the document. Check the title.", "Save your changes. Close the document."];
+  spacingButton.addEventListener("click", () => {
+    const roomy = spacingButton.getAttribute("aria-pressed") !== "true";
+    const chunks = roomy ? sampleChunks : [sampleChunks.join(" ")];
+    readingSample.replaceChildren(...chunks.map((text) => {
+      const paragraph = document.createElement("p");
+      paragraph.textContent = text;
+      return paragraph;
+    }));
+    spacingButton.setAttribute("aria-pressed", String(roomy));
+    spacingButton.textContent = roomy ? "Show as one paragraph ↔" : "Give the words more room ↔";
+  });
+  const checkboxes = [...document.querySelectorAll(".demo-checklist input")];
+  function updateChecklist() {
+    document.getElementById("checklist-progress").textContent = `${checkboxes.filter((box) => box.checked).length} of ${checkboxes.length} steps checked`;
+  }
+  checkboxes.forEach((checkbox) => checkbox.addEventListener("change", updateChecklist));
+  document.getElementById("reset-checklist").addEventListener("click", () => {
+    checkboxes.forEach((checkbox) => { checkbox.checked = false; });
+    updateChecklist();
+  });
+  const reminderButton = document.getElementById("pause-note");
+  const reminder = document.getElementById("desk-reminder");
+  reminderButton.setAttribute("aria-expanded", "false");
+  reminderButton.setAttribute("aria-controls", "desk-reminder");
+  reminderButton.addEventListener("click", () => {
+    reminder.hidden = !reminder.hidden;
+    reminderButton.setAttribute("aria-expanded", String(!reminder.hidden));
+  });
+
   const status = document.getElementById("copy-status");
   const dialog = document.getElementById("copy-dialog");
   const manualText = document.getElementById("manual-copy");
   let statusTimer;
   let lastCopyButton;
-
   function announce(message) {
     window.clearTimeout(statusTimer);
     status.textContent = message;
@@ -19,20 +105,17 @@
       status.textContent = "";
     }, 6000);
   }
-
   function selectManualText() {
     manualText.focus();
     manualText.select();
     manualText.setSelectionRange(0, manualText.value.length);
   }
-
   function showManualCopy(text, label) {
     manualText.value = text;
     manualText.setAttribute("aria-label", `${label} to copy`);
     dialog.showModal();
     selectManualText();
   }
-
   document.querySelectorAll("[data-copy]").forEach((button) => {
     button.addEventListener("click", async () => {
       const source = document.getElementById(button.dataset.copy);
@@ -42,22 +125,16 @@
       lastCopyButton = button;
       button.disabled = true;
       try {
-        if (!navigator.clipboard || !window.isSecureContext) {
-          throw new Error("Clipboard unavailable");
-        }
+        if (!navigator.clipboard || !window.isSecureContext) throw new Error("Clipboard unavailable");
         await navigator.clipboard.writeText(text);
         announce(`${label} copied. Paste it when you are ready.`);
       } catch {
-        // A selectable dialog also works when clipboard permission is denied.
         showManualCopy(text, label);
       } finally {
         button.disabled = false;
       }
     });
   });
-
   document.getElementById("select-copy-text").addEventListener("click", selectManualText);
-  dialog.addEventListener("close", () => {
-    if (lastCopyButton) lastCopyButton.focus();
-  });
+  dialog.addEventListener("close", () => { if (lastCopyButton) lastCopyButton.focus(); });
 })();

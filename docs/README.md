@@ -7,6 +7,7 @@
 - **Install and connect:** [engineering guide](engineering.md).
 - **Make a request:** [examples](examples.md).
 - **Understand the system:** [architecture and data flow](architecture.md).
+- **Understand security boundaries:** [controls, limits and review checks](security-design.md).
 - **Choose preferences:** [communication contract](communication-contract.md).
 - **Maintain the repository:** [automated checks and dependency policy](maintenance.md).
 - **Test unusual inputs:** [fuzzing guide](fuzzing.md).

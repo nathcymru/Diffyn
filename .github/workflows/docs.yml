@@ -35,6 +35,8 @@ jobs:
         run: npm --prefix scripts/docs run check
       - name: Validate landing-page JavaScript syntax
         run: node --check docs/site.js
+      - name: Test landing-page interactions
+        run: node --test scripts/docs/site.test.mjs
       - name: Validate workflow syntax
         env:
           ACTIONLINT_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8

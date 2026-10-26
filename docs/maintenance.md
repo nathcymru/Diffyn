@@ -13,7 +13,7 @@ Use the [contribution guide](../.github/CONTRIBUTING.md) for ordinary changes an
 | Dependency review | Newly introduced known vulnerable dependencies | Pull requests |
 | Rust dependency policy | RustSec advisories, licences, permitted sources and dependency policy | Pull requests, main pushes and daily |
 | Documentation dependency audit | Known advisories affecting the locked documentation tools | Pull requests, main pushes and daily |
-| Documentation integrity | Markdown, local links, anchors, citations, Mermaid syntax and workflow syntax | Pull requests and main pushes |
+| Documentation integrity | Markdown, links, citations, diagrams, workflow syntax and website interactions | Pull requests and main pushes |
 | External link availability | Reachability of referenced websites | Weekly or manually |
 | OpenSSF Scorecard | Repository security practices | Main pushes and weekly |
 | DCO sign-off | Every PR commit carries a matching contributor sign-off | Pull requests |
@@ -34,6 +34,7 @@ Use the [contribution guide](../.github/CONTRIBUTING.md) for ordinary changes an
 npm --prefix scripts/docs ci --ignore-scripts --no-audit --no-fund
 npm --prefix scripts/docs run lint
 npm --prefix scripts/docs run check
+node --test scripts/docs/site.test.mjs
 npm --prefix scripts/docs audit --package-lock-only --audit-level=low
 ```
 
@@ -81,6 +82,14 @@ Remove the override when the upstream dependency selects a patched release and b
 - **Bundled guidance:** changes in `docs/guidance/` or `docs/prompts/` are compiled into the server and need the Rust tests as well as documentation checks.
 
 **Check boundary:** syntax and link checks cannot verify the truth of a citation, the accessibility of a diagram, or the appearance of GitHub's rendered page. Review those outcomes directly.
+
+## Review pull requests
+
+- **Required checks:** all 17 build, security, dependency, documentation, package and DCO checks remain mandatory.
+- **Human review:** changes require one approval, dismissal of stale reviews and approval of the latest push.
+- **Owner exception:** only `nathcymru` can bypass the human-approval rule through a pull request; required checks and the CodeQL gate still apply.
+- **Copilot:** automatic review requests cover new pull requests and subsequent pushes, excluding drafts; execution depends on the author's Copilot access and available credits.
+- **Review findings:** address actionable findings before merging; an AI review does not establish independent human review.
 
 ## Maintain workflow permissions
 

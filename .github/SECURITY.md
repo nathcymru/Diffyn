@@ -44,5 +44,6 @@ outside the server's no-persistence guarantee.
 - **Public advisories describe** confirmed vulnerabilities and available mitigations.
 - **Automated checks cover known patterns and advisories** without guaranteeing that every vulnerability or malicious dependency is detected.
 
-See the [architecture](../docs/architecture.md) for data flow and the
+See the [security design](../docs/security-design.md) for trust boundaries,
+controls and remaining limits, the [architecture](../docs/architecture.md) for data flow, and the
 [maintenance guide](../docs/maintenance.md) for automated checks.
