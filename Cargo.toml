@@ -1,0 +1,18 @@
+[package]
+name = "diffyn"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+description = "Neurodivergent-friendly communication tools and guidance over MCP"
+license = "MIT"
+repository = "https://github.com/nathcymru/Diffyn"
+publish = false
+
+[workspace]
+members = ["."]
+resolver = "3"
+
+[package.metadata.diffyn]
+protocol = "MCP"
+
+[dependencies]
