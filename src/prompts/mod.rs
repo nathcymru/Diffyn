@@ -16,8 +16,8 @@ pub const MAX_PROMPT_INPUT_BYTES: usize = 32 * 1024;
 
 const PERSONA_NAME: &str = "neuro_inclusive_persona_wrapper";
 const INTERROGATOR_NAME: &str = "adaptive_input_interrogator";
-const PERSONA_TEMPLATE: &str = include_str!("../../assets/prompts/persona-wrapper.md");
-const INTERROGATOR_TEMPLATE: &str = include_str!("../../assets/prompts/adaptive-interrogator.md");
+const PERSONA_TEMPLATE: &str = include_str!("../../docs/prompts/persona-wrapper.md");
+const INTERROGATOR_TEMPLATE: &str = include_str!("../../docs/prompts/adaptive-interrogator.md");
 
 /// List the complete fixed registry; no pagination or caller data is required.
 pub fn list_prompts() -> ListPromptsResult {

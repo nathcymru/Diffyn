@@ -11,8 +11,8 @@ use rmcp::{
     },
 };
 
-/// Approved core guidance, shared by initialize metadata and resource reads.
-pub const CORE_INSTRUCTIONS: &str = include_str!("../../assets/core-instructions.md");
+/// Core guidance shared by MCP metadata and resource reads.
+pub const CORE_INSTRUCTIONS: &str = include_str!("../../docs/guidance/core-instructions.md");
 
 struct BundledResource {
     uri: &'static str,
@@ -32,19 +32,19 @@ const RESOURCES: &[BundledResource] = &[
         uri: "diffyn://guidance/style-guide",
         name: "Communication style guide",
         description: "Adult-respectful language, structure, numerical accuracy, and client presentation guidance.",
-        text: include_str!("../../assets/resources/style-guide.md"),
+        text: include_str!("../../docs/guidance/style-guide.md"),
     },
     BundledResource {
         uri: "diffyn://guidance/profile-matrix",
         name: "Combined preference matrix",
         description: "Optional supports and conflicts across self-described neurotypes; no diagnostic classification.",
-        text: include_str!("../../assets/resources/profile-matrix.md"),
+        text: include_str!("../../docs/guidance/profile-matrix.md"),
     },
     BundledResource {
         uri: "diffyn://guidance/evidence-and-limits",
         name: "Evidence and accessibility limits",
         description: "Source provenance, evidence strength, implementation boundaries, and evaluation requirements.",
-        text: include_str!("../../assets/resources/evidence-and-limits.md"),
+        text: include_str!("../../docs/guidance/evidence-and-limits.md"),
     },
 ];
 

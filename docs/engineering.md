@@ -1,12 +1,12 @@
-# Engineering guide
+# Build and connect Diffyn
 
-## Build and connect
+**Diffyn is a local stdio MCP server** built with Rust, Tokio and the official Rust MCP SDK.
 
-Diffyn is a local MCP server using Rust 2024, Tokio, and the official `rmcp` SDK.
+No model account, API key, database or network listener is required to run it.
+
+## Build the executable
+
 Install [stable Rust](https://rust-lang.org/tools/install/), then run:
-
-If Rust is already installed but `cargo` is unavailable in a Unix shell, load its
-environment first with `. "$HOME/.cargo/env"`.
 
 ```sh
 git clone https://github.com/nathcymru/Diffyn.git
@@ -14,10 +14,26 @@ cd Diffyn
 cargo build --release --locked
 ```
 
-The executable is `target/release/diffyn` (`diffyn.exe` on Windows). Configure an
-MCP client that supports local stdio to launch that executable. Use the absolute
-path on your machine; this illustrative configuration is not a universal client
-configuration format:
+**Output:** The executable is `target/release/diffyn`, or `target/release/diffyn.exe` on Windows.
+
+If Rust is installed but `cargo` is unavailable in a Unix shell, load its environment first:
+
+```sh
+. "$HOME/.cargo/env"
+```
+
+- **Rust baseline:** The package declares Rust 1.99 and edition 2024.
+- **Toolchain:** `rust-toolchain.toml` selects stable Rust with formatting and linting tools.
+- **Dependencies:** `Cargo.lock` fixes resolved versions, while the manifest pins `rmcp` to 3.7.0.
+- **Network use:** Building may download dependencies, while normal server operation makes no outbound calls.
+
+SDK reference: [mcp-rust-sdk-3-7-0](bibliography.bib).
+
+## Connect an MCP client
+
+Configure a client that supports **local stdio** to launch the executable using its absolute path.
+
+This example illustrates a common configuration shape; use the syntax required by your chosen client.
 
 ```json
 {
@@ -30,88 +46,96 @@ configuration format:
 }
 ```
 
-The process waits for MCP messages on standard input. No banner on standard
-output is expected. No model account, API key, database, or network listener is
-required. Network access is needed to download build dependencies, not to run
-the server. An upstream LLM may use a cloud service under its own policies.
+- **Expected startup:** The process waits for MCP input without printing a welcome banner.
+- **Standard output:** Only protocol messages belong on stdout.
+- **Cloud hosts:** An upstream AI application may still use cloud services and retain messages under its own policies.
+- **Hosted connections:** Integrations that require Streamable HTTP need another transport and deployment configuration.
 
-Rust 1.99 is the project's declared baseline. `rust-toolchain.toml` selects stable
-and `Cargo.lock` fixes dependency versions. `rmcp` is pinned to 3.7.0; the SDK's
-own minimum Rust version is lower than this project's tested baseline.
+Publishing the repository does not deploy the server or connect it automatically to an AI application.
 
-## Capabilities and boundaries
+Integration context: [openai-mcp-server](bibliography.bib) and [openai-remote-mcp](bibliography.bib).
 
-| Capability | Behavior | Boundary |
-| --- | --- | --- |
-| Core instructions | Preference-led, adult-respectful host guidance | Host decides whether to follow it; never replaces higher-priority instructions |
-| `reformat_for_cognitive_load` | Conservative local layout changes | No semantic summary or diagnosis |
-| `generate_executive_function_checklist` | Extract explicit supplied steps and identify missing structure | Cannot invent a complete plan from an arbitrary goal |
-| `verify_clarity_and_literalism` | Flag a finite set of possible English idioms | Does not prove clarity, detect all sarcasm, or replace uncertain language |
-| `neuro_inclusive_persona_wrapper` | Reusable preference-led task prompt | User text is a separate data message; host must maintain instruction boundaries |
-| `adaptive_input_interrogator` | Prompt to ask the most useful missing question | Does not request a diagnosis or repeatedly ask known preferences |
-| Bundled resources | Core instructions, style guide, profile matrix, evidence and limits | Text resources cannot set fonts, colours, spacing, or accessibility of the host UI |
+## Discover the capabilities
 
-Tool inputs support an optional `profile` with explicitly supplied labels and
-preferences. Labels do not select an assumed reading ability or trigger a hidden
-clinical preset. Omission is valid; a diagnosis is never required.
+The server advertises **tools**, **prompts** and **resources**.
 
-See the schemas returned by `tools/list` for exact fields and the examples in
-[examples.md](examples.md). Tool results include preserved source text, review
-requirements, and limitations. A client should show the useful result and relevant
-uncertainty without dumping internal metadata onto the person.
+| Request | What it returns |
+| --- | --- |
+| `tools/list` | Three tools with input schemas, output schemas and annotations. |
+| `prompts/list` | Two reusable prompt templates and their argument descriptions. |
+| `resources/list` | Four embedded Markdown resources with exact URIs and byte sizes. |
 
-## Protocol and process lifecycle
+**Registries have one page:** Continuation cursors are rejected rather than silently ignored.
 
-The SDK handles JSON-RPC framing and MCP lifecycle. Verification covers the legacy
-`2025-11-25` initialize/initialized lifecycle and the `2026-07-28`
-`server/discover` lifecycle with required request metadata. The latter uses
-`io.modelcontextprotocol/protocolVersion` and
-`io.modelcontextprotocol/clientCapabilities` under `params._meta`.
+Use the [communication contract](communication-contract.md) for supported preferences and the [examples](examples.md) for requests and expected results.
 
-Incoming JSON lines have a 1 MiB limit. Text tools apply a stricter 32 KiB UTF-8
-payload limit, and profile limits are checked in code. Schema generation alone is
-not validation. Invalid arguments produce errors, never silently truncated output.
-The stdio connection is intended for a trusted local client, not a multi-tenant
-untrusted public endpoint.
+## Protocol behaviour
 
-The SDK discards syntactically invalid JSON and oversized lines and accepts later
-valid messages. It returns JSON-RPC errors for invalid envelopes. This behavior is
-tested as implemented; the project does not claim a `-32700` response for every
-invalid input.
+The SDK handles MCP lifecycle and JSON-RPC framing, with process tests covering these two paths:
 
-EOF, SIGINT, and Unix SIGTERM close the process. Cancellation allows bounded
-cleanup. A manually managed Tokio runtime limits shutdown waiting because
-portable standard-input reads can block on macOS and Windows. Standard output is
-reserved for protocol messages; fixed operational errors use standard error.
+- **`2025-11-25`:** The client uses the `initialize` and initialized-notification lifecycle.
+- **`2026-07-28`:** The client uses `server/discover` with the required metadata on subsequent requests.
 
-## Privacy
+The latter carries `io.modelcontextprotocol/protocolVersion` and `io.modelcontextprotocol/clientCapabilities` under `params._meta`.
 
-Diffyn's application code has no outbound model calls, file reads driven by user
-input, analytics, persistent profiles, or conversation store. Resources are
-embedded at compile time and addressed through an exact URI allowlist. Submitted
-text exists in process memory while it is being handled and is returned only as
-part of the requested result. This does not guarantee memory zeroization, prevent
-OS crash dumps, or control upstream client retention.
+Protocol reference: [mcp-versioning-2026-07-28](bibliography.bib).
 
-No tracing subscriber is installed. SDK debug events can contain malformed
-payloads, so setting `RUST_LOG` does not activate content logging in this binary.
-Do not add general request logging without reviewing these boundaries.
+**Input bounds** protect availability without estimating a person's cognitive capacity:
 
-## Repository layout
+- **Transport:** One incoming JSON line may contain at most 1 MiB, including its newline.
+- **Tools:** Source text may contain at most 32,768 UTF-8 bytes and must not be blank.
+- **Prompts:** Context and preference text share a combined 32,768-byte limit.
+- **Resources:** A supplied URI may contain at most 32,768 bytes and must exactly match the registry.
+- **Profiles:** Runtime checks enforce preference ranges and the five-label limit.
+
+**Schemas and runtime checks work together:** Unknown fields are rejected, and invalid values are never accepted merely because schema metadata exists.
+
+The SDK discards syntactically invalid JSON and oversized lines, then accepts later valid messages; invalid envelopes receive JSON-RPC errors.
+
+The process tests verify this actual behaviour rather than expecting a `-32700` response for every malformed input.
+
+## Shutdown and error handling
+
+- **Normal closure:** EOF closes the process, including before the first protocol request.
+- **Stop signals:** SIGINT and Unix SIGTERM request cancellation before or after connection setup.
+- **Cleanup:** Active cancellation allows up to three seconds for service shutdown.
+- **Runtime exit:** A 250-millisecond limit prevents portable blocking stdin reads from holding shutdown indefinitely.
+- **Private errors:** Operational diagnostics use fixed messages, and tool errors do not echo input values.
+
+The stdio connection is intended for a **trusted local client**, with no public multi-tenant endpoint provided.
+
+## Privacy boundary
+
+**Application processing stays local:** Diffyn has no outbound model calls, input-driven file reads, analytics, saved profiles or conversation store.
+
+- **Embedded content:** Prompts and resources are compiled into the executable rather than loaded from caller-controlled paths.
+- **Exact routing:** Resource URIs do not become filesystem paths or network requests.
+- **No content logs:** The binary installs no tracing subscriber, so `RUST_LOG` does not activate SDK payload logging.
+- **Process memory:** Submitted content remains in memory while being handled and is returned in the requested result.
+
+These boundaries do not guarantee memory zeroization, prevent operating-system crash dumps or govern the upstream client's retention.
+
+## Repository structure
 
 ```text
 src/main.rs              Runtime and process exit
-src/server.rs            MCP metadata, capability registration, dispatch
+src/server.rs            MCP metadata and dispatch
 src/server/transport.rs  Bounded stdio and shutdown
-src/tools/               Local transformations and explicit profiles
+src/tools/               Local operations and explicit preferences
 src/prompts/             Prompt registry and argument validation
-src/resources/           Embedded resource registry and URI validation
-assets/                  Original instructions and reference text
-tests/stdio_protocol.py  Real-process MCP integration tests
-docs/research.md         Evidence, source limits, and rejected assumptions
+src/resources/           Embedded resources and URI validation
+docs/guidance/           Runtime instructions and reference text
+docs/prompts/            Runtime prompt templates
+docs/assets/             Images and charity artwork
+tests/stdio_protocol.py  Real-process MCP tests
+.github/                 Community files, funding and CI
 ```
 
-## Verification
+**Rebuild after changing bundled Markdown:** The executable contains the text embedded at compile time.
+
+The [architecture guide](architecture.md) shows the request flow and module relationships.
+
+## Run the checks
 
 ```sh
 cargo fmt --all --check
@@ -121,24 +145,9 @@ cargo build --locked
 python3 tests/stdio_protocol.py
 ```
 
-Unit tests check preservation, preferences, validation, prompt boundaries, and
-resource routing. Process tests check both protocol lifecycles, discovery and
-calls, malformed input recovery, input privacy, EOF, and signal shutdown with
-bounded waits. CI runs on Linux and macOS. Windows-specific lifecycle behavior
-and actual connections to branded AI applications require separate verification.
+- **Unit tests:** Check preservation, Unicode, preferences, validation and prompt/resource boundaries.
+- **Process tests:** Exercise real MCP requests, error handling, malformed input, privacy, EOF and signals.
+- **CI platforms:** The workflow runs on Linux and macOS.
+- **Separate verification:** Windows-specific lifecycle behaviour and connections to individual AI applications need their own checks.
 
-Tests do not establish clinical effectiveness or acceptance by neurodivergent
-users. Participatory evaluation, multilingual semantic testing, assistive
-technology testing, and real host rendering remain necessary before broader
-claims. See [research.md](research.md) for the evidence assessment.
-
-## Integration references
-
-- [Official Rust MCP SDK release](https://github.com/modelcontextprotocol/rust-sdk/releases/tag/rmcp-v3.7.0)
-- [MCP versioning](https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning)
-- [OpenAI's description of MCP capabilities](https://developers.openai.com/plugins/concepts/mcp-server)
-- [OpenAI remote MCP integration](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)
-
-This release provides local stdio. Hosted integrations that require Streamable
-HTTP need an additional transport and deployment configuration; publishing this
-repository does not connect or deploy it to ChatGPT, Claude, Mistral, or Gemini.
+**Software tests do not establish clinical effectiveness or accessibility acceptance.** Host rendering, assistive technologies and participatory evaluation remain separate responsibilities described in the [research basis](research.md).

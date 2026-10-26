@@ -1,0 +1,15 @@
+# External checks run on a schedule or by request; local checks run on each PR.
+timeout = 15
+max_retries = 2
+retry_wait_time = 2
+max_concurrency = 8
+host_concurrency = 2
+max_redirects = 5
+exclude_all_private = true
+include_mail = false
+include_verbatim = false
+hidden = true
+accept_timeouts = false
+insecure = false
+scheme = ["https", "http"]
+exclude_path = ['(^|/)target/', '(^|/)node_modules/', '(^|/)\.git/']

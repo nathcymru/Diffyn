@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Private vulnerability report
+    url: https://github.com/nathcymru/Diffyn/security/advisories/new
+    about: Report security-sensitive findings privately to the maintainer.
+  - name: Questions and discussion
+    url: https://github.com/nathcymru/Diffyn/discussions
+    about: Ask a question or discuss an early idea.

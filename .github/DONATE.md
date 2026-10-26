@@ -16,7 +16,7 @@
 
 <p align="center">
   <a href="https://www.autism.org.uk/">
-    <img src="assets/charities/nas-logo.svg" alt="National Autistic Society logo — visit the charity" width="304" height="134">
+    <img src="../docs/assets/charities/nas-logo.svg" alt="National Autistic Society logo — visit the charity" width="304" height="134">
   </a>
 </p>
 
@@ -24,7 +24,7 @@
 
 <p align="center">
   <a href="https://www.autism.org.uk/get-involved/donate">
-    <img src="assets/charities/nas-donate.svg" alt="Donate directly to the National Autistic Society" width="258" height="44">
+    <img src="../docs/assets/charities/nas-donate.svg" alt="Donate directly to the National Autistic Society" width="258" height="44">
   </a>
 </p>
 
@@ -43,7 +43,7 @@
 
 <p align="center">
   <a href="https://www.bdadyslexia.org.uk/">
-    <img src="assets/charities/bda-logo.svg" alt="British Dyslexia Association logo — visit the charity" width="304" height="134">
+    <img src="../docs/assets/charities/bda-logo.svg" alt="British Dyslexia Association logo — visit the charity" width="304" height="134">
   </a>
 </p>
 
@@ -51,7 +51,7 @@
 
 <p align="center">
   <a href="https://www.bdadyslexia.org.uk/support-us/donate-2/donate-online">
-    <img src="assets/charities/bda-donate.svg" alt="Donate directly to the British Dyslexia Association" width="258" height="44">
+    <img src="../docs/assets/charities/bda-donate.svg" alt="Donate directly to the British Dyslexia Association" width="258" height="44">
   </a>
 </p>
 
@@ -70,7 +70,7 @@
 
 <p align="center">
   <a href="https://adhduk.co.uk/">
-    <img src="assets/charities/adhd-uk-logo.svg" alt="ADHD UK logo — visit the charity" width="304" height="134">
+    <img src="../docs/assets/charities/adhd-uk-logo.svg" alt="ADHD UK logo — visit the charity" width="304" height="134">
   </a>
 </p>
 
@@ -78,7 +78,7 @@
 
 <p align="center">
   <a href="https://adhduk.co.uk/donate-to-adhd-uk/">
-    <img src="assets/charities/adhd-uk-donate.svg" alt="Donate directly to ADHD UK" width="310" height="44">
+    <img src="../docs/assets/charities/adhd-uk-donate.svg" alt="Donate directly to ADHD UK" width="310" height="44">
   </a>
 </p>
 

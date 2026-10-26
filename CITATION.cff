@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+message: Please cite the research report in preferred-citation when discussing Diffyn, and
+  record the software version used.
+type: software
+title: Diffyn
+authors:
+- name: nathcymru
+  website: https://github.com/nathcymru
+version: 0.1.0
+abstract: A local Rust Model Context Protocol server providing preference-led text formatting,
+  explicit-step extraction, clarity review, reusable prompts, and bundled guidance for neurodivergent
+  communication.
+repository-code: https://github.com/nathcymru/Diffyn
+url: https://github.com/nathcymru/Diffyn
+license: MIT
+keywords:
+- neurodiversity
+- cognitive accessibility
+- communication preferences
+- Model Context Protocol
+- Rust
+preferred-citation:
+  type: report
+  title: 'Diffyn: research basis for neurodivergent communication support'
+  authors:
+  - name: nathcymru
+    website: https://github.com/nathcymru
+  year: 2026
+  url: https://github.com/nathcymru/Diffyn/blob/main/docs/research.md
+  filename: docs/research.md
+  license: MIT
+  notes: Engineering research synthesis; not a clinical validation study.
+references:
+- type: generic
+  title: Diffyn reference bibliography
+  authors:
+  - name: nathcymru
+    website: https://github.com/nathcymru
+  year: 2026
+  url: https://github.com/nathcymru/Diffyn/blob/main/docs/bibliography.bib
+  filename: docs/bibliography.bib
+  format: BibTeX
+  notes: Source metadata for citation keys used throughout the documentation.
