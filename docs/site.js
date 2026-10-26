@@ -29,6 +29,7 @@
     motionButton.title = motionPreference.matches ? "Animation is paused by your device's reduced-motion preference." : paused ? "Resume animation" : "Pause animation";
     motionButton.setAttribute("aria-label", motionPreference.matches ? "Animation paused by your device preference" : "Pause animation");
     document.getElementById("motion-symbol").textContent = paused ? "▷" : "Ⅱ";
+    window.dispatchEvent(new Event("diffyn-motion"));
   }
   setTheme(readPreference("diffyn-theme"));
   setMotion();
@@ -42,6 +43,28 @@
     savePreference("diffyn-motion", requestedMotion ? "on" : "off");
   });
   motionPreference.addEventListener("change", setMotion);
+
+  // Only peripheral scenery shifts; reading surfaces and keyboard targets stay still.
+  const depthLayers = [...document.querySelectorAll("[data-depth]")];
+  let depthFrame = 0;
+  function updateDepth() {
+    depthFrame = 0;
+    const moving = root.dataset.motion === "on";
+    const worldTop = document.getElementById("main").offsetTop;
+    depthLayers.forEach((layer) => {
+      const amount = Math.max(-24, Math.min(24, Number(layer.dataset.depth) || 0));
+      const position = (layer.offsetTop + worldTop - window.scrollY) / Math.max(1, window.innerHeight);
+      const offset = moving ? Math.max(-1, Math.min(1, position)) * amount : 0;
+      layer.style.setProperty("--depth-shift", `${offset.toFixed(2)}px`);
+    });
+  }
+  function scheduleDepth() {
+    if (!depthFrame) depthFrame = window.requestAnimationFrame(updateDepth);
+  }
+  window.addEventListener("scroll", scheduleDepth, { passive: true });
+  window.addEventListener("resize", scheduleDepth, { passive: true });
+  window.addEventListener("diffyn-motion", scheduleDepth);
+  updateDepth();
 
   // These fixed examples illustrate presentation choices; they do not run the Rust server.
   const demoButtons = [...document.querySelectorAll("[data-demo]")];

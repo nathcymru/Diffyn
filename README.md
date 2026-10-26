@@ -5,6 +5,7 @@
 [![CI](https://github.com/nathcymru/Diffyn/actions/workflows/ci.yml/badge.svg)](https://github.com/nathcymru/Diffyn/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/github/license/nathcymru/Diffyn)](LICENSE)
 [![Rust version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fnathcymru%2FDiffyn%2Fmain%2FCargo.toml&query=%24.package.rust-version&label=Rust&logo=rust)](https://rust-lang.org/)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15973/badge)](https://www.bestpractices.dev/projects/15973)
 [![Protocol: MCP](https://img.shields.io/badge/Protocol-MCP-4203BF)](https://modelcontextprotocol.io/)
 
 **Communication tools that adapt to the person.**

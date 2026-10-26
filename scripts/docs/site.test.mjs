@@ -14,7 +14,7 @@ const sample = 'Open the document. Check the title. Save your changes. Close the
 const settle = () => new Promise((resolve) => setImmediate(resolve));
 
 // Load the shipped page and script; emulate only browser APIs absent from jsdom.
-function page(t, { preferences = {}, reducedMotion = false, blockedStorage = false, clipboard = 'available' } = {}) {
+function page(t, { preferences = {}, reducedMotion = false, blockedStorage = false, clipboard = 'available', loadScript = true, controlledFrames = false } = {}) {
   const errors = [];
   const virtualConsole = new VirtualConsole();
   virtualConsole.on('jsdomError', (error) => errors.push(error));
@@ -58,6 +58,16 @@ function page(t, { preferences = {}, reducedMotion = false, blockedStorage = fal
   }
   const scrolled = [];
   window.HTMLElement.prototype.scrollIntoView = function () { scrolled.push(this.id); };
+  const frames = new Map();
+  let nextFrame = 1;
+  if (controlledFrames) {
+    window.requestAnimationFrame = (callback) => {
+      const id = nextFrame++;
+      frames.set(id, callback);
+      return id;
+    };
+    window.cancelAnimationFrame = (id) => frames.delete(id);
+  }
   window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
   window.HTMLDialogElement.prototype.close = function () {
     this.removeAttribute('open');
@@ -67,11 +77,18 @@ function page(t, { preferences = {}, reducedMotion = false, blockedStorage = fal
     window.close();
     assert.deepEqual(errors, [], 'Page interactions cause no uncaught browser errors');
   });
-  window.eval(script);
+  if (loadScript) window.eval(script);
   return {
     window, document, query, copied, scrolled,
     root: document.documentElement,
     storage: () => Object.fromEntries(Object.entries(window.localStorage)),
+    pendingFrames: () => frames.size,
+    renderFrame() {
+      assert.ok(controlledFrames, 'The test controls the animation-frame boundary');
+      const callbacks = [...frames.values()];
+      frames.clear();
+      callbacks.forEach((callback) => callback(window.performance.now()));
+    },
     setReducedMotion(value) {
       media.matches = value;
       media.dispatchEvent(new window.Event('change'));
@@ -124,6 +141,87 @@ test('system reduced motion overrides stored animation and responds to device ch
   const restored = page(t, { preferences: p.storage() });
   assert.equal(restored.root.dataset.motion, 'off');
   assert.deepEqual(ordinary.storage(), {}, 'Default preferences do not write storage');
+});
+
+// jsdom has no layout engine, so supply viewport geometry at the browser boundary.
+function depthScene(p) {
+  const layers = [...p.document.querySelectorAll('[data-depth]')];
+  assert.ok(layers.length > 0, 'The page contains peripheral scenery');
+  Object.defineProperty(p.query('#main'), 'offsetTop', { value: 120 });
+  layers.forEach((layer, index) => Object.defineProperty(layer, 'offsetTop', { value: 280 + index * 200 }));
+  p.window.innerHeight = 800;
+  return {
+    layers,
+    shifts: () => layers.map((layer) => Number.parseFloat(layer.style.getPropertyValue('--depth-shift'))),
+    scroll(y) {
+      p.window.scrollY = y;
+      p.window.dispatchEvent(new p.window.Event('scroll'));
+    },
+  };
+}
+
+test('scroll depth stays small, batches rendering and leaves reading controls stationary', (t) => {
+  const p = page(t, { controlledFrames: true });
+  const scene = depthScene(p);
+  for (const layer of scene.layers) {
+    assert.equal(layer.getAttribute('aria-hidden'), 'true');
+    assert.equal(layer.querySelector('a, button, input, [tabindex]'), null);
+  }
+  for (const selector of ['#playground', '#hero-heading', '#quickstart']) {
+    assert.equal(p.query(selector).closest('[data-depth]'), null);
+  }
+  scene.scroll(0);
+  scene.scroll(50);
+  scene.scroll(100);
+  assert.equal(p.pendingFrames(), 1, 'A burst of scroll events schedules only one render');
+  p.renderFrame();
+  const first = scene.shifts();
+  assert.ok(first.some((shift) => shift !== 0));
+  assert.equal(p.pendingFrames(), 0, 'Depth does not start a perpetual animation loop');
+  p.window.innerHeight = 400;
+  p.window.dispatchEvent(new p.window.Event('resize'));
+  p.renderFrame();
+  assert.notDeepEqual(scene.shifts(), first, 'Depth responds to the current viewport');
+  scene.scroll(100000);
+  p.renderFrame();
+  assert.ok(scene.shifts().every((shift) => Number.isFinite(shift) && Math.abs(shift) <= 24));
+});
+
+test('pause and system reduced motion reset depth even when a scroll frame is queued', (t) => {
+  const p = page(t, { controlledFrames: true });
+  const scene = depthScene(p);
+  scene.scroll(100);
+  p.renderFrame();
+  assert.ok(scene.shifts().some((shift) => shift !== 0));
+  scene.scroll(200);
+  p.query('#motion-toggle').click();
+  assert.ok(scene.layers.every((layer) => p.window.getComputedStyle(layer).translate === '0 0'), 'CSS stops visible depth before the queued render');
+  p.renderFrame();
+  assert.ok(scene.shifts().every((shift) => shift === 0));
+  scene.scroll(300);
+  p.renderFrame();
+  assert.ok(scene.shifts().every((shift) => shift === 0), 'Scrolling while paused does not restore depth');
+  p.query('#motion-toggle').click();
+  p.renderFrame();
+  assert.ok(scene.shifts().some((shift) => shift !== 0));
+  p.setReducedMotion(true);
+  p.renderFrame();
+  assert.ok(scene.shifts().every((shift) => shift === 0));
+  assert.equal(p.query('#motion-toggle').disabled, true);
+  p.setReducedMotion(false);
+  p.renderFrame();
+  assert.ok(scene.shifts().some((shift) => shift !== 0));
+});
+
+test('without JavaScript depth is not initialized and installation remains readable', (t) => {
+  const p = page(t, { loadScript: false });
+  assert.equal(p.root.classList.contains('no-js'), true);
+  assert.equal(p.window.getComputedStyle(p.root).scrollBehavior, 'auto');
+  for (const element of p.document.querySelectorAll('[data-depth]')) {
+    assert.equal(element.style.getPropertyValue('--depth-shift'), '');
+  }
+  assert.equal(p.window.getComputedStyle(p.query('.view-controls')).display, 'none');
+  assert.equal(p.query('#install-command').textContent, installCommand, 'Installation stays readable without scripts');
 });
 
 test('blocked storage leaves appearance, examples and copy controls usable', async (t) => {
