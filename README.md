@@ -47,3 +47,10 @@ Get started with [the engineering guide](docs/engineering.md) and
 for evidence, source limitations, and the next evaluation needs.
 The code and original project documentation use the [MIT license](LICENSE).
 
+## Optional charity donations
+
+Diffyn is developed voluntarily and remains free to use and fork. If you would
+like to support a neurodiversity charity, see the [independent charity donation
+page](.github/DONATE.md). Donations are optional, go directly to your chosen
+charity, and do not imply any affiliation with Diffyn.
+

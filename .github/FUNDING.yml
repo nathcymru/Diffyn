@@ -1,0 +1,8 @@
+# Charity donations are optional and go directly to the selected charity.
+# The donation page is linked from README.md:
+# https://github.com/nathcymru/Diffyn/blob/main/.github/DONATE.md
+#
+# GitHub documents charity-group support as an unsupported use of funding links:
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+# No Sponsor-button funding destinations are configured for this project.
+custom: []
