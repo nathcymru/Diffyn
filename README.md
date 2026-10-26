@@ -31,11 +31,19 @@ Mae Diffyn yn teilwrio ymatebion AI ar gyfer Awtistiaeth, ADHD, AuDHD, Dyslexia,
 
 ## Project status
 
-Diffyn is in its foundation stage. The descriptions above state the project's
-goals; they are not claims of clinically validated outcomes or completed tools.
+Diffyn's first implementation is a local Rust MCP server with three text tools,
+two prompt templates, and four bundled reference resources. The descriptions
+above state the project's goals; they are not claims of clinically validated outcomes.
 Communication preferences vary within and across neurotypes. Individual choices
 take priority over any default, and a diagnosis is never required.
 
-Implementation and setup details are in [the engineering guide](docs/engineering.md).
+The tools format layout, extract explicit steps, and flag possible idioms. They
+preserve source text and report uncertainty; they do not diagnose people or
+guarantee a correct plan or semantic rewrite. Processing stays local to the
+server, while the upstream AI client's data policies still apply.
+
+Get started with [the engineering guide](docs/engineering.md) and
+[example requests](docs/examples.md). Read the [research assessment](docs/research.md)
+for evidence, source limitations, and the next evaluation needs.
 The code and original project documentation use the [MIT license](LICENSE).
 
