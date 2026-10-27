@@ -2,7 +2,7 @@
 
 **Start with the failed check.** Open its log, identify the affected file or dependency, and make the smallest reviewed correction.
 
-Use the [contribution guide](../.github/CONTRIBUTING.md) for ordinary changes and the [security policy](../.github/SECURITY.md) for private vulnerability reports.
+The [repository settings guide](repository-settings.md) records the access, automation and deployment baseline. Use the [contribution guide](../.github/CONTRIBUTING.md) for ordinary changes and the [security policy](../.github/SECURITY.md) for private vulnerability reports.
 
 ## What runs automatically
 
@@ -46,7 +46,7 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 npm --prefix scripts/docs ci --ignore-scripts --no-audit --no-fund
 npm --prefix scripts/docs run lint
 npm --prefix scripts/docs run check
-node --test scripts/docs/site.test.mjs
+node --test scripts/docs/*.test.mjs
 npm --prefix scripts/docs audit --package-lock-only --audit-level=low
 ```
 
@@ -71,13 +71,15 @@ The [workflow](../.github/workflows/links.yml) uses a release archive checked ag
 
 ## Review dependency updates
 
-**Dependabot:** weekly version updates cover the application and fuzzing Cargo workspaces, SHA-pinned GitHub Actions, the documentation package and the pinned container base image. Security-update PRs use GitHub's separately enabled security-update service. Dependabot proposals do not reserve project versions: a maintainer must carry the dependency change into a fresh versioned branch, reserve its candidate, open the replacement PR and close the original proposal. The version gate has no dependency-update exception.
+**Dependabot:** weekly version updates cover the application and fuzzing Cargo workspaces, SHA-pinned GitHub Actions, the documentation package, Python tooling, the published container base image and the contributor development-container images. Security-update PRs use GitHub's separately enabled security-update service. Dependabot proposals do not reserve project versions: a maintainer must carry the dependency change into a fresh versioned branch, reserve its candidate, open the replacement PR and close the original proposal. The version gate has no dependency-update exception.
 
 - **Read the change:** inspect release notes, dependency changes and any permissions changes.
 - **Keep exact pins:** actions use full commit hashes with version comments; documentation dependencies use a committed npm lockfile.
 - **Check tool pins:** Cargo-deny, Lychee and actionlint versions are explicit workflow values; review their upstream releases when updating them.
 - **Review exceptions:** do not silence a new advisory or expand the licence allowlist just to obtain a passing check.
 - **Retain evidence:** explain any justified, narrowly scoped exception in the change and its configuration.
+
+**Alert triage:** automatic dismissal of development-dependency and malware alerts is disabled. Review each finding and record its disposition; development tooling remains part of the build supply chain.
 
 **Current compatibility override:** the documentation package overrides `micromark-extension-math`'s KaTeX dependency to patched version 0.18.2 for GHSA-238p-pmpm-9mq7. [katex-ghsa-238p-pmpm-9mq7](bibliography.bib)
 
@@ -99,7 +101,7 @@ Remove the override when the upstream dependency selects a patched release and b
 
 - **Required checks:** build, security, dependency, documentation, package and DCO checks remain mandatory. Coverage, repeatability, container and version checks provide additional release evidence.
 - **Human review:** changes require one approval, dismissal of stale reviews and approval of the latest push.
-- **Owner exception:** only `nathcymru` can bypass the human-approval rule through a pull request; required checks and the CodeQL gate still apply.
+- **Owner exception:** only `nathcymru` can bypass the human-approval rule through a pull request, regardless of its author; required checks and the CodeQL gate still apply.
 - **Copilot:** automatic review requests cover new pull requests and subsequent pushes, excluding drafts; execution depends on the author's Copilot access and available credits.
 - **Review findings:** address actionable findings before merging; an AI review does not establish independent human review.
 
@@ -124,6 +126,9 @@ Main-branch and weekly Scorecard runs, unmodified SARIF results and public resul
 **Use ordinary pull requests.** PR checks receive no repository secrets, and checkout does not persist credentials.
 
 - **Default token:** keep repository content access read-only.
+- **Allowed actions:** GitHub-owned actions, `ossf/scorecard-action` and `step-security/harden-runner`; require full commit SHA references.
+- **Trusted metadata workflows:** the Actions event policy permits `pull_request_target` only for `dco.yml` and `labeling.yml`. Other workflows retain the platform default restrictions.
+- **Runner monitoring:** the [Harden-Runner guide](harden-runner.md) explains the Linux repeatability job's network audit and public telemetry.
 - **CodeQL:** limit `security-events: write` to the analysis jobs. Rust's `build-mode: none` can still execute build scripts and procedural macros.
 - **Scorecard:** keep publishing in its dedicated default-branch job with its required security-event and identity-token permissions.
 - **Documentation:** dependency installation disables npm lifecycle scripts; parsers run in a job without write access.

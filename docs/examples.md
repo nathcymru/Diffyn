@@ -116,7 +116,7 @@ The clarification prompt below can help the host decide what to ask.
 - **No rewrite:** `original_text` remains unchanged.
 - **Context matters:** The phrase could be literal or appropriate in another context.
 - **Preference effect:** Setting `literal_language` to false keeps the finding but omits its suggested interpretation.
-- **Limited coverage:** No findings means only that the finite English phrase list found no matches in the scanned text.
+- **Limited coverage:** When `analyzed` is true, no findings means only that the enabled English phrase rules found no matches in eligible text. Unsupported languages, an empty category list or fully protected text can produce no findings without analysis.
 
 Use byte offsets against the UTF-8 source rather than treating them as character indices.
 

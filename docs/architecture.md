@@ -46,7 +46,7 @@ flowchart TD
 
 **Text alternative:** The runtime starts the stdio transport, which passes MCP requests to the server dispatcher; the dispatcher invokes local tools, builds prompt messages or reads embedded resources, then returns the result through the same transport.
 
-**Tool preferences:** Each tool validates explicitly supplied settings and uses neutral defaults for omitted preferences.
+**Tool preferences:** Tools that accept preferences validate explicit values and use neutral defaults for omitted settings.
 
 ## Embedded prompts and guidance
 

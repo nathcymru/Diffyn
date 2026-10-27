@@ -18,7 +18,7 @@ Routine changes use pull requests. Explain the problem, alternatives that materi
 
 The maintainer makes final acceptance and release decisions. Disagreement can be raised respectfully in the relevant discussion with evidence or a concrete alternative. The [Code of Conduct](../.github/CODE_OF_CONDUCT.md) applies throughout.
 
-Required checks remain mandatory. Repository rules request one human approval and allow the owner a pull-request exception to that approval requirement. This solo-maintainer exception does not constitute independent human review and does not waive required checks. The [maintenance guide](maintenance.md) describes the current controls.
+Required checks remain mandatory. Repository rules request one human approval and allow the owner a pull-request exception to that approval requirement. The exception follows the person merging the PR, so it also applies when the owner merges another contributor's change. It does not constitute independent human review or waive required checks. The [maintenance guide](maintenance.md) describes the current controls.
 
 New maintainers may be appointed after sustained contributions demonstrate the technical knowledge, judgment and availability needed for the role. Record the appointment and responsibilities here, then grant only the required access.
 

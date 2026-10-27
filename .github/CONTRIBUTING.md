@@ -30,6 +30,8 @@ Each beginner issue identifies the files to inspect, a small first step and the 
 
 ## Check code changes
 
+Use the optional [development container](../docs/codespaces.md) for the supported Rust, Node.js and Python tools, or install them locally using the commands below. Creating a hosted Codespace is optional and uses your account's quota.
+
 Rust follows the [Rust Style Guide](https://doc.rust-lang.org/style-guide/), enforced by `rustfmt` and Clippy with warnings denied. Python uses four-space indentation, explicit imports and the formatting rules in [ruff.toml](../ruff.toml). Ruff checks formatting, import order, undefined names, unused imports and selected syntax and style errors. JavaScript uses two-space indentation, semicolons and single quotes under the [Prettier configuration](../.prettierrc.json). The required source style check runs both tools with pinned versions.
 
 Use descriptive names, `const` for JavaScript values that are not reassigned, and explicit asynchronous error handling. Never interpolate untrusted values into shell commands. Automated style checks complement review of clarity, behavior and trust boundaries.
@@ -104,7 +106,10 @@ dependency policy.
 
 **Read the [Developer Certificate of Origin](DCO) before contributing.**
 Each pull-request commit needs a final `Signed-off-by` trailer matching its
-author or committer name and email.
+author or committer name and email. The person signing certifies their right
+to submit the complete contribution under the DCO, including any prior work
+it contains. A maintainer may sign as committer when adopting a contribution
+they have the right to submit; this does not certify another person's identity.
 
 ```sh
 git commit --signoff
@@ -113,10 +118,19 @@ git commit --signoff
 - **Certify only contributions you have the right to submit** under the DCO.
 - **Use your own Git identity**; a configured GitHub noreply email is supported.
 - **Keep every commit signed off**, including fixups and merge commits in the pull request.
+- **Preserve authorship and existing sign-offs** when adopting another contribution. `Co-authored-by` records credit; it is not a separate DCO declaration. Never invent another person's sign-off.
 - **Remember that sign-offs are public** and retained with the contribution history.
 - **Sign-off is a declaration**, separate from cryptographic commit signing or independent review.
 
 The check reads commit metadata and runs the checker from the trusted base
 branch. It checks up to 250 commits; split larger changes into smaller pull
-requests. The [fuzzing guide](../docs/fuzzing.md) describes additional checks for
-changes to the Rust tools.
+requests. There is no blanket bot exemption: a maintainer adopting an automated
+change must also meet this certification policy.
+
+The check validates the original PR commits. GitHub can change the author email
+when creating a squash-merge commit while retaining the original sign-off;
+that generated commit is not a new contributor certification. Preserve the
+original trailers when merging.
+
+The [fuzzing guide](../docs/fuzzing.md) describes additional checks for changes
+to the Rust tools.
