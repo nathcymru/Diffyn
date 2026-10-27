@@ -57,6 +57,8 @@ Publishing the repository does not deploy the server or connect it automatically
 
 The GitHub Packages image provides the Linux AMD64 executable for clients that can launch Docker. Native downloads remain available for all four release platforms.
 
+The example pins **2.0.3**. Use that version once its release and container have been published; for an unreleased checkout, choose an available version from [GitHub Packages](https://github.com/nathcymru/Diffyn/pkgs/container/diffyn) or build the executable from source.
+
 ```json
 {
   "mcpServers": {
@@ -66,7 +68,7 @@ The GitHub Packages image provides the Linux AMD64 executable for clients that c
         "run", "--rm", "-i", "--platform=linux/amd64",
         "--network=none", "--read-only", "--cap-drop=ALL",
         "--security-opt=no-new-privileges",
-        "ghcr.io/nathcymru/diffyn:2.0.0"
+        "ghcr.io/nathcymru/diffyn:2.0.3"
       ]
     }
   }
@@ -178,7 +180,7 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 
 - **Unit tests:** Check preservation, Unicode, preferences, validation and prompt/resource boundaries.
 - **Process tests:** Exercise real MCP requests, error handling, malformed input, privacy, EOF and signals.
-- **Python tests:** Cover archive contents, portable skill packaging, unsafe symlink rejection and DCO validation.
+- **Python tests:** Cover release and container packaging, version reservations, publication guards, coverage accounting and DCO validation.
 - **CI platforms:** The workflow runs on Linux and macOS.
 - **Separate verification:** Windows-specific lifecycle behaviour and connections to individual AI applications need their own checks.
 

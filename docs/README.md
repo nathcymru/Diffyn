@@ -12,6 +12,9 @@
 - **Upgrade from 0.1.x:** [migration to 2.0.0](migration-v2.md).
 - **Choose a prompt:** [fourteen focused templates](prompts.md).
 - **Install a workflow:** [six portable and native MCP skills](skills.md).
+- **Use a development container:** [local setup and Codespaces](codespaces.md).
+- **Review repository settings:** [access, security and automation baseline](repository-settings.md).
+- **Understand CI monitoring:** [Harden-Runner scope and permissions](harden-runner.md).
 - **Maintain the repository:** [automated checks and dependency policy](maintenance.md).
 - **Assess verification:** [coverage and repeatable builds](verification.md).
 - **Understand project decisions:** [governance](governance.md) and the [roadmap](roadmap.md).

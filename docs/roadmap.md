@@ -6,7 +6,7 @@ This roadmap covers **October 2026 through October 2027**. Priorities may change
 
 Maintain the 2.x MCP interfaces, exact-detail preservation and local processing model. Extend regression cases where real failures expose gaps, keep dependency and runtime checks current, and verify compatibility with supported MCP hosts. Keep releases, source tags, downloadable packages and container aliases consistent through the documented release process.
 
-Complete the maintainer continuity arrangements described in [governance](governance.md). Maintain measured test coverage and repeatable-build evidence, and address remaining assurance gaps before claiming a higher certification level.
+Review and maintain the continuity arrangements described in [governance](governance.md). Maintain measured test coverage and repeatable-build evidence, and address remaining assurance gaps before claiming a higher certification level.
 
 ## Communication and accessibility evaluation
 

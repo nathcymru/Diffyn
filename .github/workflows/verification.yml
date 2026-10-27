@@ -79,13 +79,50 @@ jobs:
   repeatability:
     name: Repeatable Linux build
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
+    permissions:
+      contents: read
     env:
       RUSTUP_TOOLCHAIN: 1.99.0
     steps:
+      - name: Monitor build network and runtime activity
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2.22.2
+        with:
+          egress-policy: audit
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Build the contributor container on native AMD64
+        run: |
+          test "$(uname -m)" = x86_64
+          docker build --pull --platform linux/amd64 \
+            --tag diffyn-devcontainer:ci .devcontainer
+      - name: Verify the contributor toolchain and compile the read-only source
+        run: |
+          docker run --rm --init -i --platform linux/amd64 \
+            --cap-drop=ALL --security-opt=no-new-privileges \
+            --mount "type=bind,src=$GITHUB_WORKSPACE,dst=/workspace,readonly" \
+            --workdir /workspace \
+            --env "EXPECTED_RUST_VERSION=$RUSTUP_TOOLCHAIN" \
+            --env CARGO_TARGET_DIR=/tmp/diffyn-target \
+            diffyn-devcontainer:ci bash -euo pipefail <<'CHECKS'
+          test "$(id -u)" -ne 0
+          test "$(rustc --version | cut -d ' ' -f 2)" = "$EXPECTED_RUST_VERSION"
+          rustc --version
+          cargo --version
+          cargo clippy --version
+          cargo fmt --version
+          node -e 'if (process.versions.node.split(".")[0] !== "24") throw new Error("Node.js 24 is required");'
+          node --version
+          npm --version
+          python3 -c 'import sys; assert sys.version_info >= (3, 11), "Python 3.11 or newer is required"'
+          python3 --version
+          git --version
+          python3 -m venv /tmp/diffyn-venv
+          /tmp/diffyn-venv/bin/python -c 'import sys; assert sys.prefix != sys.base_prefix'
+          /tmp/diffyn-venv/bin/python -m pip --version
+          cargo check --locked --all-targets
+          CHECKS
       - name: Install the release toolchain
         run: rustup toolchain install 1.99.0 --profile minimal
       - name: Compare two clean builds of the committed source

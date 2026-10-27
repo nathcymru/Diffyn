@@ -1,0 +1,14 @@
+{
+  "name": "Diffyn contributors",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "remoteUser": "vscode",
+  "containerUser": "vscode",
+  "updateRemoteUserUID": true,
+  "init": true,
+  "otherPortsAttributes": {
+    "onAutoForward": "ignore"
+  }
+}

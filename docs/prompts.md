@@ -1,6 +1,6 @@
 # Prompt templates
 
-Diffyn 2.0.0 provides **14 prompts** for the host model. They are reusable instructions, not local model calls or guaranteed outcomes. Each accepts required nonblank `context` and optional plain-text `preferences`, with a combined limit of 32,768 UTF-8 bytes. Unknown arguments and retry state are rejected.
+Diffyn provides **14 prompts** for the host model. They are reusable instructions, not local model calls or guaranteed outcomes. Each accepts required nonblank `context` and optional plain-text `preferences`, with a combined limit of 32,768 UTF-8 bytes. Unknown arguments and retry state are rejected.
 
 | API name | Workflow |
 | --- | --- |

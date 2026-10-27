@@ -1,6 +1,6 @@
 # Communication contract
 
-**The person's expressed preferences come first.** Diffyn 2.0.0 provides nine deterministic tools, fourteen prompts, ten guidance resources and six skills. No diagnosis or ability assessment is required.
+**The person's expressed preferences come first.** Diffyn provides nine deterministic tools, fourteen prompts, ten guidance resources and six skills. No diagnosis or ability assessment is required.
 
 This page describes implemented interfaces. The [research basis](research.md) separates supporting evidence from engineering choices. The host performs semantic reasoning, presents results and controls its own permissions and retention.
 
@@ -102,7 +102,9 @@ The result separates `tool_preferences` from `host_preferences` and records `sou
 
 `compare_protected_details` accepts `original_text`, `candidate_text` and optional `protected_text`. Each main text is nonblank and at most **32,768 UTF-8 bytes**. At most **64 explicit protected strings** are allowed, each nonblank and at most **1,024 bytes**, with an aggregate protected-string limit of **32,768 bytes**.
 
-Finite automatic recognition covers documented number/date/unit forms, HTTP(S) URLs and backtick or tilde code. Explicit protected strings let the caller include names, refusals, conditions or other critical wording. Each detail reports exact occurrence counts and source/candidate byte spans. At most **128 groups** and **16 spans per text per group** are expanded; full counts and omitted/truncated indicators remain available.
+Finite automatic recognition covers numeric strings, selected units and date forms, HTTP(S) URLs and backtick or tilde code. It can recognise forms such as `£25`, `10 mg`, `2026-10-27`, `27 October 2026` and `27 Hydref 2026`; it does not interpret dates, convert units or equate differently written values. URL candidates retain ambiguous trailing punctuation for review.
+
+Explicit protected strings let the caller include names, refusals, conditions or other critical wording. Each detail reports exact occurrence counts and source/candidate byte spans. At most **128 groups** and **16 spans per text per group** are expanded; full counts and omitted/truncated indicators remain available.
 
 `semantic_equivalence_checked` is always false and `review_required` is always true. Equal counts do not establish that a value remains attached to the correct person, condition or obligation. Automatic recognition is not an exhaustive inventory of meaningful details.
 
@@ -140,7 +142,16 @@ Results include `inputs`, decimal `result`, optional `result_unit`, `exact_fract
 
 `check_response_contract` accepts nonblank `text` and a required `preferences` object. Preferences may set `max_paragraph_chars` (**20–10,000**), `max_sentence_words` (**3–200**), `required_headings` (at most **20**), `forbidden_terms` (at most **50**), `plain_text` or a literal `next_action_marker`.
 
-Headings, terms and a supplied marker are nonblank and at most **128 bytes** each; combined text and preference strings are at most **32,768 UTF-8 bytes**. Counts and matches follow the documented heuristic implementation, not linguistic understanding. The next-action marker checks literal presence, not actionability.
+Headings, terms and a supplied marker are nonblank, contain no line breaks and are at most **128 bytes** each; combined text and preference strings are at most **32,768 UTF-8 bytes**.
+
+| Check | What it measures |
+| --- | --- |
+| Paragraph length | Unicode scalar values in trimmed, blank-line-separated paragraphs; these are not necessarily displayed characters |
+| Sentence length | Whitespace-separated words in segments ending at `.`, `!`, `?` or a newline; abbreviations, numbers and code need review |
+| Required headings | Exact text on a trimmed standalone line, optionally preceded by Markdown `#` markers |
+| Forbidden terms | Case-sensitive literal matches, including substrings within longer words |
+| Plain text | Common Markdown markers for headings, strong emphasis, backtick code and links; this is not a complete markup parser |
+| Next-action marker | Literal presence of the supplied text, without assessing whether the action is useful or safe |
 
 At most **128 findings** are expanded, with total and omitted counts, `checked`, `unassessed` and mandatory review. There is no generic pass, cognitive-load score, rewrite or guarantee that a response is usable. Limits express the caller's preference and are never inferred from a diagnosis.
 

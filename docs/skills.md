@@ -1,6 +1,6 @@
 # Skills
 
-Diffyn 2.0.0 includes **six focused workflows**. Each is a self-contained `SKILL.md` with discovery metadata, operational guidance, an example and failure handling. A skill guides the host model; it does not run an LLM, send a message or grant permission to act elsewhere.
+Diffyn includes **six focused workflows**. Each is a self-contained `SKILL.md` with discovery metadata, operational guidance, an example and failure handling. A skill guides the host model; it does not run an LLM, send a message or grant permission to act elsewhere.
 
 | Skill | Use it for |
 | --- | --- |
