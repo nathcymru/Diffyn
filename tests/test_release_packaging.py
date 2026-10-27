@@ -2,12 +2,12 @@
 
 import importlib.util
 import os
-from pathlib import Path
 import tarfile
 import tempfile
 import unittest
-from unittest.mock import patch
 import zipfile
+from pathlib import Path
+from unittest.mock import patch
 
 SPEC = importlib.util.spec_from_file_location(
     "release_packaging", Path(__file__).resolve().parents[1] / "scripts" / "package-release.py"
@@ -18,7 +18,13 @@ SPEC.loader.exec_module(PACKAGING)
 
 class ReleasePackagingTests(unittest.TestCase):
     def prepare(self, root, target):
-        binary = root / "target" / target / "release" / ("diffyn.exe" if "windows" in target else "diffyn")
+        binary = (
+            root
+            / "target"
+            / target
+            / "release"
+            / ("diffyn.exe" if "windows" in target else "diffyn")
+        )
         binary.parent.mkdir(parents=True)
         binary.write_bytes(b"test executable")
         (root / "LICENSE").write_text("MIT test license\n")
@@ -39,7 +45,16 @@ class ReleasePackagingTests(unittest.TestCase):
             with self.subTest(target=target), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory).resolve()
                 destination = self.prepare(root, target)
-                with patch.object(PACKAGING, "ROOT", root), patch.dict(os.environ, {"RELEASE_TARGET": target}), patch.object(PACKAGING, "third_party_notices", return_value=b"third party"), patch.object(PACKAGING, "rust_library_notices", return_value=(b"rust licenses", b"rust metadata")):
+                with (
+                    patch.object(PACKAGING, "ROOT", root),
+                    patch.dict(os.environ, {"RELEASE_TARGET": target}),
+                    patch.object(PACKAGING, "third_party_notices", return_value=b"third party"),
+                    patch.object(
+                        PACKAGING,
+                        "rust_library_notices",
+                        return_value=(b"rust licenses", b"rust metadata"),
+                    ),
+                ):
                     PACKAGING.package_binary("2.0.0", destination)
                 archive = destination / PACKAGING.archive_name("2.0.0", target)
                 if target.endswith("msvc"):
@@ -47,7 +62,10 @@ class ReleasePackagingTests(unittest.TestCase):
                         contents = {name: package.read(name) for name in package.namelist()}
                 else:
                     with tarfile.open(archive) as package:
-                        contents = {member.name: package.extractfile(member).read() for member in package.getmembers()}
+                        contents = {
+                            member.name: package.extractfile(member).read()
+                            for member in package.getmembers()
+                        }
                 for name in PACKAGING.SKILL_NAMES:
                     relative = f"skills/{name}/SKILL.md"
                     self.assertEqual(contents[relative], (root / relative).read_bytes())
@@ -64,7 +82,16 @@ class ReleasePackagingTests(unittest.TestCase):
             skill = root / "skills" / PACKAGING.SKILL_NAMES[0] / "SKILL.md"
             skill.unlink()
             skill.symlink_to(root / "LICENSE")
-            with patch.object(PACKAGING, "ROOT", root), patch.dict(os.environ, {"RELEASE_TARGET": target}), patch.object(PACKAGING, "third_party_notices", return_value=b"third party"), patch.object(PACKAGING, "rust_library_notices", return_value=(b"rust licenses", b"rust metadata")):
+            with (
+                patch.object(PACKAGING, "ROOT", root),
+                patch.dict(os.environ, {"RELEASE_TARGET": target}),
+                patch.object(PACKAGING, "third_party_notices", return_value=b"third party"),
+                patch.object(
+                    PACKAGING,
+                    "rust_library_notices",
+                    return_value=(b"rust licenses", b"rust metadata"),
+                ),
+            ):
                 with self.assertRaisesRegex(ValueError, "missing or unsafe"):
                     PACKAGING.package_binary("2.0.0", destination)
 

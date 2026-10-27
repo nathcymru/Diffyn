@@ -22,10 +22,16 @@ accessibility feedback and code changes are welcome.
 1. **Read** the [architecture](../docs/architecture.md) and [communication contract](../docs/communication-contract.md).
 2. **Create a branch** for a focused change.
 3. **Preserve meaning**, exact values, user preferences and access to the original text.
-4. **Add regression coverage** when changing behaviour or fixing a reproducible failure.
+4. **Add automated tests for every major new feature.** Bug fixes must include a regression test when the failure is reproducible; explain any exception in the pull request.
 5. **Run the relevant checks** before opening a pull request.
 
 ## Check code changes
+
+Rust follows the [Rust Style Guide](https://doc.rust-lang.org/style-guide/), enforced by `rustfmt` and Clippy with warnings denied. Python uses four-space indentation, explicit imports and the formatting rules in [ruff.toml](../ruff.toml). Ruff checks formatting, import order, undefined names, unused imports and selected syntax and style errors. JavaScript uses two-space indentation, semicolons and single quotes under the [Prettier configuration](../.prettierrc.json). The required source style check runs both tools with pinned versions.
+
+Use descriptive names, `const` for JavaScript values that are not reassigned, and explicit asynchronous error handling. Never interpolate untrusted values into shell commands. Automated style checks complement review of clarity, behavior and trust boundaries.
+
+Major new functionality must have automated tests before acceptance. Include normal behavior, meaningful edge cases and relevant trust boundaries. New tests run in CI with the existing suite; tests that only reproduce the implementation do not replace behavioral coverage. See [verification](../docs/verification.md) for coverage and repeatability checks.
 
 ```sh
 cargo fmt --all --check
@@ -35,6 +41,20 @@ cargo build --locked
 python3 tests/stdio_protocol.py
 python3 -m unittest discover -s tests -p 'test_*.py'
 ```
+
+Install the source style tools in a local Python environment and the existing documentation workspace:
+
+```sh
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r scripts/requirements-style.txt
+npm --prefix scripts/docs ci --ignore-scripts --no-audit --no-fund
+ruff check scripts tests
+ruff format --check scripts tests
+npm --prefix scripts/docs run style:check
+```
+
+Apply formatting with `ruff format scripts tests` and `npm --prefix scripts/docs run style:fix`. Review import fixes from `ruff check --fix scripts tests` before committing.
 
 - **Keep standard output for MCP** and avoid logs containing submitted text.
 - **Validate inputs in code** rather than relying only on generated schemas.
@@ -64,6 +84,10 @@ Guidance in `docs/guidance/`, templates in `docs/prompts/` and workflows in `ski
 - **Include neurodivergent participants** in evaluation without requiring diagnostic disclosure.
 
 ## Submit a pull request
+
+Every pull request needs a fresh, higher version and an annotated candidate tag created before the PR. Follow [version reservation](../docs/releases/README.md#prepare-a-version) and use the versioned PR helper. A later push needs a new candidate number for the same reserved version; do not move an existing tag or reuse a version from another PR.
+
+Contributors without permission to create repository tags should share their proposed branch in an issue or Discussion and ask the maintainer to reserve its candidate before opening the PR. The helper supports a separate `--head-repo` for fork branches. Versions are accepted in increasing order; if a higher version merges first, an older outstanding reservation needs a replacement PR with a fresh version.
 
 - **Explain the problem** and the resulting behaviour.
 - **List relevant checks** and any limitations.

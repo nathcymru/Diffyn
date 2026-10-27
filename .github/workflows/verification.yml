@@ -1,0 +1,98 @@
+name: Coverage and repeatability
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verification-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  style:
+    name: Source style
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+      - name: Install pinned source style tools
+        run: |
+          python3 -m venv "$RUNNER_TEMP/style-python"
+          "$RUNNER_TEMP/style-python/bin/pip" install --disable-pip-version-check -r scripts/requirements-style.txt
+          echo "$RUNNER_TEMP/style-python/bin" >> "$GITHUB_PATH"
+          npm --prefix scripts/docs ci --ignore-scripts --no-audit --no-fund
+      - name: Check Python style and correctness rules
+        run: |
+          ruff check scripts tests
+          ruff format --check scripts tests
+      - name: Check JavaScript formatting
+        run: npm --prefix scripts/docs run style:check
+
+  coverage:
+    name: Source coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      RUSTUP_TOOLCHAIN: 1.99.0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+      - name: Install pinned coverage tools
+        run: |
+          rustup toolchain install 1.99.0 --profile minimal --component llvm-tools-preview
+          cargo install cargo-llvm-cov --version 0.9.1 --locked
+          python3 -m venv "$RUNNER_TEMP/coverage-python"
+          "$RUNNER_TEMP/coverage-python/bin/pip" install --disable-pip-version-check coverage==7.17.0
+          echo "$RUNNER_TEMP/coverage-python/bin" >> "$GITHUB_PATH"
+          npm --prefix scripts/docs ci --ignore-scripts --no-audit --no-fund
+      - name: Measure Rust, Python and JavaScript coverage
+        run: bash scripts/check-coverage.sh
+      - name: Retain coverage evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: source-coverage
+          path: |
+            target/verification/*.json
+            target/verification/*.lcov
+            target/verification/javascript/coverage-summary.json
+            target/verification/javascript/lcov.info
+          if-no-files-found: error
+          retention-days: 30
+
+  repeatability:
+    name: Repeatable Linux build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      RUSTUP_TOOLCHAIN: 1.99.0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install the release toolchain
+        run: rustup toolchain install 1.99.0 --profile minimal
+      - name: Compare two clean builds of the committed source
+        run: bash scripts/check-repeatable-build.sh
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: repeatable-linux-build
+          path: target/verification/repeatable-build.txt
+          if-no-files-found: error
+          retention-days: 30

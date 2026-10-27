@@ -8,10 +8,14 @@ const fixture = `<!doctype html><html data-motion="on" data-theme="vivid"><body>
   <section data-scene-room>
     <button data-scene-lamp aria-pressed="true" hidden>Desk lamp</button>
     <p data-scene-status role="status"></p>
-    ${['tools', 'prompts', 'resources'].map((name) => `
+    ${['tools', 'prompts', 'resources']
+      .map(
+        (name) => `
       <button data-scene-drawer aria-controls="${name}" aria-expanded="false" hidden>${name} drawer</button>
       <div id="${name}"><a id="${name}-link" href="#${name}">${name} content</a></div>
-    `).join('')}
+    `,
+      )
+      .join('')}
     <details data-scene-book><summary>Prompt book</summary><p>Use explicit preferences.</p></details>
     <div data-scene-depth="8" aria-hidden="true"></div>
     <div data-scene-depth="-200" aria-hidden="true"></div>
@@ -71,9 +75,14 @@ function scene(t, { motion = 'on', reduced = false, runScript = true, hash = '' 
     window.close();
     assert.deepEqual(errors, [], 'Scene interactions do not throw browser errors');
   });
-  if (runScript) window.eval(script);
+  if (runScript)
+    window.eval(`${script}\n//# sourceURL=${new URL('../../docs/scene.js', import.meta.url).href}`);
   return {
-    window, document, root, room, query,
+    window,
+    document,
+    root,
+    room,
+    query,
     pending: () => frames.size,
     render() {
       const callbacks = [...frames.values()];
@@ -103,7 +112,11 @@ function scene(t, { motion = 'on', reduced = false, runScript = true, hash = '' 
     offsets() {
       return [...document.querySelectorAll('[data-scene-depth][aria-hidden="true"]')]
         .filter((layer) => !layer.querySelector('button'))
-        .map((layer) => ['--scene-x', '--scene-y'].map((name) => Number.parseFloat(layer.style.getPropertyValue(name))));
+        .map((layer) =>
+          ['--scene-x', '--scene-y'].map((name) =>
+            Number.parseFloat(layer.style.getPropertyValue(name)),
+          ),
+        );
     },
   };
 }
@@ -173,7 +186,9 @@ test('native books open with or without the engine and no-script content stays a
     assert.equal(book.open, false);
     if (!runScript) {
       assert.equal(p.query('[data-scene-lamp]').hidden, true);
-      for (const panel of p.document.querySelectorAll('[id="tools"], [id="prompts"], [id="resources"]')) {
+      for (const panel of p.document.querySelectorAll(
+        '[id="tools"], [id="prompts"], [id="resources"]',
+      )) {
         assert.equal(panel.hidden, false);
       }
       assert.equal(p.pending(), 0);
@@ -190,7 +205,14 @@ test('pointer and scroll depth are bounded, batched and restricted to decorative
   assert.equal(p.pending(), 1);
   p.render();
   assert.ok(p.offsets().some(([x, y]) => x !== 0 || y !== 0));
-  assert.ok(p.offsets().every(([x, y]) => Number.isFinite(x) && Math.abs(x) <= 12 && Number.isFinite(y) && Math.abs(y) <= 24));
+  assert.ok(
+    p
+      .offsets()
+      .every(
+        ([x, y]) =>
+          Number.isFinite(x) && Math.abs(x) <= 12 && Number.isFinite(y) && Math.abs(y) <= 24,
+      ),
+  );
   assert.equal(p.query('#reading').style.cssText, '');
   assert.equal(p.query('#interactive').style.cssText, '');
   assert.equal(p.pending(), 0, 'The engine does not run a perpetual rendering loop');
@@ -227,7 +249,10 @@ test('pause and reduced motion immediately cancel queued depth while objects rem
   assert.ok(p.offsets().every(([x, y]) => x === 0 && y === 0));
   p.reduce(false);
   p.render();
-  assert.ok(p.offsets().some(([, y]) => y !== 0), 'Local scroll depth resumes only when allowed');
+  assert.ok(
+    p.offsets().some(([, y]) => y !== 0),
+    'Local scroll depth resumes only when allowed',
+  );
 });
 
 test('hero objects respond to local scrolling in a tall room without render feedback drift', (t) => {
@@ -237,16 +262,28 @@ test('hero objects respond to local scrolling in a tall room without render feed
   const initial = p.offsets();
   p.scroll(0);
   p.render();
-  assert.notDeepEqual(p.offsets(), initial, 'A visible object reacts before the middle of a long page');
+  assert.notDeepEqual(
+    p.offsets(),
+    initial,
+    'A visible object reacts before the middle of a long page',
+  );
   const afterScroll = p.offsets();
   for (let repeat = 0; repeat < 5; repeat++) {
     p.window.dispatchEvent(new p.window.Event('resize'));
     p.render();
-    assert.deepEqual(p.offsets(), afterScroll, 'Reading the transformed rectangle must not accumulate displacement');
+    assert.deepEqual(
+      p.offsets(),
+      afterScroll,
+      'Reading the transformed rectangle must not accumulate displacement',
+    );
   }
   p.pointer(400, 700);
   p.render();
-  assert.notDeepEqual(p.offsets(), afterScroll, 'Vertical pointer movement uses the visible viewport');
+  assert.notDeepEqual(
+    p.offsets(),
+    afterScroll,
+    'Vertical pointer movement uses the visible viewport',
+  );
 });
 
 test('initial reduced motion and a hidden document never start depth rendering', (t) => {

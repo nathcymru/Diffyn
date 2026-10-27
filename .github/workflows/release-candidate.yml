@@ -1,0 +1,58 @@
+name: Release the main version
+
+on:
+  workflow_run:
+    workflows: [CI, CodeQL, Documentation, Dependency security, Fuzzing, Coverage and repeatability]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-main-version
+  cancel-in-progress: false
+
+jobs:
+  candidate:
+    name: Check for a new stable version
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository &&
+       github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: write
+      checks: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify all version references
+        id: version
+        run: |
+          python3 scripts/check-release-version.py > "$RUNNER_TEMP/release-version.json"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          version = json.loads(Path(os.environ['RUNNER_TEMP'], 'release-version.json').read_text())['version']
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'version={version}\n')
+          PY
+      - name: Publish only a new version after main checks succeed
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+          RELEASE_COMMIT: ${{ github.event.workflow_run.head_sha || github.sha }}
+        with:
+          script: |
+            const { startCandidate } = require('./scripts/release-candidate.cjs');
+            await startCandidate({ github, context, core,
+              version: process.env.RELEASE_VERSION, sha: process.env.RELEASE_COMMIT });

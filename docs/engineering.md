@@ -53,6 +53,30 @@ This example illustrates a common configuration shape; use the syntax required b
 
 Publishing the repository does not deploy the server or connect it automatically to an AI application.
 
+## Run with Docker
+
+The GitHub Packages image provides the Linux AMD64 executable for clients that can launch Docker. Native downloads remain available for all four release platforms.
+
+```json
+{
+  "mcpServers": {
+    "diffyn": {
+      "command": "docker",
+      "args": [
+        "run", "--rm", "-i", "--platform=linux/amd64",
+        "--network=none", "--read-only", "--cap-drop=ALL",
+        "--security-opt=no-new-privileges",
+        "ghcr.io/nathcymru/diffyn:2.0.0"
+      ]
+    }
+  }
+}
+```
+
+Keep stdin open with `-i` and do not allocate a terminal with `-t`: MCP uses process pipes. The image runs as a non-root user, requires no writable volume and exposes no network service. Docker needs network access to pull the image; the running container does not. ARM hosts need Docker's Linux AMD64 emulation support.
+
+Pin a version or published image digest for predictable installations. `latest` follows the latest verified stable release. See [package verification](releases/README.md#verify-a-download) before first use.
+
 Integration context: [openai-mcp-server](bibliography.bib) and [openai-remote-mcp](bibliography.bib).
 
 ## Discover the capabilities

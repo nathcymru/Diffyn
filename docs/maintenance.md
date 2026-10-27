@@ -19,6 +19,12 @@ Use the [contribution guide](../.github/CONTRIBUTING.md) for ordinary changes an
 | DCO sign-off | Every PR commit carries a matching contributor sign-off | Pull requests |
 | Fuzzing | Randomized inputs exercise text preservation and structured tool requests | Pull requests, main pushes and weekly |
 | Release packages | Build and test four platform binaries and the Cargo source package | Pull requests, release tags or manually |
+| Container and MCP | Non-root container, registry provenance, vulnerability scan and real-process protocol tests | Pull requests and release publication |
+| Source coverage | At least 80% measured coverage in each of Rust, Python and JavaScript | Pull requests and main pushes |
+| Source style | Python correctness and formatting rules; consistent JavaScript formatting | Pull requests and main pushes |
+| Repeatable Linux build | Compare executable bytes from two clean builds | Pull requests and main pushes |
+| PR version reservation | Require a higher unused version and a matching candidate tag | Pull requests |
+| Release the main version | Dispatch publication for a new stable version after all main checks pass | Successful main CI or manually |
 
 **Scope:** these checks detect specific errors and known advisories. They do not certify that a dependency is free of malicious code or establish clinical effectiveness, accessibility conformance, or host-interface quality.
 
@@ -65,7 +71,7 @@ The [workflow](../.github/workflows/links.yml) uses a release archive checked ag
 
 ## Review dependency updates
 
-**Dependabot:** weekly version updates cover the application and fuzzing Cargo workspaces, SHA-pinned GitHub Actions, and the documentation package. Security-update PRs use GitHub's separately enabled security-update service.
+**Dependabot:** weekly version updates cover the application and fuzzing Cargo workspaces, SHA-pinned GitHub Actions, the documentation package and the pinned container base image. Security-update PRs use GitHub's separately enabled security-update service. Dependabot proposals do not reserve project versions: a maintainer must carry the dependency change into a fresh versioned branch, reserve its candidate, open the replacement PR and close the original proposal. The version gate has no dependency-update exception.
 
 - **Read the change:** inspect release notes, dependency changes and any permissions changes.
 - **Keep exact pins:** actions use full commit hashes with version comments; documentation dependencies use a committed npm lockfile.
@@ -91,7 +97,7 @@ Remove the override when the upstream dependency selects a patched release and b
 
 ## Review pull requests
 
-- **Required checks:** all 17 build, security, dependency, documentation, package and DCO checks remain mandatory.
+- **Required checks:** build, security, dependency, documentation, package and DCO checks remain mandatory. Coverage, repeatability, container and version checks provide additional release evidence.
 - **Human review:** changes require one approval, dismissal of stale reviews and approval of the latest push.
 - **Owner exception:** only `nathcymru` can bypass the human-approval rule through a pull request; required checks and the CodeQL gate still apply.
 - **Copilot:** automatic review requests cover new pull requests and subsequent pushes, excluding drafts; execution depends on the author's Copilot access and available credits.
@@ -108,8 +114,27 @@ Remove the override when the upstream dependency selects a patched release and b
 - **Communication:** checks publish job results and summaries; they do not create issues or post PR comments.
 - **DCO:** the read-only `pull_request_target` job checks out the trusted base commit and reads commit metadata; it never checks out or runs pull-request code.
 - **Fuzzing:** use the bounded runs and local reproduction steps in the [fuzzing guide](fuzzing.md).
-- **Packages:** follow the [release guide](releases/README.md); publishing permissions are limited to the release job.
+- **Packages:** follow the [release guide](releases/README.md); publishing permissions are limited to the relevant tagging and publication jobs. Pull requests cannot publish a stable release.
 
 Before requiring a new check in branch rules, confirm that it succeeds on GitHub and use its exact check name. Required workflows run on every pull request so path filtering cannot leave them permanently pending.
 
 **Separate signals:** a successful CodeQL analysis means the scan completed; repository code-scanning rules determine which findings prevent merging. Keep Scorecard and third-party link availability outside the required merge checks.
+
+## Labels and milestones
+
+Use labels to describe a change and milestones to group a concrete release:
+
+| Label | Use |
+| --- | --- |
+| `bug` | A reproducible defect |
+| `enhancement` | New or improved behavior |
+| `documentation` | Public guides, website content or examples |
+| `accessibility` | An accessibility barrier or improvement |
+| `security` | Public security maintenance; report undisclosed vulnerabilities privately |
+| `dependencies` | Dependency or base-image updates |
+| `ci` | Build, verification or repository automation |
+| `release` | Version metadata, distribution or release publication |
+
+The labeling workflow adds area labels from trusted pull-request metadata and changed paths. It does not infer whether a change fixes a bug, constitutes a vulnerability or belongs to a particular release. Dependabot supplies its dependency and area labels explicitly.
+
+Assign each version pull request to its intended release milestone. Keep the milestone open until publication and verification are complete; a merged pull request alone does not close the distribution work. Move unfinished work to a later milestone with an explanation instead of marking it complete.

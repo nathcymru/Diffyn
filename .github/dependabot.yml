@@ -1,7 +1,26 @@
 version: 2
 updates:
+  - package-ecosystem: pip
+    directory: /scripts
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:40"
+      timezone: Europe/London
+    labels: [dependencies, ci]
+    open-pull-requests-limit: 5
+  - package-ecosystem: docker
+    directory: /container
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:45"
+      timezone: Europe/London
+    labels: [dependencies, security]
+    open-pull-requests-limit: 5
   - package-ecosystem: cargo
     directory: /
+    labels: [dependencies]
     schedule:
       interval: weekly
       day: monday
@@ -17,6 +36,7 @@ updates:
         patterns: ["*"]
   - package-ecosystem: github-actions
     directory: /
+    labels: [dependencies, ci]
     schedule:
       interval: weekly
       day: monday
@@ -28,6 +48,7 @@ updates:
         patterns: ["*"]
   - package-ecosystem: cargo
     directory: /fuzz
+    labels: [dependencies]
     schedule:
       interval: weekly
       day: monday
@@ -43,6 +64,7 @@ updates:
         patterns: ["*"]
   - package-ecosystem: npm
     directory: /scripts/docs
+    labels: [dependencies, documentation]
     schedule:
       interval: weekly
       day: monday
