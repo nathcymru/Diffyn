@@ -103,6 +103,22 @@ Remove the override when the upstream dependency selects a patched release and b
 - **Copilot:** automatic review requests cover new pull requests and subsequent pushes, excluding drafts; execution depends on the author's Copilot access and available credits.
 - **Review findings:** address actionable findings before merging; an AI review does not establish independent human review.
 
+## Triage repository-practice alerts
+
+Scorecard findings describe repository practices as well as code risks. Review the reported condition, existing controls and available remediation before choosing a disposition. A dismissed alert retains its evidence and does not improve the underlying Scorecard result.
+
+The following findings were reviewed on **27 October 2026** and accepted under the current solo-maintainer model:
+
+| Finding | Current controls and remaining limitation | Reassessment |
+| --- | --- | --- |
+| [Branch protection, alert 1](https://github.com/nathcymru/Diffyn/security/code-scanning/1) | The main protection ruleset has no bypass actors and requires 22 checks, CodeQL, pull requests and protected history. A separate review rule permits only the owner to bypass approval through a PR. Two independent approvals and CODEOWNERS review are not required. | Review the exception and independent approval requirements when additional maintainers join. |
+| [Code review, alert 3](https://github.com/nathcymru/Diffyn/security/code-scanning/3) | The reviewed sample contained 0 of 15 changesets with independent approval. Automated tests and analysis remain mandatory; automated review does not supply independent human judgment. | Reassess as genuine independently reviewed changes enter the sample. |
+| [Maintained, alert 4](https://github.com/nathcymru/Diffyn/security/code-scanning/4) | The repository was created on 26 October 2026 at 03:48:32 UTC. Scorecard applies an age condition of more than 90 days. | Reassess after 24 January 2027 at 03:48:32 UTC, alongside actual maintenance activity. |
+
+These alerts use GitHub's **Won't fix** disposition to record an accepted present limitation. Do not classify them as false positives or claim that their conditions have been repaired. Reopen an alert if its accepted scope changes or its controls no longer hold.
+
+Main-branch and weekly Scorecard runs, unmodified SARIF results and public result publication continue. Review new findings individually. The [Scorecard check definitions](https://github.com/ossf/scorecard/blob/main/docs/checks.md) explain the measurements; GitHub documents [alert dismissal and reopening](https://docs.github.com/en/code-security/how-tos/manage-security-alerts/manage-code-scanning-alerts/resolve-alerts).
+
 ## Maintain workflow permissions
 
 **Use ordinary pull requests.** PR checks receive no repository secrets, and checkout does not persist credentials.
@@ -134,6 +150,10 @@ Use labels to describe a change and milestones to group a concrete release:
 | `dependencies` | Dependency or base-image updates |
 | `ci` | Build, verification or repository automation |
 | `release` | Version metadata, distribution or release publication |
+| `integrations` | Native host plugins and MCP client connections |
+| `deployment` | User-owned installation, configuration and operations |
+| `good first issue` | A bounded newcomer task with prerequisites, source pointers and completion checks |
+| `help wanted` | Work open to contributor participation |
 
 The labeling workflow adds area labels from trusted pull-request metadata and changed paths. It does not infer whether a change fixes a bug, constitutes a vulnerability or belongs to a particular release. Dependabot supplies its dependency and area labels explicitly.
 

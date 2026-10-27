@@ -1,0 +1,12 @@
+name: Diffyn
+desc: A local Rust MCP server with communication tools, prompts and skills for neurodivergent users.
+site: https://github.com/nathcymru/Diffyn
+tags:
+  - rust
+  - accessibility
+  - neurodiversity
+  - mcp
+  - documentation
+upforgrabs:
+  name: good first issue
+  link: https://github.com/nathcymru/Diffyn/labels/good%20first%20issue
