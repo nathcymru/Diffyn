@@ -18,8 +18,8 @@ Use the private form for vulnerabilities or security-sensitive findings.
 
 | Development line | Security fixes |
 | --- | --- |
-| Current `main` branch, version `0.1.x` | Supported through updates to `main`. |
-| Older commits and unsupported forks | Update to the current development line. |
+| Current `main` branch, version `2.x` | Supported through updates to `main`. |
+| `0.1.x`, older commits and unsupported forks | Update to the current development line. |
 
 Diffyn is under active development and does not provide a separate long-term
 support release.
@@ -28,7 +28,7 @@ support release.
 
 - **Transport:** local stdio connects a trusted client to one server process.
 - **Inputs:** text and profile values receive bounded validation.
-- **Resources:** exact URI matching selects text embedded at compile time.
+- **Resources:** exact URI matching selects guidance and skill files embedded at compile time.
 - **Network:** the application makes no outbound model calls or runtime source fetches.
 - **Storage:** the application does not persist submitted text or profiles.
 - **Logging:** operational errors exclude submitted content.

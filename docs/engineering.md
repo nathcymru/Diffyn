@@ -57,13 +57,14 @@ Integration context: [openai-mcp-server](bibliography.bib) and [openai-remote-mc
 
 ## Discover the capabilities
 
-The server advertises **tools**, **prompts** and **resources**.
+The server advertises **tools**, **prompts**, **resources** and the **Skills extension**.
 
 | Request | What it returns |
 | --- | --- |
-| `tools/list` | Three tools with input schemas, output schemas and annotations. |
-| `prompts/list` | Two reusable prompt templates and their argument descriptions. |
-| `resources/list` | Four embedded Markdown resources with exact URIs and byte sizes. |
+| `tools/list` | Nine tools with input schemas, output schemas and annotations. |
+| `prompts/list` | Fourteen reusable prompt templates and their argument descriptions. |
+| `resources/list` | Ten embedded Markdown resources with exact URIs and byte sizes. |
+| `skills/list` and `skills/get` | Six workflows through the advertised Skills extension. |
 
 **Registries have one page:** Continuation cursors are rejected rather than silently ignored.
 
@@ -86,7 +87,8 @@ Protocol reference: [mcp-versioning-2026-07-28](bibliography.bib).
 - **Tools:** Source text may contain at most 32,768 UTF-8 bytes and must not be blank.
 - **Prompts:** Context and preference text share a combined 32,768-byte limit.
 - **Resources:** A supplied URI may contain at most 32,768 bytes and must exactly match the registry.
-- **Profiles:** Runtime checks enforce preference ranges and the five-label limit.
+- **Profiles:** Runtime checks enforce preference ranges and the five-label compatibility limit.
+- **New tools:** Field, list and aggregate limits are documented in the [communication contract](communication-contract.md); they reject invalid input without silent truncation.
 
 **Schemas and runtime checks work together:** Unknown fields are rejected, and invalid values are never accepted merely because schema metadata exists.
 
@@ -124,12 +126,16 @@ src/server/transport.rs  Bounded stdio and shutdown
 src/tools/               Local operations and explicit preferences
 src/prompts/             Prompt registry and argument validation
 src/resources/           Embedded resources and URI validation
+src/skills.rs            Embedded skill manifest and extension dispatch
+skills/                  Six portable SKILL.md workflows
 docs/guidance/           Runtime instructions and reference text
 docs/prompts/            Runtime prompt templates
 docs/assets/             Images and charity artwork
 tests/stdio_protocol.py  Real-process MCP tests
 .github/                 Community files, funding and CI
 ```
+
+See [prompt discovery](prompts.md), [skill installation](skills.md) and [v2 migration](migration-v2.md).
 
 **Rebuild after changing bundled Markdown:** The executable contains the text embedded at compile time.
 
@@ -143,10 +149,12 @@ cargo clippy --locked --all-targets -- -D warnings
 cargo test --locked
 cargo build --locked
 python3 tests/stdio_protocol.py
+python3 -m unittest discover -s tests -p 'test_*.py'
 ```
 
 - **Unit tests:** Check preservation, Unicode, preferences, validation and prompt/resource boundaries.
 - **Process tests:** Exercise real MCP requests, error handling, malformed input, privacy, EOF and signals.
+- **Python tests:** Cover archive contents, portable skill packaging, unsafe symlink rejection and DCO validation.
 - **CI platforms:** The workflow runs on Linux and macOS.
 - **Separate verification:** Windows-specific lifecycle behaviour and connections to individual AI applications need their own checks.
 

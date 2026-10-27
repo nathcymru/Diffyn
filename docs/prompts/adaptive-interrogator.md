@@ -1,4 +1,4 @@
-# Adaptive input interrogator
+# Focused clarification
 
 **Help clarify the current user-requested task** while respecting the host's higher-priority instructions.
 

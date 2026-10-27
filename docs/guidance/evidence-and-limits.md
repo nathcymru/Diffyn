@@ -12,11 +12,13 @@ comprehension.
 - **Study limits:** research on a specialist typeface in children and Bionic Reading in fluent adult readers does not establish a universal neurodivergent formatting prescription ([joseph-powell-2022](https://github.com/nathcymru/Diffyn/blob/main/docs/bibliography.bib), [beelders-2025](https://github.com/nathcymru/Diffyn/blob/main/docs/bibliography.bib)).
 - **Product choices:** sentence grouping, checklist size, and input limits are configurable engineering decisions, not measured cognitive thresholds.
 
+## Primary studies added for 2.0.0
+
+Exploratory studies of neurodivergent LLM use inform discoverability, task resumption and voice preservation. A CHI 2026 audit of six models and 345,000 outputs, accompanied by 11 autistic interviews, identifies stereotype risks when personalising advice from diagnostic disclosure. A participatory Singapore study with 20 autistic adults motivates reciprocal communication and adjustment requests. These are design inputs, not evaluations of Diffyn. The [evidence-to-feature map](https://github.com/nathcymru/Diffyn/blob/main/docs/guidance/evidence-to-feature-map.md) identifies each source and limit.
+
 ## Tool and privacy boundaries
 
-**Conservative operations:** layout changes, step extraction, and finite phrase
-matching cannot reliably rewrite every sentence, infer a complete plan, or
-detect all sarcasm and ambiguity.
+**Conservative operations:** layout changes, step extraction, bounded phrase matching, protected-detail comparisons, structural plan checks and output-shape checks cannot establish complete meaning, infer a safe procedure or detect all ambiguity. Exact supported arithmetic does not establish that a calculation is appropriate to the situation.
 Keep originals available and review uncertain results.
 
 **Local processing:** Diffyn does not persist profiles or submitted text, make

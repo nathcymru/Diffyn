@@ -7,7 +7,7 @@ const html = readFileSync(new URL('../../docs/index.html', import.meta.url), 'ut
 const script = readFileSync(new URL('../../docs/site.js', import.meta.url), 'utf8');
 const sceneScript = readFileSync(new URL('../../docs/scene.js', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../../docs/styles.css', import.meta.url), 'utf8');
-const installCommand = 'cargo install --git https://github.com/nathcymru/Diffyn --tag v0.1.0 --locked diffyn';
+const installCommand = 'cargo install --git https://github.com/nathcymru/Diffyn --tag v2.0.0 --locked diffyn';
 const configuration = {
   mcpServers: { diffyn: { command: '/absolute/path/to/diffyn', args: [] } },
 };

@@ -3,7 +3,11 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use super::{NeurotypeProfile, ResolvedPreferences, resolve_profile, validate_text};
+use super::{
+    NeurotypeProfile, ResolvedPreferences, resolve_profile,
+    text_spans::{ProtectedSpan, overlaps, protected_spans},
+    validate_text,
+};
 
 #[derive(Debug, Deserialize, JsonSchema)]
 #[serde(deny_unknown_fields)]
@@ -17,6 +21,8 @@ pub struct ReformatRequest {
 pub struct ReformatOutput {
     pub original_text: String,
     pub formatted_text: String,
+    /// Protected source bytes are copied exactly; offsets refer to original_text.
+    pub protected_spans: Vec<ProtectedSpan>,
     pub preferences: ResolvedPreferences,
     pub changes: Vec<String>,
     pub warnings: Vec<String>,
@@ -30,40 +36,42 @@ pub fn reformat_for_cognitive_load(request: ReformatRequest) -> Result<ReformatO
     let mut warnings = Vec::new();
     let mut changes = Vec::new();
     let mut breaks = 0;
-    // Quoted and inline markup spans can cross several lines. A middle line
-    // may have no delimiters, so retain the whole source when parsing would be
-    // required to establish whether a paragraph break is safe.
-    let formatted_text = if has_structured_block(&request.text)
-        || has_verbatim_syntax(&request.text)
-    {
-        warnings
-            .push("Structured or verbatim content was preserved without layout changes.".into());
-        request.text.clone()
+    let protected = protected_spans(&request.text);
+    let mut formatted_text = String::with_capacity(request.text.len());
+    let mut line_offset = 0;
+    let paragraph_break = if request.text.contains("\r\n") {
+        "\r\n\r\n"
     } else {
-        let mut formatted = String::with_capacity(request.text.len());
-        for line in request.text.split_inclusive('\n') {
-            if is_structural_line(line) || has_verbatim_syntax(line) {
-                formatted.push_str(line);
-                if !line.trim().is_empty() && warnings.is_empty() {
-                    warnings.push(
-                        "Some structured, quoted, or linked lines were preserved verbatim.".into(),
-                    );
-                }
+        "\n\n"
+    };
+    for line in request.text.split_inclusive('\n') {
+        if is_structural_line(line) {
+            formatted_text.push_str(line);
+            line_offset += line.len();
+            continue;
+        }
+        let mut previous_end = 0;
+        let mut eligible_count = 0;
+        for (start, end) in sentence_separators(line) {
+            // Include the sentence punctuation: a URL/code/quote ending in a
+            // period must not be mistaken for a prose sentence boundary.
+            if overlaps(&protected, line_offset + start - 1, line_offset + end) {
                 continue;
             }
-            let mut previous_end = 0;
-            for (index, (start, end)) in sentence_separators(line).into_iter().enumerate() {
-                if (index + 1) % preferences.max_sentences_per_chunk == 0 {
-                    formatted.push_str(&line[previous_end..start]);
-                    formatted.push_str("\n\n");
-                    previous_end = end;
-                    breaks += 1;
-                }
+            eligible_count += 1;
+            if eligible_count % preferences.max_sentences_per_chunk == 0 {
+                formatted_text.push_str(&line[previous_end..start]);
+                formatted_text.push_str(paragraph_break);
+                previous_end = end;
+                breaks += 1;
             }
-            formatted.push_str(&line[previous_end..]);
         }
-        formatted
-    };
+        formatted_text.push_str(&line[previous_end..]);
+        line_offset += line.len();
+    }
+    if !protected.is_empty() {
+        warnings.push("Recognized source syntax was preserved byte-for-byte; eligible surrounding prose may have layout changes. Unclosed constructs are protected conservatively.".into());
+    }
     if breaks > 0 {
         changes.push(format!("Replaced {breaks} inter-sentence whitespace gap(s) with paragraph breaks; all non-whitespace characters were preserved."));
     }
@@ -76,6 +84,7 @@ pub fn reformat_for_cognitive_load(request: ReformatRequest) -> Result<ReformatO
     Ok(ReformatOutput {
         original_text: request.text,
         formatted_text,
+        protected_spans: protected,
         preferences,
         changes,
         review_required: breaks > 0 || !warnings.is_empty(),
@@ -86,33 +95,6 @@ pub fn reformat_for_cognitive_load(request: ReformatRequest) -> Result<ReformatO
             "Plain-text preference suppresses generated decoration; existing source formatting is never stripped.".into(),
         ],
     })
-}
-
-/// Multi-line markup is intentionally kept intact rather than partly parsed.
-pub(super) fn has_structured_block(text: &str) -> bool {
-    text.contains("```") || text.contains("~~~") || text.contains('\r') || text.contains('|')
-}
-
-pub(super) fn has_verbatim_syntax(line: &str) -> bool {
-    line.contains('`')
-        || line.contains('"')
-        || line.contains(['“', '”', '«', '»'])
-        || line.contains("://")
-        || line.contains("www.")
-        || line.contains("](")
-        || line.contains(['[', ']', '*', '_'])
-        || line.contains("<!--")
-        || line.contains(['$', '=', '≤', '≥', '∑', '√'])
-        || line.contains("\\(")
-        || line.contains("\\[")
-        || (line.contains('<') && line.contains('>'))
-        || line.starts_with("    ")
-        || line.starts_with('\t')
-        || line.char_indices().any(|(index, ch)| {
-            ch == '\''
-                && (index == 0 || line[..index].ends_with(char::is_whitespace))
-                && line[index + 1..].contains('\'')
-        })
 }
 
 fn is_structural_line(line: &str) -> bool {

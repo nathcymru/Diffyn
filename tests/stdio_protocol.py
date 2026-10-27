@@ -7,6 +7,7 @@ shutdown has a deadline; a broken server must fail a test instead of hanging CI.
 Tests exercise the published registries and conservative local text tools.
 """
 
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -28,13 +29,32 @@ TOOLS = {
     "reformat_for_cognitive_load",
     "generate_executive_function_checklist",
     "verify_clarity_and_literalism",
+    "resolve_communication_preferences",
+    "compare_protected_details",
+    "validate_action_plan",
+    "build_resume_card",
+    "explain_numeric_values",
+    "check_response_contract",
 }
-PROMPTS = {"neuro_inclusive_persona_wrapper", "adaptive_input_interrogator"}
+PROMPTS = {
+    "neuro_inclusive_persona_wrapper", "adaptive_input_interrogator",
+    "choose_communication_style", "explain_in_layers", "understand_message",
+    "repair_communication", "rewrite_in_my_voice", "clarify_task_brief",
+    "start_a_task", "resume_after_interruption", "compare_options",
+    "explain_numbers_and_dates", "prepare_conversation",
+    "request_communication_adjustment",
+}
 RESOURCES = {
     "diffyn://guidance/core-instructions",
     "diffyn://guidance/style-guide",
     "diffyn://guidance/profile-matrix",
     "diffyn://guidance/evidence-and-limits",
+    "diffyn://guidance/preferences-and-scope",
+    "diffyn://guidance/communication-repair-and-voice",
+    "diffyn://guidance/task-planning-and-resumption",
+    "diffyn://guidance/numbers-dates-and-units",
+    "diffyn://guidance/language-and-host-capabilities",
+    "diffyn://guidance/evidence-to-feature-map",
 }
 EOF = object()
 
@@ -203,11 +223,10 @@ class ProtocolTests(unittest.TestCase):
         self.assertEqual(peer.request("ping")["result"], {})
 
     def assert_capabilities(self, capabilities):
-        self.assertEqual(set(capabilities), {"tools", "prompts", "resources"})
-        for capability in capabilities.values():
-            # No list-change notifications, subscription support, or other
-            # capability is promised by these fixed local registries.
-            self.assertEqual(capability, {})
+        self.assertEqual(set(capabilities), {"tools", "prompts", "resources", "extensions"})
+        for name in ("tools", "prompts", "resources"):
+            self.assertEqual(capabilities[name], {})
+        self.assertEqual(capabilities["extensions"], {"io.modelcontextprotocol/skills": {}})
 
     def call_tool(self, peer, name, arguments):
         response = peer.request("tools/call", {"name": name, "arguments": arguments})
@@ -409,13 +428,9 @@ class ProtocolTests(unittest.TestCase):
     def test_tool_unknown_field_errors_do_not_echo_input(self):
         peer = self.peer()
         marker = "DIFFYN_PRIVATE_UNKNOWN_FIELD_9a3a2229"
-        for name, field in (
-            ("reformat_for_cognitive_load", "text"),
-            ("generate_executive_function_checklist", "complex_task"),
-            ("verify_clarity_and_literalism", "text"),
-        ):
+        for name in TOOLS:
             with self.subTest(tool=name):
-                response = peer.request("tools/call", {"name": name, "arguments": {field: "Open notes.", marker: True}})
+                response = peer.request("tools/call", {"name": name, "arguments": {marker: True}})
                 self.assertTrue(response["result"]["isError"])
                 self.assertNotIn(marker, json.dumps(response))
         peer.close_input()
@@ -487,6 +502,125 @@ class ProtocolTests(unittest.TestCase):
                 response = peer.request(method, dict(params, requestState=marker))
                 self.assert_error(response, -32602)
                 self.assertNotIn(marker, json.dumps(response))
+
+    def test_skills_discovery_manifest_and_exact_resource_reads(self):
+        peer = self.peer(initialized=False)
+        metadata = {"_meta": {
+            "io.modelcontextprotocol/protocolVersion": MODERN_VERSION,
+            "io.modelcontextprotocol/clientCapabilities": {
+                "extensions": {"io.modelcontextprotocol/skills": {}}
+            },
+        }}
+        listed = peer.request("skills/list", metadata)["result"]
+        self.assertEqual(listed["resultType"], "complete")
+        self.assertEqual(listed["cacheScope"], "public")
+        self.assertEqual(len(listed["skills"]), 6)
+        self.assertNotIn("nextCursor", listed)
+        names = set()
+        for skill in listed["skills"]:
+            name = skill["frontmatter"]["name"]
+            names.add(name)
+            self.assertEqual(skill["uri"], f"skill://{name}/SKILL.md")
+            fetched = peer.request("skills/get", dict(metadata, uri=skill["uri"]))["result"]
+            self.assertEqual(fetched["skill"], skill)
+            resource = peer.request("resources/read", dict(metadata, uri=skill["uri"]))["result"]
+            content = resource["contents"][0]["text"].encode()
+            self.assertEqual(content, (ROOT / "skills" / name / "SKILL.md").read_bytes())
+            self.assertEqual(skill["resources"], [{
+                "uri": skill["uri"], "size": len(content),
+                "digest": "sha256:" + hashlib.sha256(content).hexdigest(),
+            }])
+        self.assertEqual(names, {
+            "diffyn-understand-document", "diffyn-task-support",
+            "diffyn-repair-communication", "diffyn-write-in-my-voice",
+            "diffyn-make-decision", "diffyn-prepare-conversation",
+        })
+        marker = "PRIVATE_SKILL_381c7"
+        for method, extra, code in (
+            ("skills/list", {"cursor": marker}, -32602),
+            ("skills/list", {"requestState": marker}, -32602),
+            ("skills/get", {"uri": f"file:///tmp/{marker}"}, -32602),
+            ("resources/read", {"uri": f"skill://diffyn-task-support/../{marker}"}, -32602),
+            ("resources/read", {"uri": "skill://diffyn-task-support/SKILL.md", "requestState": marker}, -32602),
+        ):
+            response = peer.request(method, dict(metadata, **extra))
+            self.assert_error(response, code)
+            self.assertNotIn(marker, json.dumps(response))
+
+    def test_explicit_preferences_integrity_and_response_checks(self):
+        peer = self.peer()
+        prefs = self.call_tool(peer, "resolve_communication_preferences", {
+            "general": {"plain_text": False, "detail": "detailed"},
+            "task": {"detail": "standard"},
+            "current_request": {"plain_text": True, "use_bold": True, "detail": "concise"},
+        })
+        self.assertTrue(prefs["tool_preferences"]["plain_text"])
+        self.assertFalse(prefs["tool_preferences"]["use_bold"])
+        self.assertEqual(prefs["host_preferences"]["detail"], "concise")
+        self.assertTrue(prefs["conflicts"])
+        comparison = self.call_tool(peer, "compare_protected_details", {
+            "original_text": "Pay £48 by 27 October 2026. Keep REF-A.",
+            "candidate_text": "Pay £84 by 28 October 2026. Keep REF-B.",
+            "protected_text": ["REF-A"],
+        })
+        self.assertGreater(comparison["changed_detail_groups"], 0)
+        self.assertFalse(comparison["semantic_equivalence_checked"])
+        contract = self.call_tool(peer, "check_response_contract", {
+            "text": "**Please** do it soon.",
+            "preferences": {"plain_text": True, "forbidden_terms": ["soon"], "required_headings": ["Next action"]},
+        })
+        self.assertEqual(contract["total_findings"], 3)
+        self.assertTrue(contract["unassessed"])
+
+    def test_revision_bound_progress_plan_and_resumption(self):
+        peer = self.peer()
+        source = "- Open the form.\n- Add the reference.\n- Check and save."
+        first = self.call_tool(peer, "generate_executive_function_checklist", {"complex_task": source})
+        steps = first["all_steps"]
+        request = {
+            "complex_task": source, "source_revision": first["source_revision"],
+            "progress": [{"step_id": steps[0]["step_id"], "status": "completed"}],
+            "start_at_step_id": steps[1]["step_id"],
+        }
+        updated = self.call_tool(peer, "generate_executive_function_checklist", request)
+        self.assertEqual(updated["next_action"], "Add the reference.")
+        self.assertEqual(updated["all_steps"][0]["status_origin"], "caller_reported")
+        self.assertIsNone(updated["all_steps"][0]["completed"])
+        self.assert_error(peer.request("tools/call", {
+            "name": "generate_executive_function_checklist",
+            "arguments": dict(request, complex_task=source + " Changed."),
+        }), -32602)
+        plan = self.call_tool(peer, "validate_action_plan", {"steps": [
+            {"id": "a", "text": "Open the form.", "origin": "user", "depends_on": ["b"]},
+            {"id": "b", "text": "Add the reference.", "origin": "proposal", "depends_on": ["a"]},
+        ]})
+        self.assertFalse(plan["structurally_valid"])
+        self.assertEqual(set(plan["cycle_step_ids"]), {"a", "b"})
+        resume = self.call_tool(peer, "build_resume_card", {
+            "goal": "Submit the form.",
+            "steps": [{"id": step["step_id"], "text": step["text"], "status": step["status"]} for step in updated["all_steps"]],
+            "current_step_id": steps[1]["step_id"], "next_step_id": steps[1]["step_id"],
+            "blockers": ["Need the reference number."],
+        })
+        self.assertFalse(resume["saved"])
+        self.assertEqual(resume["completed_step_ids"], [steps[0]["step_id"]])
+        self.assertIn("Need the reference number.", resume["plain_text"])
+
+    def test_numeric_exactness_rounding_and_invalid_dimensions(self):
+        peer = self.peer()
+        exact = self.call_tool(peer, "explain_numeric_values", {"operation": "add", "value": "0.1", "other_value": "0.2"})
+        self.assertEqual(exact["result"], "0.3")
+        self.assertEqual(exact["exact_fraction"], "3/10")
+        self.assertFalse(exact["rounded"])
+        rounded = self.call_tool(peer, "explain_numeric_values", {"operation": "divide", "value": "1", "other_value": "3", "decimal_places": 2})
+        self.assertEqual(rounded["result"], "0.33")
+        self.assertTrue(rounded["rounded"])
+        self.assertEqual(rounded["exact_fraction"], "1/3")
+        for arguments in (
+            {"operation": "divide", "value": "1", "other_value": "0"},
+            {"operation": "convert_unit", "value": "1", "from_unit": "kg", "to_unit": "min"},
+        ):
+            self.assert_error(peer.request("tools/call", {"name": "explain_numeric_values", "arguments": arguments}), -32602)
 
     def test_invalid_envelope_returns_error_and_recovers(self):
         peer = self.peer()

@@ -16,7 +16,7 @@ use rmcp::{
 };
 use serde::Serialize;
 
-use crate::{prompts, resources, tools};
+use crate::{prompts, resources, skills, tools};
 
 /// A stateless handler: no user profile, message history, or storage is retained.
 #[derive(Clone)]
@@ -77,6 +77,78 @@ impl DiffynServer {
     ) -> Result<CallToolResult, ErrorData> {
         structured_result(tools::verify_clarity_and_literalism(request))
     }
+
+    #[tool(
+        description = "Resolve explicit communication preferences across general, task and current-request scopes. Reports effective settings, their sources, conflicts and host-only guidance. No diagnosis inference, learning or storage.",
+        output_schema = rmcp::handler::server::tool::schema_for_output::<tools::ResolvePreferencesOutput>(),
+        annotations(read_only_hint = true, destructive_hint = false, idempotent_hint = true, open_world_hint = false)
+    )]
+    fn resolve_communication_preferences(
+        &self,
+        Parameters(request): Parameters<tools::ResolvePreferencesRequest>,
+    ) -> Result<CallToolResult, ErrorData> {
+        structured_result(tools::resolve_communication_preferences(request))
+    }
+
+    #[tool(
+        description = "Compare original and candidate text for changes to exact numerical details, URLs, code and user-marked protected passages. Returns source evidence and coverage limits; never certifies equivalent meaning or completeness.",
+        output_schema = rmcp::handler::server::tool::schema_for_output::<tools::CompareDetailsOutput>(),
+        annotations(read_only_hint = true, destructive_hint = false, idempotent_hint = true, open_world_hint = false)
+    )]
+    fn compare_protected_details(
+        &self,
+        Parameters(request): Parameters<tools::CompareDetailsRequest>,
+    ) -> Result<CallToolResult, ErrorData> {
+        structured_result(tools::compare_protected_details(request))
+    }
+
+    #[tool(
+        description = "Check a supplied structured action plan for invalid identifiers, source references and dependencies, including dependency cycles. Preserves the distinction between source actions and proposals. Does not establish procedural safety or completeness.",
+        output_schema = rmcp::handler::server::tool::schema_for_output::<tools::ValidatePlanOutput>(),
+        annotations(read_only_hint = true, destructive_hint = false, idempotent_hint = true, open_world_hint = false)
+    )]
+    fn validate_action_plan(
+        &self,
+        Parameters(request): Parameters<tools::ValidatePlanRequest>,
+    ) -> Result<CallToolResult, ErrorData> {
+        structured_result(tools::validate_action_plan(request))
+    }
+
+    #[tool(
+        description = "Build a portable resume card from an explicitly supplied goal and task state. Retains confirmed status, blockers and the requested return point. Does not infer completion, remember previous calls or save the card.",
+        output_schema = rmcp::handler::server::tool::schema_for_output::<tools::ResumeCardOutput>(),
+        annotations(read_only_hint = true, destructive_hint = false, idempotent_hint = true, open_world_hint = false)
+    )]
+    fn build_resume_card(
+        &self,
+        Parameters(request): Parameters<tools::ResumeCardRequest>,
+    ) -> Result<CallToolResult, ErrorData> {
+        structured_result(tools::build_resume_card(request))
+    }
+
+    #[tool(
+        description = "Calculate bounded decimal values, percentage changes and supported unit conversions locally. Retains the supplied values, calculation and any rounding. Does not infer units, dates, financial advice or risk meaning.",
+        output_schema = rmcp::handler::server::tool::schema_for_output::<tools::NumericOutput>(),
+        annotations(read_only_hint = true, destructive_hint = false, idempotent_hint = true, open_world_hint = false)
+    )]
+    fn explain_numeric_values(
+        &self,
+        Parameters(request): Parameters<tools::NumericRequest>,
+    ) -> Result<CallToolResult, ErrorData> {
+        structured_result(tools::explain_numeric_values(request))
+    }
+
+    #[tool(
+        description = "Check text against explicit measurable presentation requirements such as paragraph limits, headings, terminology and plain text. Identifies which checks ran and their limits; no cognitive-load score or accessibility certification.",
+        output_schema = rmcp::handler::server::tool::schema_for_output::<tools::ResponseContractOutput>(),
+        annotations(read_only_hint = true, destructive_hint = false, idempotent_hint = true, open_world_hint = false)
+    )]
+    fn check_response_contract(
+        &self,
+        Parameters(request): Parameters<tools::ResponseContractRequest>,
+    ) -> Result<CallToolResult, ErrorData> {
+        structured_result(tools::check_response_contract(request))
+    }
 }
 
 #[tool_handler(router = self.tool_router)]
@@ -89,6 +161,10 @@ impl ServerHandler for DiffynServer {
                 .enable_tools()
                 .enable_prompts()
                 .enable_resources()
+                .enable_extensions_with(std::collections::BTreeMap::from([(
+                    skills::EXTENSION_ID.to_owned(),
+                    serde_json::Map::new(),
+                )]))
                 .build(),
         )
         .with_server_info(Implementation::new("diffyn", env!("CARGO_PKG_VERSION")))
@@ -160,14 +236,20 @@ impl ServerHandler for DiffynServer {
         request: ReadResourceRequestParams,
         _context: RequestContext<RoleServer>,
     ) -> Result<ReadResourceResponse, ErrorData> {
+        if let Some(result) = skills::read_resource(&request) {
+            return result.map(Into::into);
+        }
         resources::read_resource(request).map(Into::into)
     }
 
     async fn on_custom_request(
         &self,
-        _request: CustomRequest,
+        request: CustomRequest,
         _context: RequestContext<RoleServer>,
     ) -> Result<CustomResult, ErrorData> {
+        if matches!(request.method.as_str(), "skills/list" | "skills/get") {
+            return skills::handle_request(request);
+        }
         // The SDK default repeats the unknown method string, which can itself
         // contain private input. Unsupported methods need only a fixed error.
         Err(ErrorData::new(

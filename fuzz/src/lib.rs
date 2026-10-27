@@ -1,10 +1,6 @@
 //! Invariants exercise the production tools; no alternative parser is substituted.
 
-use diffyn::tools::{
-    ChecklistRequest, ClarityRequest, MAX_TEXT_BYTES, NeurotypeProfile, ReformatRequest,
-    ResolvedPreferences, generate_executive_function_checklist, reformat_for_cognitive_load,
-    verify_clarity_and_literalism,
-};
+use diffyn::tools::*;
 
 fn accepts(text: &str, profile: &Option<NeurotypeProfile>) -> bool {
     !text.trim().is_empty()
@@ -34,6 +30,12 @@ pub fn check_reformat(request: ReformatRequest) {
                 .chars()
                 .filter(|ch| !ch.is_whitespace()))
         );
+        for span in &output.protected_spans {
+            let protected = original
+                .get(span.start_byte..span.end_byte)
+                .expect("valid source span");
+            assert!(output.formatted_text.contains(protected));
+        }
         check_preferences(&output.preferences);
         assert!(serde_json::to_vec(&output).is_ok());
     }
@@ -43,26 +45,31 @@ pub fn check_checklist(request: ChecklistRequest) {
     let expected_ok = accepts(&request.complex_task, &request.profile);
     let original = request.complex_task.clone();
     let result = generate_executive_function_checklist(request);
-    assert_eq!(result.is_ok(), expected_ok);
+    if !expected_ok {
+        assert!(result.is_err());
+    }
     if let Ok(output) = result {
         assert_eq!(output.original_task, original);
         assert!(output.suggested_steps.is_empty());
         assert!(output.extracted_steps.len() <= output.preferences.max_checklist_items);
-        if !output.deferred_steps.is_empty() {
-            assert_eq!(
-                output.extracted_steps.len(),
-                output.preferences.max_checklist_items
-            );
-        }
-        // Every extracted or deferred item must retain its source in order.
-        // This catches lost conditions, invented steps and cap-related deletion.
-        let mut offset = 0;
-        for (index, step) in output
+        let all_ids: std::collections::HashSet<_> =
+            output.all_steps.iter().map(|s| &s.step_id).collect();
+        let visible_ids: std::collections::HashSet<_> = output
             .extracted_steps
             .iter()
             .chain(&output.deferred_steps)
-            .enumerate()
-        {
+            .map(|s| &s.step_id)
+            .collect();
+        assert_eq!(all_ids, visible_ids);
+        assert_eq!(all_ids.len(), output.all_steps.len());
+        assert_eq!(
+            output.all_steps.len(),
+            output.extracted_steps.len() + output.deferred_steps.len()
+        );
+        // Every extracted or deferred item must retain its source in order.
+        // This catches lost conditions, invented steps and cap-related deletion.
+        let mut offset = 0;
+        for (index, step) in output.all_steps.iter().enumerate() {
             assert_eq!(step.source_order, index + 1);
             let relative = original[offset..]
                 .find(&step.source_text)
@@ -75,8 +82,7 @@ pub fn check_checklist(request: ChecklistRequest) {
                 output
                     .extracted_steps
                     .iter()
-                    .chain(&output.deferred_steps)
-                    .any(|step| step.completed != Some(true) && &step.text == next)
+                    .any(|step| step.status == StepStatus::Pending && &step.text == next)
             );
         }
         check_preferences(&output.preferences);
@@ -86,9 +92,14 @@ pub fn check_checklist(request: ChecklistRequest) {
 
 pub fn check_clarity(request: ClarityRequest) {
     let expected_ok = accepts(&request.text, &request.profile);
+    let default_rules = request.categories.is_none() && request.language.is_none();
     let original = request.text.clone();
     let result = verify_clarity_and_literalism(request);
-    assert_eq!(result.is_ok(), expected_ok);
+    if default_rules {
+        assert_eq!(result.is_ok(), expected_ok);
+    } else if !expected_ok {
+        assert!(result.is_err());
+    }
     if let Ok(output) = result {
         assert_eq!(output.original_text, original);
         assert!(output.findings.len() <= 128);
@@ -109,6 +120,9 @@ pub fn check_clarity(request: ClarityRequest) {
             );
             assert!(finding.start_byte >= previous_start);
             assert!(finding.start_byte < finding.end_byte);
+            assert!(!output.protected_spans.iter().any(
+                |span| span.start_byte < finding.end_byte && span.end_byte > finding.start_byte
+            ));
             previous_start = finding.start_byte;
         }
         check_preferences(&output.preferences);
@@ -134,6 +148,7 @@ pub fn check_text(data: &[u8]) {
     check_checklist(ChecklistRequest {
         complex_task: text.clone(),
         profile: Some(profile.clone()),
+        ..Default::default()
     });
     // Construct a known list independently of the parser. Random quantities
     // and window sizes must never lose a condition or silently drop later items.
@@ -152,19 +167,16 @@ pub fn check_text(data: &[u8]) {
         let output = generate_executive_function_checklist(ChecklistRequest {
             complex_task: task,
             profile: Some(profile.clone()),
+            ..Default::default()
         })
         .expect("a bounded explicit list and valid preferences must be accepted");
-        let actual: Vec<_> = output
-            .extracted_steps
-            .iter()
-            .chain(&output.deferred_steps)
-            .map(|step| &step.text)
-            .collect();
+        let actual: Vec<_> = output.all_steps.iter().map(|step| &step.text).collect();
         assert_eq!(actual, expected_steps.iter().collect::<Vec<_>>());
     }
     check_clarity(ClarityRequest {
         text,
         profile: Some(profile),
+        ..Default::default()
     });
 }
 
@@ -179,6 +191,75 @@ pub fn check_json(data: &[u8]) {
     }
     if let Ok(request) = serde_json::from_slice::<ClarityRequest>(data) {
         check_clarity(request);
+    }
+    if let Ok(request) = serde_json::from_slice::<ResolvePreferencesRequest>(data)
+        && let Ok(output) = resolve_communication_preferences(request)
+    {
+        check_preferences(&output.tool_preferences);
+        assert!(serde_json::to_vec(&output).is_ok());
+    }
+    if let Ok(request) = serde_json::from_slice::<CompareDetailsRequest>(data) {
+        let original = request.original_text.clone();
+        let candidate = request.candidate_text.clone();
+        if let Ok(output) = compare_protected_details(request) {
+            assert!(!output.semantic_equivalence_checked);
+            assert!(output.details.len() <= 128);
+            assert_eq!(
+                output.total_detail_groups,
+                output.details.len() + output.omitted_detail_groups
+            );
+            for detail in output.details {
+                for span in detail.original_spans {
+                    assert_eq!(
+                        original.get(span.start_byte..span.end_byte),
+                        Some(detail.text.as_str())
+                    );
+                }
+                for span in detail.candidate_spans {
+                    assert_eq!(
+                        candidate.get(span.start_byte..span.end_byte),
+                        Some(detail.text.as_str())
+                    );
+                }
+            }
+        }
+    }
+    if let Ok(request) = serde_json::from_slice::<ValidatePlanRequest>(data)
+        && let Ok(output) = validate_action_plan(request)
+    {
+        assert!(output.steps.len() <= 100);
+        assert!(output.review_required);
+        assert!(serde_json::to_vec(&output).is_ok());
+    }
+    if let Ok(request) = serde_json::from_slice::<ResumeCardRequest>(data)
+        && let Ok(output) = build_resume_card(request)
+    {
+        assert!(!output.saved);
+        assert!(output.steps.len() <= 100);
+        assert!(serde_json::to_vec(&output).is_ok());
+    }
+    if let Ok(request) = serde_json::from_slice::<NumericRequest>(data)
+        && let Ok(output) = explain_numeric_values(request)
+    {
+        assert!(!output.result.is_empty());
+        assert!(output.result.len() < 128);
+        assert!(output.exact_fraction.contains('/'));
+        assert!(serde_json::to_vec(&output).is_ok());
+    }
+    if let Ok(request) = serde_json::from_slice::<ResponseContractRequest>(data) {
+        let text = request.text.clone();
+        if let Ok(output) = check_response_contract(request) {
+            assert!(output.findings.len() <= 128);
+            assert_eq!(
+                output.total_findings,
+                output.findings.len() + output.omitted_findings
+            );
+            for finding in output.findings {
+                if let (Some(start), Some(end)) = (finding.start_byte, finding.end_byte) {
+                    assert!(text.get(start..end).is_some());
+                }
+            }
+        }
     }
 }
 

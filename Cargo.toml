@@ -1,6 +1,6 @@
 [package]
 name = "diffyn"
-version = "0.1.0"
+version = "2.0.0"
 edition = "2024"
 rust-version = "1.99"
 description = "Neurodivergent-friendly communication tools and guidance over MCP"
@@ -10,7 +10,7 @@ homepage = "https://nathcymru.github.io/Diffyn/"
 documentation = "https://github.com/nathcymru/Diffyn/tree/main/docs"
 keywords = ["mcp", "accessibility", "neurodiversity", "communication"]
 categories = ["accessibility", "command-line-utilities"]
-include = ["/src/**", "/docs/guidance/**", "/docs/prompts/**", "/tests/stdio_protocol.py", "/Cargo.toml", "/Cargo.lock", "/README.md", "/LICENSE", "/CITATION.cff"]
+include = ["/src/**", "/docs/guidance/**", "/docs/prompts/**", "/skills/**", "/tests/stdio_protocol.py", "/Cargo.toml", "/Cargo.lock", "/README.md", "/LICENSE", "/CITATION.cff"]
 publish = false
 
 [workspace]
@@ -26,6 +26,7 @@ rmcp = { version = "=3.7.0", default-features = false, features = ["server", "tr
 schemars = "1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+sha2 = "0.11.1"
 tokio = { version = "1", features = ["rt-multi-thread", "signal", "time", "macros"] }
 tokio-util = { version = "0.7", features = ["rt"] }
 

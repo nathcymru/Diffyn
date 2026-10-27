@@ -21,6 +21,11 @@ TARGETS = (
     "x86_64-apple-darwin",
     "x86_64-pc-windows-msvc",
 )
+SKILL_NAMES = (
+    "diffyn-understand-document", "diffyn-task-support",
+    "diffyn-repair-communication", "diffyn-write-in-my-voice",
+    "diffyn-make-decision", "diffyn-prepare-conversation",
+)
 
 
 def release_version():
@@ -174,9 +179,16 @@ def package_binary(version, destination):
     bundled_notices = (
         ("THIRD_PARTY_NOTICES.txt", notices + rust_metadata),
         ("RUST_LIBRARY_LICENSES.html", rust_notices),
+        ("SKILLS.md", (ROOT / "docs" / "skills.md").read_text(encoding="utf-8")
+         .replace("(../skills/", "(skills/").encode("utf-8")),
     )
     archive = destination / archive_name(version, target)
-    files = ((binary, executable), (ROOT / "LICENSE", "LICENSE"))
+    files = [(binary, executable), (ROOT / "LICENSE", "LICENSE")]
+    for name in SKILL_NAMES:
+        source = ROOT / "skills" / name / "SKILL.md"
+        if source.is_symlink() or not source.is_file() or not source.resolve().is_relative_to(ROOT):
+            raise ValueError("A bundled workflow skill is missing or unsafe")
+        files.append((source, f"skills/{name}/SKILL.md"))
     if "windows" in target:
         with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as output:
             for source, name in files:

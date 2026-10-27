@@ -11,7 +11,7 @@
 **Communication tools that adapt to the person.**
 
 Diffyn is a local Rust server for the **Model Context Protocol (MCP)**.
-It provides text tools, prompt templates and reference guidance for AI clients
+It provides text tools, prompt templates, portable skills and reference guidance for AI clients
 serving neurodivergent people.
 
 The name brings together **Different** and the Welsh **Diffinio**: to define.
@@ -28,17 +28,18 @@ and access to detail.
 
 ## What Diffyn provides
 
-- **[Reformat for cognitive load](docs/examples.md#add-space-without-rewriting "reformat_for_cognitive_load"):** Add manageable paragraph breaks while preserving wording.
-- **[Generate executive function checklist](docs/examples.md#keep-an-existing-sequence-manageable "generate_executive_function_checklist"):** Extract supplied actions into ordered groups.
-- **[Verify clarity and literalism](docs/examples.md#review-a-possible-idiom "verify_clarity_and_literalism"):** Flag a defined set of potentially ambiguous English phrases.
+**Nine local tools** support reliable operations on supplied information:
 
-- **Two prompts** support preference-led responses and focused clarification.
-- **Four resources** provide communication guidance, combined preference options and evidence limits.
-- **Local processing** requires no model account, API key or hosted service.
-- **Explicit preferences** control formatting without requiring a diagnosis.
+- Reformat paragraphs, extract explicit steps and review bounded clarity findings.
+- Resolve explicit preferences and compare protected details before and after an edit.
+- Check a supplied action plan, build a resume card and explain supported numerical calculations.
+- Check requested presentation constraints without assigning a readability or capacity score.
 
-The tools preserve source text and identify results that need review.
-They do not diagnose, infer a person's abilities or establish clinical benefit.
+**[Fourteen prompts](docs/prompts.md)** guide explanation, clarification, task support, communication repair, writing and decision-making. **[Six portable skills](docs/skills.md)** combine these into focused workflows. **Ten resources** explain the operating rules, evidence and boundaries.
+
+The tools run locally without a model account, API key or hosted service. Semantic rewriting and reasoning belong to the host model. Original information, provenance and uncertainty stay available for review; no tool certifies comprehension, safety or clinical benefit.
+
+See the [communication contract](docs/communication-contract.md) for exact behaviour and [migration guide](docs/migration-v2.md) when upgrading.
 
 ## Designed for different processing needs
 
@@ -56,8 +57,10 @@ or dyspraxic, alongside anyone who prefers these formats.
 
 **Requirements:** Rust 1.99 or later and an MCP client that supports local stdio.
 
+This checkout documents **2.0.0**. The tagged command below requires that version to appear in [GitHub Releases](https://github.com/nathcymru/Diffyn/releases); before publication, use the [source build guide](docs/engineering.md#build-the-executable).
+
 ```sh
-cargo install --git https://github.com/nathcymru/Diffyn --tag v0.1.0 --locked diffyn
+cargo install --git https://github.com/nathcymru/Diffyn --tag v2.0.0 --locked diffyn
 ```
 
 1. **Install** with the command above, or choose a [prebuilt download](https://github.com/nathcymru/Diffyn/releases).
@@ -107,8 +110,8 @@ neurodiversity charities.
 
 **Offer cyfathrebu sy'n addasu i'r unigolyn.**
 
-Llyfrgell cod agored yw Diffyn sy'n cynnwys cyfarwyddiadau a phrompts system
-ar gyfer modelau iaith mawr ac anghenion cyfathrebu niwrodargyfeiriol.
+Gweinydd MCP lleol a chod agored yw Diffyn. Mae'n cynnig offer testun,
+prompts a chanllawiau ar gyfer cyfathrebu sy'n parchu dewisiadau'r unigolyn.
 
 - **Gwybodaeth glir:** adrannau byr a chamau gweithredu syml.
 - **Dewis personol:** mae dewisiadau'r unigolyn yn dod gyntaf.

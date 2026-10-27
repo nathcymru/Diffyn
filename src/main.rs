@@ -3,6 +3,7 @@
 mod prompts;
 mod resources;
 mod server;
+mod skills;
 
 use diffyn::tools;
 

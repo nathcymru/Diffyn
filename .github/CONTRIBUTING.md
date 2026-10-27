@@ -33,6 +33,7 @@ cargo clippy --locked --all-targets -- -D warnings
 cargo test --locked
 cargo build --locked
 python3 tests/stdio_protocol.py
+python3 -m unittest discover -s tests -p 'test_*.py'
 ```
 
 - **Keep standard output for MCP** and avoid logs containing submitted text.
@@ -51,7 +52,9 @@ Follow the [style guide](../docs/guidance/style-guide.md).
 - **Provide text alternatives** for diagrams and meaningful images.
 - **Preserve mature vocabulary** and explain necessary technical terms.
 
-## Update prompts and research
+## Update prompts, skills and research
+
+Guidance in `docs/guidance/`, templates in `docs/prompts/` and workflows in `skills/` are embedded at compile time. Rebuild after editing them and run the Rust and documentation checks. Skill metadata must match the directory name and embedded registry; keep each workflow self-contained with realistic examples and failure handling.
 
 - **Use primary sources** for substantive evidence claims.
 - **Add source metadata** to the [BibTeX bibliography](../docs/bibliography.bib).

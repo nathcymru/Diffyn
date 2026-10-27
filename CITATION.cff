@@ -6,10 +6,10 @@ title: Diffyn
 authors:
 - name: nathcymru
   website: https://github.com/nathcymru
-version: 0.1.0
+version: 2.0.0
 abstract: A local Rust Model Context Protocol server providing preference-led text formatting,
-  explicit-step extraction, clarity review, reusable prompts, and bundled guidance for neurodivergent
-  communication.
+  explicit-step extraction, clarity review, plan and integrity checks, exact numeric explanations,
+  reusable prompts, portable skills, and bundled guidance for neurodivergent communication.
 repository-code: https://github.com/nathcymru/Diffyn
 url: https://github.com/nathcymru/Diffyn
 license: MIT

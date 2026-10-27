@@ -37,3 +37,5 @@ jobs:
         run: cargo +stable build --locked
       - name: Test MCP over real process pipes
         run: python3 tests/stdio_protocol.py
+      - name: Test portable release archive contents
+        run: python3 -m unittest discover -s tests -p 'test_release_packaging.py'
