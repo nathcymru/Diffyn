@@ -57,10 +57,10 @@ or dyspraxic, alongside anyone who prefers these formats.
 
 **Requirements:** Rust 1.99 or later and an MCP client that supports local stdio.
 
-**Version 2.0.1:** use the tagged source installation below once it appears in [GitHub Releases](https://github.com/nathcymru/Diffyn/releases). The [source build guide](docs/engineering.md#build-the-executable) also supports unreleased repository changes.
+**Version 2.0.2:** use the tagged source installation below once it appears in [GitHub Releases](https://github.com/nathcymru/Diffyn/releases). The [source build guide](docs/engineering.md#build-the-executable) also supports unreleased repository changes.
 
 ```sh
-cargo install --git https://github.com/nathcymru/Diffyn --tag v2.0.1 --locked diffyn
+cargo install --git https://github.com/nathcymru/Diffyn --tag v2.0.2 --locked diffyn
 ```
 
 1. **Install** with the command above, or choose a [prebuilt download](https://github.com/nathcymru/Diffyn/releases).
@@ -95,6 +95,7 @@ and evaluation priorities behind Diffyn.
 
 - **Propose a change:** follow the [contribution guide](.github/CONTRIBUTING.md).
 - **Report a bug:** use the [issue templates](https://github.com/nathcymru/Diffyn/issues/new/choose).
+- **Make a first contribution:** choose a [good first issue](https://github.com/nathcymru/Diffyn/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22) with a bounded task and a completion checklist.
 - **Share an idea:** join [GitHub Discussions](https://github.com/nathcymru/Diffyn/discussions).
 - **Participate respectfully:** follow the [Code of Conduct](.github/CODE_OF_CONDUCT.md).
 

@@ -5,10 +5,13 @@ accessibility feedback and code changes are welcome.
 
 ## Choose a route
 
+- **First contribution:** choose a [good first issue](https://github.com/nathcymru/Diffyn/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22), read its completion checklist and comment with the part you would like to try.
 - **Bug:** open a [bug report](https://github.com/nathcymru/Diffyn/issues/new?template=bug_report.yml).
 - **Feature:** submit a [feature request](https://github.com/nathcymru/Diffyn/issues/new?template=feature_request.yml).
 - **Question or early idea:** use [Discussions](https://github.com/nathcymru/Diffyn/discussions).
 - **Vulnerability:** follow the [private security reporting process](SECURITY.md).
+
+Each beginner issue identifies the files to inspect, a small first step and the checks needed for review. Questions and partial progress are welcome. If platform access blocks a client check, record the limitation and ask for maintainer help; you do not need to buy API credits to contribute packaging or offline checks.
 
 ## Protect people's information
 

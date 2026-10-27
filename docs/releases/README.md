@@ -2,7 +2,7 @@
 
 **Install a tagged version** to keep the software used by your MCP client predictable.
 
-- **Version notes:** [Diffyn v2.0.1](v2.0.1.md) and [Diffyn v2.0.0](v2.0.0.md).
+- **Version notes:** [Diffyn v2.0.2](v2.0.2.md), [Diffyn v2.0.1](v2.0.1.md) and [Diffyn v2.0.0](v2.0.0.md).
 - **Historical release:** [Diffyn v0.1.0](v0.1.0.md).
 - **Upgrade:** [Migration to 2.0.0](../migration-v2.md).
 - **Downloads:** [GitHub Releases](https://github.com/nathcymru/Diffyn/releases).

@@ -47,6 +47,7 @@
 
 - **Community topics:** [discussion collection](community/README.md).
 - **Contribute:** [contribution guide](../.github/CONTRIBUTING.md).
+- **Find a first contribution:** [beginner tasks and contributor discovery](community/contributor-discovery.md).
 - **Report vulnerabilities:** [security policy](../.github/SECURITY.md).
 - **Community conduct:** [Code of Conduct](../.github/CODE_OF_CONDUCT.md).
 - **Support charities:** [donation page](../.github/DONATE.md).
