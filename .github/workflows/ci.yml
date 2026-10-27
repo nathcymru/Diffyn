@@ -25,6 +25,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          fetch-depth: 0
       - name: Install stable Rust
         run: rustup toolchain install stable --profile minimal --component rustfmt --component clippy
       - name: Check formatting
@@ -37,5 +38,14 @@ jobs:
         run: cargo +stable build --locked
       - name: Test MCP over real process pipes
         run: python3 tests/stdio_protocol.py
-      - name: Test portable release archive contents
-        run: python3 -m unittest discover -s tests -p 'test_release_packaging.py'
+      - name: Test release and repository tooling
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Verify release version consistency
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -n "$BASE_REF" ] && [ "$BASE_REF" != 0000000000000000000000000000000000000000 ]; then
+            python3 scripts/check-release-version.py --base-ref "$BASE_REF"
+          else
+            python3 scripts/check-release-version.py
+          fi

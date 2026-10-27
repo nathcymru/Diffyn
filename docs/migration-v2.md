@@ -4,7 +4,7 @@ Version 2.0.0 expands the local server from three tools, two prompts and four re
 
 ## Upgrade the executable
 
-Once 2.0.0 is published, install its tag or download the matching platform package from [GitHub Releases](https://github.com/nathcymru/Diffyn/releases). Before publication, build the checked-out version using the [source guide](engineering.md#build-the-executable).
+Install the published 2.0.0 tag below, or select a newer compatible 2.x package from [GitHub Releases](https://github.com/nathcymru/Diffyn/releases). The [source guide](engineering.md#build-the-executable) also covers repository builds.
 
 ```sh
 cargo install --git https://github.com/nathcymru/Diffyn --tag v2.0.0 --locked diffyn

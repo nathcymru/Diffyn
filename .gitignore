@@ -1,6 +1,8 @@
 /target
 /dist/
 __pycache__/
+.ruff_cache/
+.venv/
 /tmp/
 node_modules/
 .DS_Store

@@ -1,0 +1,31 @@
+name: Pull request version
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited, ready_for_review]
+  push:
+    tags: ["v*-rc.*"]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: pr-version-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  version:
+    name: Pull request version
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Test version reservation and pull-request checks
+        run: python3 -m unittest discover -s tests -p 'test_pr_version.py'
+      - name: Require a fresh version and candidate tag at HEAD
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/check-pr-version.py

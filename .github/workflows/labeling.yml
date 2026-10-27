@@ -1,0 +1,52 @@
+name: Pull request labels
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: labeling-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  labels:
+    name: Apply area labels
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # This trusted-base workflow reads filenames through the API. It never
+      # checks out a branch, runs pull-request code or evaluates submitted text.
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const pull_number = context.payload.pull_request.number;
+            const repository = { ...context.repo, pull_number };
+            const { data: pull } = await github.rest.pulls.get(repository);
+            if (pull.changed_files > 3000) {
+              throw new Error('The changed-file list exceeds the API limit. Label this pull request manually.');
+            }
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              ...repository, per_page: 100,
+            });
+            if (files.length !== pull.changed_files) {
+              throw new Error('The changed-file list is incomplete. Retry before applying labels.');
+            }
+            const paths = files.flatMap(file => [file.filename, file.previous_filename])
+              .filter(path => typeof path === 'string');
+            const rules = {
+              documentation: path => /^(README\.md$|CITATION\.cff$|docs\/|skills\/)/.test(path)
+                || /^\.github\/[^/]+\.md$/.test(path),
+              ci: path => /^(\.github\/workflows\/|scripts\/)/.test(path),
+              dependencies: path => /^(Cargo\.(toml|lock)|fuzz\/Cargo\.(toml|lock)|scripts\/docs\/package(-lock)?\.json|\.github\/dependabot\.yml|deny\.toml|rust-toolchain\.toml)$/.test(path),
+              release: path => /^(docs\/releases\/|scripts\/package-release\.py$|\.github\/workflows\/(release|container[^/]*)\.yml$|Dockerfile$|\.dockerignore$)/.test(path),
+            };
+            const labels = Object.keys(rules).filter(label => paths.some(rules[label]));
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                ...context.repo, issue_number: pull_number, labels,
+              });
+            }

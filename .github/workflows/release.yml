@@ -3,8 +3,24 @@ name: Release packages
 on:
   pull_request:
   push:
-    tags: ["v*"]
+    tags: ["v*", "!*-*"]
   workflow_dispatch:
+    inputs:
+      published_tag:
+        description: "Published immutable release to add to GitHub Packages (for example v2.0.0)"
+        type: string
+        required: false
+        default: ""
+      release_commit:
+        description: "Current main commit to publish automatically (40-character commit ID)"
+        type: string
+        required: false
+        default: ""
+      expected_version:
+        description: "Expected numeric stable version for release_commit (for example 2.1.0)"
+        type: string
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -14,8 +30,60 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  validate-request:
+    name: Validate release request
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require one explicit publication mode
+        env:
+          PUBLISHED_TAG: ${{ inputs.published_tag }}
+          RELEASE_COMMIT: ${{ inputs.release_commit }}
+          EXPECTED_VERSION: ${{ inputs.expected_version }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          tag, commit, version = (os.environ[key] for key in (
+              "PUBLISHED_TAG", "RELEASE_COMMIT", "EXPECTED_VERSION"))
+          if tag and (commit or version):
+              raise SystemExit("Choose published_tag or release_commit, not both")
+          if tag and not re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", tag):
+              raise SystemExit("published_tag must be a numeric stable release tag")
+          if bool(commit) != bool(version):
+              raise SystemExit("release_commit and expected_version are required together")
+          if commit and (not re.fullmatch(r"[0-9a-f]{40}", commit)
+                         or not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", version)):
+              raise SystemExit("Use a full commit ID and numeric stable version")
+          PY
+
+  tag-release:
+    name: Tag the validated main version
+    needs: validate-request
+    if: github.event_name == 'workflow_dispatch' && inputs.release_commit != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Create or verify the annotated version tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_COMMIT: ${{ inputs.release_commit }}
+          EXPECTED_VERSION: ${{ inputs.expected_version }}
+        run: python3 scripts/start-release.py
+
   build:
     name: Package (${{ matrix.target }})
+    needs: [validate-request, tag-release]
+    if: >-
+      !cancelled() && needs.validate-request.result == 'success' &&
+      (needs.tag-release.result == 'success' || needs.tag-release.result == 'skipped') &&
+      (github.event_name != 'workflow_dispatch' || inputs.published_tag == '')
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25
     strategy:
@@ -54,8 +122,8 @@ jobs:
         env:
           RUSTUP_TOOLCHAIN: 1.99.0
           RELEASE_TARGET: ${{ matrix.target }}
-          RELEASE_REF_TYPE: ${{ github.ref_type }}
-          RELEASE_REF_NAME: ${{ github.ref_name }}
+          RELEASE_REF_TYPE: ${{ inputs.release_commit != '' && 'tag' || github.ref_type }}
+          RELEASE_REF_NAME: ${{ inputs.release_commit != '' && format('v{0}', inputs.expected_version) || github.ref_name }}
         run: python3 scripts/package-release.py binary
       - name: Verify the Cargo source package
         if: matrix.os == 'ubuntu-24.04'
@@ -77,12 +145,122 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  container:
+    name: Container and MCP (linux/amd64)
+    needs: [validate-request, build]
+    if: >-
+      !cancelled() && needs.validate-request.result == 'success' &&
+      (needs.build.result == 'success' ||
+       (github.event_name == 'workflow_dispatch' && inputs.published_tag != ''))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      version: ${{ steps.source.outputs.version }}
+      revision: ${{ steps.source.outputs.revision }}
+      tag: ${{ steps.source.outputs.tag }}
+      archive: ${{ steps.source.outputs.archive }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Test container package boundaries
+        run: python3 -m unittest discover -s tests -p 'test_container_packaging.py'
+      - name: Identify the exact package source
+        id: source
+        env:
+          PUBLISHED_TAG: ${{ inputs.published_tag }}
+          RELEASE_REF_TYPE: ${{ inputs.release_commit != '' && 'tag' || github.ref_type }}
+          RELEASE_REF_NAME: ${{ inputs.release_commit != '' && format('v{0}', inputs.expected_version) || github.ref_name }}
+        run: |
+          source_tag="$PUBLISHED_TAG"
+          if [ -z "$source_tag" ] && [ "$RELEASE_REF_TYPE" = tag ]; then
+            source_tag="$RELEASE_REF_NAME"
+          fi
+          python3 scripts/package-container.py metadata --source-tag "$source_tag" \
+            --metadata "$RUNNER_TEMP/container-source.json"
+      - name: Download the tested Linux build
+        if: inputs.published_tag == ''
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: diffyn-x86_64-unknown-linux-gnu
+          path: dist
+      - name: Verify and download the published release
+        if: inputs.published_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_TAG: ${{ steps.source.outputs.tag }}
+          ARCHIVE_NAME: ${{ steps.source.outputs.archive }}
+          SOURCE_REVISION: ${{ steps.source.outputs.revision }}
+        run: |
+          gh release view "$SOURCE_TAG" \
+            --json tagName,isDraft,isImmutable,isPrerelease,publishedAt,assets \
+            > "$RUNNER_TEMP/published-release.json"
+          gh release download "$SOURCE_TAG" --pattern "$ARCHIVE_NAME" \
+            --pattern SHA256SUMS --dir dist
+          python3 scripts/package-container.py verify-release \
+            --metadata "$RUNNER_TEMP/container-source.json" \
+            --release "$RUNNER_TEMP/published-release.json" --directory dist
+          gh attestation verify "dist/$ARCHIVE_NAME" --repo "$GITHUB_REPOSITORY" \
+            --signer-workflow "$GITHUB_REPOSITORY/.github/workflows/release.yml" \
+            --source-digest "$SOURCE_REVISION"
+      - name: Prepare the allowlisted container files
+        run: |
+          python3 scripts/package-container.py extract \
+            --metadata "$RUNNER_TEMP/container-source.json" \
+            --directory dist --context "$RUNNER_TEMP/container-context"
+      - name: Build and inspect the container
+        env:
+          SOURCE_VERSION: ${{ steps.source.outputs.version }}
+          SOURCE_REVISION: ${{ steps.source.outputs.revision }}
+        run: |
+          docker build --platform linux/amd64 --provenance=false --file container/Dockerfile \
+            --build-arg "SOURCE_DATE_EPOCH=$(git show -s --format=%ct "$SOURCE_REVISION")" \
+            --build-arg "DIFFYN_VERSION=$SOURCE_VERSION" \
+            --build-arg "DIFFYN_REVISION=$SOURCE_REVISION" \
+            --build-arg "DIFFYN_PACKAGING_REVISION=$GITHUB_SHA" \
+            --tag diffyn-container:candidate "$RUNNER_TEMP/container-context"
+          python3 scripts/package-container.py verify-image \
+            --metadata "$RUNNER_TEMP/container-source.json"
+      - name: Test MCP with no network or writable container filesystem
+        env:
+          DIFFYN_SOURCE_REVISION: ${{ steps.source.outputs.revision }}
+        run: python3 tests/container_protocol.py
+      - name: Check the container for high and critical vulnerabilities
+        env:
+          TRIVY_SHA256: c7cbe3137fb8a48a17574bede3dd6beb16742d1e9772929940fc90082c39d9c0
+        run: |
+          archive="$RUNNER_TEMP/trivy.tar.gz"
+          curl --fail --silent --show-error --location --retry 2 --max-time 120 \
+            https://github.com/aquasecurity/trivy/releases/download/v0.76.1/trivy_0.76.1_Linux-64bit.tar.gz \
+            --output "$archive"
+          printf '%s  %s\n' "$TRIVY_SHA256" "$archive" | sha256sum --check --strict
+          tar -xzf "$archive" -C "$RUNNER_TEMP" trivy
+          "$RUNNER_TEMP/trivy" image --scanners vuln --severity HIGH,CRITICAL \
+            --exit-code 1 --no-progress diffyn-container:candidate
+      - name: Save the tested container
+        run: docker save diffyn-container:candidate --output "$RUNNER_TEMP/diffyn-container.tar"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: container-image
+          path: |
+            ${{ runner.temp }}/diffyn-container.tar
+            ${{ runner.temp }}/container-source.json
+          if-no-files-found: error
+          retention-days: 14
+
   publish:
     name: Publish versioned packages
-    needs: build
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: [build, container]
+    if: >-
+      !cancelled() && needs.build.result == 'success' && needs.container.result == 'success' &&
+      ((github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) ||
+       (github.event_name == 'workflow_dispatch' && inputs.release_commit != ''))
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    concurrency:
+      group: diffyn-stable-release-publication
+      cancel-in-progress: false
     permissions:
       contents: write
       id-token: write
@@ -101,8 +279,8 @@ jobs:
           path: dist
       - name: Verify the complete package set and write checksums
         env:
-          RELEASE_REF_TYPE: ${{ github.ref_type }}
-          RELEASE_REF_NAME: ${{ github.ref_name }}
+          RELEASE_REF_TYPE: tag
+          RELEASE_REF_NAME: ${{ needs.container.outputs.tag }}
         run: python3 scripts/package-release.py checksums
       - name: Attest package provenance
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
@@ -113,7 +291,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ needs.container.outputs.tag }}
         run: |
           gh release create "$RELEASE_TAG" dist/* --draft --verify-tag \
             --title "Diffyn $RELEASE_TAG" --notes-file "docs/releases/$RELEASE_TAG.md"
@@ -121,8 +299,96 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ needs.container.outputs.tag }}
+          RELEASE_REF_TYPE: tag
+          RELEASE_REF_NAME: ${{ needs.container.outputs.tag }}
         run: |
-          gh release view "$RELEASE_TAG" --json assets,isDraft,tagName > "$RUNNER_TEMP/diffyn-release.json"
-          python3 scripts/package-release.py verify-release < "$RUNNER_TEMP/diffyn-release.json"
-          gh release edit "$RELEASE_TAG" --draft=false
+          python3 scripts/package-release.py publish-release
+
+  publish-container:
+    name: Publish GitHub Packages
+    needs: [container, publish]
+    if: >-
+      !cancelled() && needs.container.result == 'success' &&
+      (needs.publish.result == 'success' ||
+       (github.event_name == 'workflow_dispatch' && inputs.published_tag != ''))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    concurrency:
+      group: diffyn-container-publication
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: container-image
+          path: container-artifact
+      - name: Recheck the published source release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_TAG: ${{ needs.container.outputs.tag }}
+          ARCHIVE_NAME: ${{ needs.container.outputs.archive }}
+          SOURCE_REVISION: ${{ needs.container.outputs.revision }}
+        run: |
+          python3 scripts/package-container.py metadata --source-tag "$SOURCE_TAG" \
+            --metadata "$RUNNER_TEMP/verified-source.json"
+          cmp "$RUNNER_TEMP/verified-source.json" container-artifact/container-source.json
+          gh release view "$SOURCE_TAG" \
+            --json tagName,isDraft,isImmutable,isPrerelease,publishedAt,assets \
+            > "$RUNNER_TEMP/published-release.json"
+          gh release download "$SOURCE_TAG" --pattern "$ARCHIVE_NAME" \
+            --pattern SHA256SUMS --dir dist
+          python3 scripts/package-container.py verify-release \
+            --metadata container-artifact/container-source.json \
+            --release "$RUNNER_TEMP/published-release.json" --directory dist
+          gh attestation verify "dist/$ARCHIVE_NAME" --repo "$GITHUB_REPOSITORY" \
+            --signer-workflow "$GITHUB_REPOSITORY/.github/workflows/release.yml" \
+            --source-digest "$SOURCE_REVISION"
+      - name: Load and inspect the tested container
+        run: |
+          docker load --input container-artifact/diffyn-container.tar
+          python3 scripts/package-container.py verify-image \
+            --metadata container-artifact/container-source.json
+      - name: Authenticate to GitHub Packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: printf '%s' "$GH_TOKEN" | docker login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+      - name: Publish the version without replacing existing content
+        id: package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/package-container.py publish \
+            --metadata container-artifact/container-source.json
+      - name: Attest the published container
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-name: ghcr.io/nathcymru/diffyn
+          subject-digest: ${{ steps.package.outputs.digest }}
+          push-to-registry: true
+          create-storage-record: false
+      - name: Verify the registry image over MCP
+        env:
+          DIFFYN_IMAGE: ghcr.io/nathcymru/diffyn@${{ steps.package.outputs.digest }}
+          DIFFYN_SOURCE_REVISION: ${{ needs.container.outputs.revision }}
+        run: |
+          docker pull "$DIFFYN_IMAGE"
+          python3 tests/container_protocol.py
+      - name: Update the latest stable container alias
+        env:
+          GH_TOKEN: ${{ github.token }}
+          IMAGE_DIGEST: ${{ steps.package.outputs.digest }}
+        run: |
+          python3 scripts/package-container.py promote-latest \
+            --metadata container-artifact/container-source.json --digest "$IMAGE_DIGEST"
+      - name: Remove registry credentials
+        if: always()
+        run: docker logout ghcr.io

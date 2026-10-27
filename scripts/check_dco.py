@@ -111,7 +111,9 @@ def github_get(path: str, token: str) -> object:
 
 def check_pull_request(repository: str, number: int, expected_head: str, get) -> list[str]:
     """Verify all pages and a stable head before returning per-commit failures."""
-    if not REPOSITORY.fullmatch(repository) or any(part in (".", "..") for part in repository.split("/")):
+    if not REPOSITORY.fullmatch(repository) or any(
+        part in (".", "..") for part in repository.split("/")
+    ):
         raise CheckError("Repository identifier is invalid.")
     if type(number) is not int or number < 1 or not SHA.fullmatch(expected_head):
         raise CheckError("Pull request event identifiers are invalid.")
@@ -125,7 +127,9 @@ def check_pull_request(repository: str, number: int, expected_head: str, get) ->
         head = value.get("head", {})
         sha = head.get("sha") if isinstance(head, dict) else None
         if type(count) is not int or not 1 <= count <= MAX_COMMITS:
-            raise CheckError("Pull requests must contain 1–250 commits for complete DCO checking; split larger changes.")
+            raise CheckError(
+                "Pull requests must contain 1–250 commits for complete DCO checking; split larger changes."
+            )
         if sha != expected_head:
             raise CheckError("Pull request head changed; run the check for the current head.")
         return count, sha
@@ -140,9 +144,15 @@ def check_pull_request(repository: str, number: int, expected_head: str, get) ->
     if snapshot() != (count, expected_head):
         raise CheckError("Pull request changed while checking; rerun for the current head.")
     shas = [entry.get("sha") if isinstance(entry, dict) else None for entry in commits]
-    if (len(commits) != count or any(not isinstance(sha, str) or not SHA.fullmatch(sha) for sha in shas)
-            or len(set(shas)) != count or shas[-1] != expected_head):
-        raise CheckError("Commit pages are incomplete or inconsistent; no partial DCO result is accepted.")
+    if (
+        len(commits) != count
+        or any(not isinstance(sha, str) or not SHA.fullmatch(sha) for sha in shas)
+        or len(set(shas)) != count
+        or shas[-1] != expected_head
+    ):
+        raise CheckError(
+            "Commit pages are incomplete or inconsistent; no partial DCO result is accepted."
+        )
     failures = []
     for commit in commits:
         if reason := validate_commit(commit):
@@ -161,7 +171,9 @@ def main() -> int:
         if pull_request["base"]["repo"]["full_name"].casefold() != repository.casefold():
             raise CheckError("Pull request base does not match the workflow repository.")
         failures = check_pull_request(
-            repository, pull_request["number"], pull_request["head"]["sha"],
+            repository,
+            pull_request["number"],
+            pull_request["head"]["sha"],
             lambda path: github_get(path, token),
         )
     except CheckError as error:
@@ -172,7 +184,10 @@ def main() -> int:
         return 1
     if failures:
         print("\n".join(failures), file=sys.stderr)
-        print("Read .github/DCO and the contribution guide before adding your own sign-off.", file=sys.stderr)
+        print(
+            "Read .github/DCO and the contribution guide before adding your own sign-off.",
+            file=sys.stderr,
+        )
         return 1
     print("Every pull-request commit has a matching DCO sign-off.")
     return 0

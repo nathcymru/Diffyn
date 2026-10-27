@@ -1,0 +1,11 @@
+target-version = "py311"
+line-length = 100
+indent-width = 4
+
+[lint]
+select = ["F", "E4", "E7", "E9", "I"]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"

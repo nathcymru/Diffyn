@@ -13,6 +13,8 @@
 - **Choose a prompt:** [fourteen focused templates](prompts.md).
 - **Install a workflow:** [six portable and native MCP skills](skills.md).
 - **Maintain the repository:** [automated checks and dependency policy](maintenance.md).
+- **Assess verification:** [coverage and repeatable builds](verification.md).
+- **Understand project decisions:** [governance](governance.md) and the [roadmap](roadmap.md).
 - **Test unusual inputs:** [fuzzing guide](fuzzing.md).
 
 ## Evidence

@@ -7,7 +7,10 @@ const html = readFileSync(new URL('../../docs/index.html', import.meta.url), 'ut
 const script = readFileSync(new URL('../../docs/site.js', import.meta.url), 'utf8');
 const sceneScript = readFileSync(new URL('../../docs/scene.js', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../../docs/styles.css', import.meta.url), 'utf8');
-const installCommand = 'cargo install --git https://github.com/nathcymru/Diffyn --tag v2.0.0 --locked diffyn';
+const packageVersion = readFileSync(new URL('../../Cargo.toml', import.meta.url), 'utf8').match(
+  /^version = "([0-9]+\.[0-9]+\.[0-9]+)"$/m,
+)[1];
+const installCommand = `cargo install --git https://github.com/nathcymru/Diffyn --tag v${packageVersion} --locked diffyn`;
 const configuration = {
   mcpServers: { diffyn: { command: '/absolute/path/to/diffyn', args: [] } },
 };
@@ -15,7 +18,18 @@ const sample = 'Open the document. Check the title. Save your changes. Close the
 const settle = () => new Promise((resolve) => setImmediate(resolve));
 
 // Load the shipped page and script; emulate only browser APIs absent from jsdom.
-function page(t, { preferences = {}, reducedMotion = false, blockedStorage = false, clipboard = 'available', loadScript = true, loadScene = false, controlledFrames = false } = {}) {
+function page(
+  t,
+  {
+    preferences = {},
+    reducedMotion = false,
+    blockedStorage = false,
+    clipboard = 'available',
+    loadScript = true,
+    loadScene = false,
+    controlledFrames = false,
+  } = {},
+) {
   const errors = [];
   const virtualConsole = new VirtualConsole();
   virtualConsole.on('jsdomError', (error) => errors.push(error));
@@ -38,7 +52,9 @@ function page(t, { preferences = {}, reducedMotion = false, blockedStorage = fal
   for (const [key, value] of Object.entries(preferences)) window.localStorage.setItem(key, value);
   if (blockedStorage) {
     Object.defineProperty(window, 'localStorage', {
-      get() { throw new window.DOMException('Storage blocked', 'SecurityError'); },
+      get() {
+        throw new window.DOMException('Storage blocked', 'SecurityError');
+      },
     });
   }
   const media = new window.EventTarget();
@@ -51,14 +67,19 @@ function page(t, { preferences = {}, reducedMotion = false, blockedStorage = fal
   Object.defineProperty(window, 'isSecureContext', { value: true });
   if (clipboard !== 'unavailable') {
     Object.defineProperty(window.navigator, 'clipboard', {
-      value: { async writeText(text) {
-        if (clipboard === 'denied') throw new window.DOMException('Permission denied', 'NotAllowedError');
-        copied.push(text);
-      } },
+      value: {
+        async writeText(text) {
+          if (clipboard === 'denied')
+            throw new window.DOMException('Permission denied', 'NotAllowedError');
+          copied.push(text);
+        },
+      },
     });
   }
   const scrolled = [];
-  window.HTMLElement.prototype.scrollIntoView = function () { scrolled.push(this.id); };
+  window.HTMLElement.prototype.scrollIntoView = function () {
+    scrolled.push(this.id);
+  };
   const frames = new Map();
   let nextFrame = 1;
   if (controlledFrames) {
@@ -69,7 +90,9 @@ function page(t, { preferences = {}, reducedMotion = false, blockedStorage = fal
     };
     window.cancelAnimationFrame = (id) => frames.delete(id);
   }
-  window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
+  window.HTMLDialogElement.prototype.showModal = function () {
+    this.setAttribute('open', '');
+  };
   window.HTMLDialogElement.prototype.close = function () {
     this.removeAttribute('open');
     this.dispatchEvent(new window.Event('close'));
@@ -79,11 +102,18 @@ function page(t, { preferences = {}, reducedMotion = false, blockedStorage = fal
     assert.deepEqual(errors, [], 'Page interactions cause no uncaught browser errors');
   });
   if (loadScript) {
-    window.eval(script);
-    if (loadScene) window.eval(sceneScript);
+    window.eval(`${script}\n//# sourceURL=${new URL('../../docs/site.js', import.meta.url).href}`);
+    if (loadScene)
+      window.eval(
+        `${sceneScript}\n//# sourceURL=${new URL('../../docs/scene.js', import.meta.url).href}`,
+      );
   }
   return {
-    window, document, query, copied, scrolled,
+    window,
+    document,
+    query,
+    copied,
+    scrolled,
     root: document.documentElement,
     storage: () => Object.fromEntries(Object.entries(window.localStorage)),
     pendingFrames: () => frames.size,
@@ -156,7 +186,8 @@ test('blocked storage leaves appearance, examples and copy controls usable', asy
 
 test('spacing changes paragraph breaks without changing any example words', (t) => {
   const p = page(t);
-  const paragraphs = () => [...p.query('#reading-sample').querySelectorAll('p')].map((node) => node.textContent);
+  const paragraphs = () =>
+    [...p.query('#reading-sample').querySelectorAll('p')].map((node) => node.textContent);
   assert.equal(paragraphs().length, 2);
   assert.equal(paragraphs().join(' '), sample);
   p.query('#spacing-toggle').click();
@@ -229,8 +260,18 @@ test('demo controls select one example and shortcut links move focus to its cont
   const p = page(t);
   for (const name of ['steps', 'meaning', 'space']) {
     p.query(`[data-demo="${name}"]`).click();
-    assert.deepEqual([...p.document.querySelectorAll('.demo-panel')].filter((panel) => !panel.hidden).map((panel) => panel.id), [`demo-${name}`]);
-    assert.deepEqual([...p.document.querySelectorAll('[data-demo][aria-pressed="true"]')].map((button) => button.dataset.demo), [name]);
+    assert.deepEqual(
+      [...p.document.querySelectorAll('.demo-panel')]
+        .filter((panel) => !panel.hidden)
+        .map((panel) => panel.id),
+      [`demo-${name}`],
+    );
+    assert.deepEqual(
+      [...p.document.querySelectorAll('[data-demo][aria-pressed="true"]')].map(
+        (button) => button.dataset.demo,
+      ),
+      [name],
+    );
   }
   p.query('[data-open-demo="meaning"]').click();
   assert.equal(p.query('#demo-meaning').hidden, false);
@@ -262,13 +303,19 @@ test('checklist progress, reset and reminders work without storing personal stat
 
 test('copy buttons copy the complete install command and valid MCP configuration', async (t) => {
   const p = page(t);
-  for (const [id, label] of [['install-command', 'Install command'], ['mcp-config', 'MCP configuration']]) {
+  for (const [id, label] of [
+    ['install-command', 'Install command'],
+    ['mcp-config', 'MCP configuration'],
+  ]) {
     const button = p.query(`[data-copy="${id}"]`);
     button.click();
     await settle();
     assert.equal(p.copied.at(-1), p.query(`#${id}`).textContent);
     assert.equal(button.disabled, false);
-    assert.equal(p.query('#copy-status').textContent, `${label} copied. Paste it when you are ready.`);
+    assert.equal(
+      p.query('#copy-status').textContent,
+      `${label} copied. Paste it when you are ready.`,
+    );
     assert.equal(p.query('#copy-dialog').open, false);
   }
   assert.equal(p.copied[0], installCommand);

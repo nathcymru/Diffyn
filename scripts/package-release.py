@@ -5,14 +5,13 @@ import hashlib
 import io
 import json
 import os
-from pathlib import Path
 import re
 import subprocess
 import sys
 import tarfile
 import tomllib
 import zipfile
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGETS = (
@@ -22,9 +21,12 @@ TARGETS = (
     "x86_64-pc-windows-msvc",
 )
 SKILL_NAMES = (
-    "diffyn-understand-document", "diffyn-task-support",
-    "diffyn-repair-communication", "diffyn-write-in-my-voice",
-    "diffyn-make-decision", "diffyn-prepare-conversation",
+    "diffyn-understand-document",
+    "diffyn-task-support",
+    "diffyn-repair-communication",
+    "diffyn-write-in-my-voice",
+    "diffyn-make-decision",
+    "diffyn-prepare-conversation",
 )
 
 
@@ -89,9 +91,21 @@ def license_documents(package):
 def third_party_notices(target):
     """Collect notices from the locked, already-downloaded target dependency graph."""
     result = subprocess.run(
-        ["cargo", "metadata", "--locked", "--offline", "--format-version", "1",
-         "--filter-platform", target],
-        cwd=ROOT, check=True, capture_output=True, text=True, timeout=60,
+        [
+            "cargo",
+            "metadata",
+            "--locked",
+            "--offline",
+            "--format-version",
+            "1",
+            "--filter-platform",
+            target,
+        ],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=60,
     )
     metadata = json.loads(result.stdout)
     resolution = metadata.get("resolve") or {}
@@ -106,8 +120,7 @@ def third_party_notices(target):
         if package_id not in reachable:
             reachable.add(package_id)
             pending.extend(nodes[package_id]["dependencies"])
-    packages = [p for p in metadata["packages"]
-                if p["id"] in reachable and p["id"] != root_id]
+    packages = [p for p in metadata["packages"] if p["id"] in reachable and p["id"] != root_id]
     if len(packages) != len(reachable) - 1:
         raise ValueError("Cargo returned incomplete dependency metadata")
 
@@ -122,13 +135,15 @@ def third_party_notices(target):
         source = package.get("source") or ""
         if source != "registry+https://github.com/rust-lang/crates.io-index":
             raise ValueError(f"Unsupported dependency source for {package['name']}")
-        sections.extend([
-            "=" * 78,
-            f"Package: {package['name']} {package['version']}",
-            f"License metadata: {package.get('license') or 'See declared license file'}",
-            f"Source: {source}",
-            f"Package URL: https://crates.io/crates/{package['name']}/{package['version']}",
-        ])
+        sections.extend(
+            [
+                "=" * 78,
+                f"Package: {package['name']} {package['version']}",
+                f"License metadata: {package.get('license') or 'See declared license file'}",
+                f"Source: {source}",
+                f"Package URL: https://crates.io/crates/{package['name']}/{package['version']}",
+            ]
+        )
         if package.get("repository"):
             sections.append(f"Repository: {package['repository']}")
         for name, content in license_documents(package):
@@ -138,10 +153,15 @@ def third_party_notices(target):
 
 def rust_library_notices():
     """Preserve the copyright document installed by this build's rustc component."""
+
     def rustc(*arguments):
         return subprocess.run(
-            ["rustc", *arguments], cwd=ROOT, check=True,
-            capture_output=True, text=True, timeout=60,
+            ["rustc", *arguments],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=60,
         ).stdout.strip()
 
     sysroot = Path(rustc("--print", "sysroot"))
@@ -179,8 +199,13 @@ def package_binary(version, destination):
     bundled_notices = (
         ("THIRD_PARTY_NOTICES.txt", notices + rust_metadata),
         ("RUST_LIBRARY_LICENSES.html", rust_notices),
-        ("SKILLS.md", (ROOT / "docs" / "skills.md").read_text(encoding="utf-8")
-         .replace("(../skills/", "(skills/").encode("utf-8")),
+        (
+            "SKILLS.md",
+            (ROOT / "docs" / "skills.md")
+            .read_text(encoding="utf-8")
+            .replace("(../skills/", "(skills/")
+            .encode("utf-8"),
+        ),
     )
     archive = destination / archive_name(version, target)
     files = [(binary, executable), (ROOT / "LICENSE", "LICENSE")]
@@ -236,8 +261,9 @@ def verify_release(version, destination, release):
     assets = release.get("assets")
     if not isinstance(assets, list) or len(assets) != len(expected):
         raise ValueError("The draft release does not contain exactly six assets")
-    if any(not isinstance(asset, dict) or not isinstance(asset.get("name"), str)
-           for asset in assets):
+    if any(
+        not isinstance(asset, dict) or not isinstance(asset.get("name"), str) for asset in assets
+    ):
         raise ValueError("The draft release contains invalid asset metadata")
     if {asset.get("name") for asset in assets} != expected:
         raise ValueError("The draft release asset names do not match the package set")
@@ -248,6 +274,67 @@ def verify_release(version, destination, release):
         if asset.get("size") != path.stat().st_size:
             raise ValueError("An uploaded asset size does not match the local package")
     print("Verified the draft release's six uploaded asset names and sizes")
+
+
+def publish_draft(version, destination):
+    """Publish verified assets without moving latest behind a newer stable version."""
+    repository = "nathcymru/Diffyn"
+    release = json.loads(
+        subprocess.check_output(
+            [
+                "gh",
+                "release",
+                "view",
+                f"v{version}",
+                "--repo",
+                repository,
+                "--json",
+                "assets,isDraft,tagName",
+            ],
+            text=True,
+        )
+    )
+    verify_release(version, destination, release)
+    pages = json.loads(
+        subprocess.check_output(
+            [
+                "gh",
+                "api",
+                "--paginate",
+                "--slurp",
+                f"repos/{repository}/releases?per_page=100",
+            ],
+            text=True,
+        )
+    )
+    if not isinstance(pages, list) or any(not isinstance(page, list) for page in pages):
+        raise ValueError("Invalid stable release history")
+    current = tuple(map(int, version.split(".")))
+    newer_stable = False
+    for page in pages:
+        for published in page:
+            if not isinstance(published, dict):
+                raise ValueError("Invalid published release metadata")
+            if published.get("draft") or published.get("prerelease"):
+                continue
+            tag = published.get("tag_name", "")
+            if not isinstance(tag, str) or not re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", tag):
+                raise ValueError("Stable release history contains a non-numeric version")
+            if tuple(map(int, tag[1:].split("."))) > current:
+                newer_stable = True
+    subprocess.run(
+        [
+            "gh",
+            "release",
+            "edit",
+            f"v{version}",
+            "--repo",
+            repository,
+            "--draft=false",
+            f"--latest={'false' if newer_stable else 'true'}",
+        ],
+        check=True,
+    )
 
 
 if __name__ == "__main__":
@@ -262,8 +349,10 @@ if __name__ == "__main__":
             write_checksums(version, destination)
         elif mode == "verify-release":
             verify_release(version, destination, json.load(sys.stdin))
+        elif mode == "publish-release":
+            publish_draft(version, destination)
         else:
-            raise ValueError("Use binary, checksums or verify-release mode")
+            raise ValueError("Use binary, checksums, verify-release or publish-release mode")
     except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
         print(f"Packaging failed: {error}", file=sys.stderr)
         sys.exit(1)

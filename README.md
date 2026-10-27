@@ -57,10 +57,10 @@ or dyspraxic, alongside anyone who prefers these formats.
 
 **Requirements:** Rust 1.99 or later and an MCP client that supports local stdio.
 
-This checkout documents **2.0.0**. The tagged command below requires that version to appear in [GitHub Releases](https://github.com/nathcymru/Diffyn/releases); before publication, use the [source build guide](docs/engineering.md#build-the-executable).
+**Version 2.0.1:** use the tagged source installation below once it appears in [GitHub Releases](https://github.com/nathcymru/Diffyn/releases). The [source build guide](docs/engineering.md#build-the-executable) also supports unreleased repository changes.
 
 ```sh
-cargo install --git https://github.com/nathcymru/Diffyn --tag v2.0.0 --locked diffyn
+cargo install --git https://github.com/nathcymru/Diffyn --tag v2.0.1 --locked diffyn
 ```
 
 1. **Install** with the command above, or choose a [prebuilt download](https://github.com/nathcymru/Diffyn/releases).
