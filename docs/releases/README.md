@@ -2,7 +2,9 @@
 
 **Install a tagged version** to keep the software used by your MCP client predictable.
 
-- **Release notes:** [Diffyn v0.1.0](v0.1.0.md).
+- **2.0.0 release notes:** [Diffyn v2.0.0](v2.0.0.md).
+- **Historical release:** [Diffyn v0.1.0](v0.1.0.md).
+- **Upgrade:** [Migration to 2.0.0](../migration-v2.md).
 - **Downloads:** [GitHub Releases](https://github.com/nathcymru/Diffyn/releases).
 - **Build requirements:** Rust 1.99 or newer; Python and Node.js are only needed for development checks.
 
@@ -11,7 +13,7 @@
 GitHub Releases hosts platform binaries, a Cargo source package and a SHA-256 manifest.
 Dependency versions are recorded in `Cargo.lock`; Dependabot proposes updates for review.
 Each package also has a GitHub artifact attestation linking its digest to the release workflow.
-Binary archives include the project licence, third-party dependency notices and Rust library licence texts.
+Binary archives include the project licence, third-party dependency notices, Rust library licence texts and the six portable skills with their installation guide.
 
 **Cargo registry publishing is disabled.** The supported source installation uses the repository's version tag rather than an unrelated registry package with a similar name.
 
@@ -51,5 +53,5 @@ Confirm that the verified source reference is the expected `refs/tags/vMAJOR.MIN
 ```sh
 gh attestation verify FILE --repo nathcymru/Diffyn \
   --signer-workflow nathcymru/Diffyn/.github/workflows/release.yml \
-  --source-ref refs/tags/v0.1.0
+  --source-ref refs/tags/v2.0.0
 ```

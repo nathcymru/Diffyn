@@ -1,0 +1,1 @@
+{"source_text": "Read the form.", "steps": [{"id": "a", "text": "Read the form.", "origin": "source", "source_ref": {"start_byte": 0, "end_byte": 14}, "depends_on": ["b"]}, {"id": "b", "text": "Send it.", "origin": "proposal", "depends_on": ["a"]}]}

@@ -136,7 +136,7 @@ Use byte offsets against the UTF-8 source rather than treating them as character
 
 **Expected result:** Separate user-role messages contain the template, supplied context and supplied preferences.
 
-- **Alternative template:** `neuro_inclusive_persona_wrapper` uses the same argument names.
+- **Other templates:** All [fourteen prompts](prompts.md) use the same argument names.
 - **Required context:** `context` must be a nonblank string.
 - **Free-text preferences:** Prompt preferences are a string, not the tool profile object.
 - **Combined limit:** Context and preferences together may contain at most 32,768 UTF-8 bytes.
@@ -154,9 +154,120 @@ Use byte offsets against the UTF-8 source rather than treating them as character
 
 **Expected result:** One `text/markdown` resource contains the combined preference matrix.
 
-- **Other resources:** `core-instructions`, `style-guide` and `evidence-and-limits` use the same `diffyn://guidance/` prefix.
+- **Other resources:** Ten exact guidance URIs are listed in the [communication contract](communication-contract.md).
 - **Exact match:** File paths, external URLs, query strings and other URI variants are rejected.
 - **Local content:** References are citations that the server does not fetch.
+
+## Carry checklist progress explicitly
+
+After the first checklist call, copy its exact `source_revision` and the `step_id` to update. Send the same `complex_task`, the copied revision and `progress: [{"step_id": "the returned ID", "status": "completed"}]`. The quoted ID here describes where to copy a value; it is not a valid hard-coded identifier.
+
+The completed item remains in `all_steps` and outside the active `extracted_steps` window. Source checkbox evidence remains unchanged. If the source changes, request a new checklist before applying progress. A moved display window does not authorize skipping earlier requirements.
+
+## Resolve preferences for this request
+
+**Tool:** `resolve_communication_preferences`.
+
+```json
+{
+  "general": {"use_bold": true, "detail": "detailed"},
+  "task": {"answer_order": "answer_first"},
+  "current_request": {"plain_text": true, "detail": "concise"}
+}
+```
+
+The result selects concise host detail, retains answer-first ordering and suppresses generated bold because plain text is selected. It records the source of each setting and the conflicts. Copy `tool_preferences` into `profile.preferences` for an original text tool; the host applies the separate host choices. Nothing is saved.
+
+## Review changed details
+
+**Tool:** `compare_protected_details`.
+
+```json
+{
+  "original_text": "The fee is £25. I cannot attend on Friday.",
+  "candidate_text": "The fee is £35. I can attend on Friday.",
+  "protected_text": ["I cannot attend on Friday."]
+}
+```
+
+The output reports changed recognised amounts and the missing protected refusal. A person or host must also review the meaning. Automatic matching does not detect every obligation or establish equivalence when counts match.
+
+## Check a supplied action plan
+
+**Tool:** `validate_action_plan`.
+
+```json
+{
+  "steps": [
+    {"id": "draft", "text": "Draft the outline", "origin": "user", "completion": "not_started"},
+    {"id": "review", "text": "Review the outline", "origin": "proposal", "depends_on": ["draft"]}
+  ]
+}
+```
+
+This checks a supplied dependency structure. The proposed review remains distinct from the user's instruction. A structurally valid result does not show that the plan is complete or safe for the real task.
+
+## Build a return point
+
+**Tool:** `build_resume_card`.
+
+```json
+{
+  "goal": "Finish the report",
+  "steps": [
+    {"id": "outline", "text": "Draft the outline", "status": "completed"},
+    {"id": "figures", "text": "Check table 2", "status": "not_started"}
+  ],
+  "next_step_id": "figures",
+  "blockers": []
+}
+```
+
+The card retains the stated completion and records “Check table 2” as the explicitly supplied next action. It returns `saved: false`. Without `next_step_id`, it does not choose one.
+
+## Explain a numerical calculation
+
+**Tool:** `explain_numeric_values`.
+
+```json
+{
+  "operation": "percentage_of",
+  "value": "12.5",
+  "other_value": "80",
+  "decimal_places": 2
+}
+```
+
+The result is `10`, with exact fraction `10/1` and `rounded: false`. This means 12.5% of 80. The tool does not infer whether the calculation is appropriate to a bill, risk statement or other context.
+
+For a supported conversion, use `{"operation":"convert_unit","value":"90","from_unit":"min","to_unit":"h"}`. The result is 1.5 hours. Calendar dates and time zones are outside the local numeric tool.
+
+## Check a requested response shape
+
+**Tool:** `check_response_contract`.
+
+```json
+{
+  "text": "## Next action\nOpen the report.",
+  "preferences": {
+    "required_headings": ["Next action"],
+    "next_action_marker": "Open the report.",
+    "max_paragraph_chars": 120
+  }
+}
+```
+
+The tool checks the supplied literal marker, heading and length preference. It reports what was checked and what remains unassessed; it cannot determine whether opening the report is the right action. The length preference is user-selected, not a clinical limit.
+
+## Read a skill
+
+A client supporting the Skills extension can call `skills/get` with:
+
+```json
+{"uri": "skill://diffyn-write-in-my-voice/SKILL.md"}
+```
+
+This returns the manifest. Use `resources/read` with that same URI for the skill text. A host without native skill discovery can install the portable folder instead; see the [skills guide](skills.md).
 
 ## Present the result usefully
 

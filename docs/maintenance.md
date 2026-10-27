@@ -28,6 +28,12 @@ Use the [contribution guide](../.github/CONTRIBUTING.md) for ordinary changes an
 
 **Rust:** install the stable toolchain, then use the verification commands in the [engineering guide](engineering.md).
 
+**Python:** exercise release archives and DCO validation without creating a release:
+
+```sh
+python3 -m unittest discover -s tests -p 'test_*.py'
+```
+
 **Documentation:** use Node.js 24 or newer. Dependencies are development-only and do not become part of the Rust executable.
 
 ```sh
@@ -79,7 +85,7 @@ Remove the override when the upstream dependency selects a patched release and b
 - **Citations:** keep research keys aligned with [bibliography.bib](bibliography.bib); [CITATION.cff](../CITATION.cff) is validated against the official CFF 1.2.0 schema.
 - **Diagrams:** Mermaid fences are parsed for syntax. Preview their layout separately and retain a text alternative.
 - **Presentation:** Markdownlint permits the intentional HTML used for linked logos and centered sections. Long source lines are allowed; keep rendered paragraphs readable.
-- **Bundled guidance:** changes in `docs/guidance/` or `docs/prompts/` are compiled into the server and need the Rust tests as well as documentation checks.
+- **Bundled guidance:** changes in `docs/guidance/`, `docs/prompts/` or `skills/` are compiled into the server and need the Rust tests as well as documentation checks.
 
 **Check boundary:** syntax and link checks cannot verify the truth of a citation, the accessibility of a diagram, or the appearance of GitHub's rendered page. Review those outcomes directly.
 

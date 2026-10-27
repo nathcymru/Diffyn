@@ -2,7 +2,7 @@
 
 **Diffyn runs locally** as a Rust process connected to an AI host through MCP over standard input and output.
 
-The host chooses when to use its **three tools**, **two prompts** and **four resources**, then reviews what to present to the person.
+The host chooses when to use its **nine tools**, **fourteen prompts**, **ten resources** and **six skills**, then reviews what to present to the person.
 
 ## The communication flow
 
@@ -36,7 +36,7 @@ flowchart TD
     Client["Local MCP client"]
     Transport["src/server/transport.rs<br/>Bounded stdio"]
     Server["src/server.rs<br/>MCP dispatch"]
-    Capabilities["Validated local capabilities<br/>Tools, prompts and resources"]
+    Capabilities["Validated local capabilities<br/>Tools, prompts, resources and skills"]
 
     Main --> Transport
     Client <-->|"JSON-RPC"| Transport
@@ -54,28 +54,31 @@ flowchart TD
 flowchart TD
     PromptFiles["docs/prompts/<br/>Prompt Markdown"]
     Guidance["docs/guidance/<br/>Reference Markdown"]
+    Skills["skills/<br/>Portable workflow Markdown"]
     Embed["include_str!<br/>Embedded at compile time"]
-    Registries["Prompt and resource registries<br/>src/prompts/<br/>src/resources/"]
-    Published["Prompt messages<br/>Resource text<br/>Core server instructions"]
+    Registries["Prompt, resource and skill registries<br/>src/prompts/<br/>src/resources/<br/>src/skills.rs"]
+    Published["Prompt messages<br/>Resource text<br/>Skill manifests<br/>Core server instructions"]
 
     PromptFiles --> Embed
     Guidance --> Embed
+    Skills --> Embed
     Embed --> Registries
     Registries --> Published
 ```
 
-**Text alternative:** Prompt and guidance Markdown is embedded during compilation, then the prompt and resource modules expose that fixed text through MCP; the core guidance also supplies the server instructions.
+**Text alternative:** Prompt, guidance and skill Markdown is embedded during compilation, then the registries expose fixed text and skill manifests through MCP; the core guidance also supplies the server instructions.
 
-**Build-time content:** Rust's `include_str!` embeds the Markdown in `docs/prompts/` and `docs/guidance/` into the executable, so changing those files requires rebuilding the server.
+**Build-time content:** Rust's `include_str!` embeds the Markdown in `docs/prompts/`, `docs/guidance/` and `skills/` into the executable, so changing those files requires rebuilding the server.
 
 ## What each module does
 
 - **[Entry point](../src/main.rs):** Creates the Tokio runtime and limits how long runtime shutdown can wait.
 - **[Transport](../src/server/transport.rs):** Applies a 1 MiB incoming JSON-line limit and handles EOF or stop signals.
 - **[Server](../src/server.rs):** Publishes capabilities, routes requests and prevents tool errors from echoing submitted content.
-- **[Tools](../src/tools/):** Validate text and explicit preferences before formatting layout, extracting steps or finding possible idioms.
+- **[Tools](../src/tools/):** Validate text and explicit preferences before formatting layout, extracting steps, finding possible ambiguity or checking supplied structured information.
 - **[Prompts](../src/prompts/mod.rs):** Return a static template and separate user-role messages containing supplied context and preferences.
-- **[Resources](../src/resources/mod.rs):** Resolve four exact resource URIs without interpreting them as file paths or network addresses.
+- **[Resources](../src/resources/mod.rs):** Resolve ten exact guidance URIs without interpreting them as file paths or network addresses.
+- **[Skills](../src/skills.rs):** Discover six embedded workflows and serve their exact file URIs with matching digests.
 
 The **same core-instruction text** appears in server metadata and at `diffyn://guidance/core-instructions`.
 
@@ -89,6 +92,12 @@ The **same core-instruction text** appears in server metadata and at `diffyn://g
 6. **Review:** The host considers the result, original content, warnings and limitations before presenting it.
 
 The [communication contract](communication-contract.md) describes each tool's actual settings and limits.
+
+## Skills and host reasoning
+
+The six portable workflows in `skills/` are embedded at build time and exposed through the `io.modelcontextprotocol/skills` extension. Exact `skill://<name>/SKILL.md` reads return only those bundled files. Digests and sizes describe the embedded bytes; there is no directory traversal or runtime file loading. See the [skills guide](skills.md).
+
+Prompts and skills instruct the host model. The local server performs deterministic operations and makes no model calls. Resume cards and preference layers are supplied by the caller; the server does not remember prior requests.
 
 ## Privacy and lifecycle
 

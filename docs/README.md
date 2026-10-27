@@ -8,7 +8,10 @@
 - **Make a request:** [examples](examples.md).
 - **Understand the system:** [architecture and data flow](architecture.md).
 - **Understand security boundaries:** [controls, limits and review checks](security-design.md).
-- **Choose preferences:** [communication contract](communication-contract.md).
+- **Choose preferences and tools:** [communication contract](communication-contract.md).
+- **Upgrade from 0.1.x:** [migration to 2.0.0](migration-v2.md).
+- **Choose a prompt:** [fourteen focused templates](prompts.md).
+- **Install a workflow:** [six portable and native MCP skills](skills.md).
 - **Maintain the repository:** [automated checks and dependency policy](maintenance.md).
 - **Test unusual inputs:** [fuzzing guide](fuzzing.md).
 
@@ -25,10 +28,18 @@
 - **Combined preferences:** [support options and trade-offs](guidance/profile-matrix.md).
 - **Evidence limits:** [scope and boundaries](guidance/evidence-and-limits.md).
 
+- **Preference scope:** [precedence and reversible settings](guidance/preferences-and-scope.md).
+- **Communication:** [repair and authorship](guidance/communication-repair-and-voice.md).
+- **Task support:** [planning and resumption](guidance/task-planning-and-resumption.md).
+- **Numeracy:** [numbers, dates and units](guidance/numbers-dates-and-units.md).
+- **Host coverage:** [language and capabilities](guidance/language-and-host-capabilities.md).
+- **Traceability:** [evidence-to-feature map](guidance/evidence-to-feature-map.md).
+
 ## Prompt templates
 
 - **Preference-led responses:** [persona wrapper](prompts/persona-wrapper.md).
-- **Focused clarification:** [adaptive interrogator](prompts/adaptive-interrogator.md).
+- **Focused clarification:** [retained API template](prompts/adaptive-interrogator.md).
+- **All workflows:** [prompt directory](prompts.md).
 
 ## Project participation
 

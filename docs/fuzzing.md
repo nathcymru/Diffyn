@@ -7,14 +7,20 @@ tool with libFuzzer and AddressSanitizer.
 ## What is checked
 
 - **Text preservation:** formatting must retain every non-whitespace character and the complete original.
-- **Checklist integrity:** extracted and deferred steps must come from the source in order, with the original retained.
+- **Checklist integrity:** `all_steps` retains source order; active and deferred IDs form a complete disjoint partition, and the next action belongs to the active window.
 - **Clarity spans:** finding offsets must identify the exact phrase on valid UTF-8 boundaries.
+- **Preference resolution:** resolved local settings stay within bounds, and plain text suppresses generated bold.
+- **Detail comparison:** returned spans match the original or candidate text, counts remain consistent, expanded groups stay bounded and semantic equivalence is never claimed.
+- **Plan validation:** returned steps stay bounded, results serialize and review remains required.
+- **Resume cards:** returned steps stay bounded and `saved` remains false.
+- **Numeric explanations:** supported results serialize with a bounded decimal representation and an exact fraction; arithmetic correctness has separate regression tests.
+- **Response contracts:** expanded findings stay bounded, total counts include omitted findings and returned byte spans are valid.
 - **Input limits:** blank text, oversized text and invalid preferences must fail safely.
 - **Request parsing:** malformed JSON, unknown fields, invalid enum values and nested data exercise typed deserialization.
 
 Both harnesses call the same Rust library used by the MCP server. Synthetic
 seeds include Welsh, emoji, quantities, conditions, completed items, Markdown,
-idioms and size boundaries.
+idioms and size boundaries. Version 2.0.0 adds seven JSON seeds covering scoped preferences, protected-detail changes, plan dependencies, caller-supplied resume state, rounded division, optional clarity categories and response contracts. The JSON harness exercises all nine request types; generated corpus files are not committed.
 
 ## Run a bounded session
 

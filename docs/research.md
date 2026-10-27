@@ -102,6 +102,35 @@ Individual preference and demonstrated general benefit remain different claims.
 without automatically introducing specialized fonts, fragmented word bolding,
 or a fixed reading grade.
 
+## Lived experience, agency and AI communication
+
+The 2.0.0 synthesis adds primary human-computer interaction studies to the earlier accessibility and practice sources. The studies below inform design questions; none evaluates Diffyn itself.
+
+| Study | Evidence and sample | Implication and limit |
+| --- | --- | --- |
+| Jang et al., CHI 2024 | Eleven autistic participants compared a GPT-4 chatbot with a disguised human confederate for workplace advice; an employment practitioner identified problematic advice. [jang-et-al-2024](bibliography.bib) | Support user choice while reviewing suggestions that prioritise employers, masking or disclosure; expressed preference does not establish advice quality. |
+| Çarik et al., January 2025 | Qualitative analysis of discussions across 61 Reddit communities identified uses, configuration workarounds and concerns. [carik-et-al-2025](bibliography.bib) | Make focused workflows discoverable and accept imperfect input; online self-reports do not establish prevalence or effectiveness. |
+| Jamshed et al., ASSETS 2025 | Interviews with 19 neurodivergent students described useful assistance alongside configuration burden, disrupted routines and flattened personal voice. [jamshed-et-al-2025](bibliography.bib) | Preserve authorship and offer flexible task re-entry; the study is largely undergraduate, at one institution, and based on accounts rather than observed intervention outcomes. |
+| Pinto et al., November 2025 | A seven-day diary study and interviews with 13 adults with ADHD examined communication and task support. [pinto-et-al-2025](bibliography.bib) | Offer manageable starting points and user-selected engagement; reported experiences do not establish treatment or body-doubling efficacy. |
+| Wohn et al., CHI 2026 | An audit of 345,000 outputs from six LLMs, contextualised by interviews with 11 autistic adults, found that autism disclosure could shift advice toward stereotyped avoidance. [wohn-et-al-2026](bibliography.bib) | Use concrete preferences rather than diagnosis-based defaults and preserve ambitions and agency; the tested models and scenarios do not establish all-model behaviour or prove that instructions eliminate bias. |
+| Kan et al., May 2026 | Participatory group discussions with 20 autistic adults in Singapore identified ambiguous work processes and shared responsibility for inclusion. [kan-et-al-2026](bibliography.bib) | Support reciprocal clarification and concrete adjustment requests; findings are context-specific and this paper does not report chatbot outcome evidence. |
+
+### Communication repair and authorship
+
+**Design response:** a message-understanding workflow distinguishes stated content, possible interpretations and unknowns. A repair workflow drafts a concrete clarification without claiming to know another person's private intentions. Voice-preserving editing retains refusals, uncertainty, commitments and chosen tone. These are engineering responses to the studies above, not validated measures of empathy or social competence.
+
+**Agency:** advice must not assume that safety means withdrawal, that politeness means agreement, or that a diagnosis establishes risk tolerance. Diagnostic disclosure is never inserted into a draft automatically. Preferences can vary across tasks and over time.
+
+### Starting and returning to tasks
+
+**Design response:** clarify the goal, known prerequisites and completion criteria, then offer the requested level of support. A resume card records caller-supplied progress and a recorded next action. It does not infer completion or retain a hidden history. Structural plan checks can identify inconsistent references or dependencies, but cannot establish real-world safety or completeness.
+
+### Numbers, dates and alternative explanations
+
+**Additional COGA patterns:** the existing 2021 guidance specifically addresses implied content, task preparation and alternatives for numerical concepts. These are newly examined portions of an existing source, not new empirical findings. [w3c-coga-2021](bibliography.bib)
+
+**Design response:** retain exact values and show supported calculations with units and labelled rounding. Supplement an exact number with an explanation rather than replacing it. Relative dates need a reference date, and ambiguous calendar conventions remain unresolved until the relevant context is known. Numerical explanation is not a diagnosis-specific rounding algorithm.
+
 ## Combined needs and uncertainty
 
 **Compose preferences:** support needs can overlap, and useful adjustments can
@@ -142,6 +171,10 @@ describe the implemented fields, mechanisms, and limitations.
 The evidence reviewed here does not establish a universal sentence limit,
 checklist size, readability score, or cognitive-load threshold.
 
+## Evidence-to-feature traceability
+
+The bundled [evidence-to-feature map](guidance/evidence-to-feature-map.md) links each research family to the corresponding workflow and its boundary. Local preservation checks, source references, dependency validation and output-shape checks are engineering controls; their correctness is assessed by software tests, not inferred from the cited studies.
+
 ## Evaluation priorities
 
 **Software verification:** automated checks can assess preservation, argument
@@ -153,7 +186,10 @@ varied and combined preferences, without requiring diagnostic disclosure,
 following COGA's emphasis on user involvement.
 [w3c-coga-2021](bibliography.bib)
 
-- **Task outcomes:** assess completion, mistakes, and retained meaning against the original information.
+- **Task outcomes:** assess initiation, resumption after interruption, mistakes and retained meaning against the original information.
+- **Agency and authorship:** assess whether people recognise their own voice, retain boundaries and can reject unwanted assistance.
+- **Configuration effort:** assess the work needed to discover and adjust a workflow, including declined or unsuccessful uses.
+- **Uncertainty:** assess whether interpretations, unknown requirements and stale progress remain understandable.
 - **User experience:** measure perceived effort, control, preferred detail, and willingness to use the format again.
 - **Language coverage:** evaluate Welsh, English, and other intended languages without assuming English heuristics transfer.
 - **Host accessibility:** test keyboard use, screen readers, zoom, reflow, contrast, and text-spacing overrides in real clients.

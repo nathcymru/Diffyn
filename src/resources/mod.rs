@@ -37,7 +37,7 @@ const RESOURCES: &[BundledResource] = &[
     BundledResource {
         uri: "diffyn://guidance/profile-matrix",
         name: "Combined preference matrix",
-        description: "Optional supports and conflicts across self-described neurotypes; no diagnostic classification.",
+        description: "Preference combinations and conflicts without diagnostic classification.",
         text: include_str!("../../docs/guidance/profile-matrix.md"),
     },
     BundledResource {
@@ -45,6 +45,42 @@ const RESOURCES: &[BundledResource] = &[
         name: "Evidence and accessibility limits",
         description: "Source provenance, evidence strength, implementation boundaries, and evaluation requirements.",
         text: include_str!("../../docs/guidance/evidence-and-limits.md"),
+    },
+    BundledResource {
+        uri: "diffyn://guidance/preferences-and-scope",
+        name: "Preferences and scope",
+        description: "Explicit settings, precedence and reversible choices.",
+        text: include_str!("../../docs/guidance/preferences-and-scope.md"),
+    },
+    BundledResource {
+        uri: "diffyn://guidance/communication-repair-and-voice",
+        name: "Communication repair and voice",
+        description: "Reciprocal clarification and preservation of authorship.",
+        text: include_str!("../../docs/guidance/communication-repair-and-voice.md"),
+    },
+    BundledResource {
+        uri: "diffyn://guidance/task-planning-and-resumption",
+        name: "Task planning and resumption",
+        description: "Known prerequisites, supplied state and honest progress.",
+        text: include_str!("../../docs/guidance/task-planning-and-resumption.md"),
+    },
+    BundledResource {
+        uri: "diffyn://guidance/numbers-dates-and-units",
+        name: "Numbers, dates and units",
+        description: "Exact values, labelled calculations and calendar ambiguity.",
+        text: include_str!("../../docs/guidance/numbers-dates-and-units.md"),
+    },
+    BundledResource {
+        uri: "diffyn://guidance/language-and-host-capabilities",
+        name: "Language and host capabilities",
+        description: "Language coverage and honest client capability fallbacks.",
+        text: include_str!("../../docs/guidance/language-and-host-capabilities.md"),
+    },
+    BundledResource {
+        uri: "diffyn://guidance/evidence-to-feature-map",
+        name: "Evidence to feature map",
+        description: "Research-informed choices and limits of validation.",
+        text: include_str!("../../docs/guidance/evidence-to-feature-map.md"),
     },
 ];
 
@@ -100,7 +136,10 @@ mod tests {
     #[test]
     fn all_listed_resources_resolve_with_matching_metadata() -> Result<(), ErrorData> {
         let registry = list_resources();
-        assert_eq!(registry.resources.len(), 4);
+        assert_eq!(registry.resources.len(), 10);
+        let uris: std::collections::HashSet<_> =
+            registry.resources.iter().map(|r| &r.uri).collect();
+        assert_eq!(uris.len(), registry.resources.len());
         for resource in registry.resources {
             assert_eq!(resource.mime_type.as_deref(), Some("text/markdown"));
             let result = read_resource(ReadResourceRequestParams::new(&resource.uri))?;

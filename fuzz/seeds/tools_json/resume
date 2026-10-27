@@ -1,0 +1,1 @@
+{"goal": "Submit the form.", "steps": [{"id": "a", "text": "Read it.", "status": "completed"}, {"id": "b", "text": "Check it.", "status": "pending"}], "next_step_id": "b"}

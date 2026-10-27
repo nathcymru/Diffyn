@@ -10,7 +10,7 @@ This guide describes the current implementation and its limits. Use the
 ## Trust and data flow
 
 - **Trust the host:** the operating system and the MCP client control the process and its permissions.
-- **Validate submitted data:** text, profiles, prompt arguments and resource identifiers may be malformed or hostile.
+- **Validate submitted data:** text, profiles, supplied plans and task state, prompt arguments and resource identifiers may be malformed or hostile.
 - **Keep processing local:** the server makes no outbound model calls or runtime source fetches.
 - **Return results to the caller:** responses intentionally include original text where the tool contract requires it.
 - **Review upstream use:** the client decides whether to display, retain or send those results to a model or another service.
@@ -24,14 +24,14 @@ access-control and resource-management design.
 - **Protocol messages:** each line is limited to 1 MiB, including its delimiter. Total request volume and concurrent work remain unbounded.
 - **Tool inputs:** typed parsing rejects unknown fields; code validates blank text, a 32 KiB text limit and preference ranges. Valid text can still be misleading or harmful.
 - **Prompt arguments:** combined context and preferences are limited to 32 KiB and separated from the static template. This is not an injection-proof sandbox; the host must enforce its own instructions.
-- **Resources:** exact URI matching selects assets embedded at compile time. Changes to these assets need review because they change guidance.
+- **Resources and skills:** exact URI matching selects assets embedded at compile time. Skills manifests describe only the bundled SKILL.md files and their SHA-256 digests; neither retrieval method browses directories or loads caller-controlled paths. Changes need review because they change guidance.
 - **Errors:** fixed operational messages and sanitized tool errors avoid echoing submitted values. Successful results intentionally contain caller data.
 - **Shutdown:** EOF ends the session; supported stop signals trigger bounded cleanup. The operating system and client control process termination and crash handling.
 
 **Implementation:** [transport](../src/server/transport.rs),
 [MCP handlers](../src/server.rs), [tool validation](../src/tools/mod.rs),
-[profiles](../src/tools/profile.rs), [prompt registry](../src/prompts/mod.rs)
-and [resource registry](../src/resources/mod.rs).
+[profiles](../src/tools/profile.rs), [prompt registry](../src/prompts/mod.rs),
+[resource registry](../src/resources/mod.rs) and [skills extension](../src/skills.rs).
 
 ## Privacy and permissions
 
@@ -48,10 +48,10 @@ global CPU, memory or request-rate quota.
 ## Preserve meaning and user control
 
 **Formatting is not a semantic safety check.** Diffyn uses deterministic layout
-rules, explicit checklist extraction and a finite set of clarity patterns.
+rules, explicit checklist extraction, finite clarity patterns, protected-detail comparisons, supplied-plan checks and exact bounded arithmetic.
 
-- **Retain the source:** tool responses keep the original text or task for comparison.
-- **Keep unresolved work visible:** checklist output retains deferred steps and reports missing structure.
+- **Retain source evidence:** text tools keep the original or provide comparison spans; plan and resume tools retain supplied steps and provenance.
+- **Keep unresolved work visible:** checklist output retains all steps and requires matching source revisions for caller-supplied progress; resume cards never infer or save progress.
 - **Explain uncertainty:** outputs include limitations, review requirements or warnings where applicable.
 - **Respect preferences:** profile labels are self-declared; the server does not infer a diagnosis from writing style.
 - **Check consequential content:** the host and user must verify conditions, quantities and instructions before acting.
